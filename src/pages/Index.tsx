@@ -13,35 +13,38 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   useEffect(() => {
-    // Smooth scroll behavior for anchor links
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
-      
-      if (anchor && anchor.hash && anchor.hash.startsWith('#') && anchor.origin + anchor.pathname === window.location.origin + window.location.pathname) {
-        e.preventDefault();
+    // Only run this in browser environment
+    if (typeof window !== 'undefined') {
+      // Smooth scroll behavior for anchor links
+      const handleAnchorClick = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        const anchor = target.closest('a');
         
-        const targetElement = document.querySelector(anchor.hash);
-        if (targetElement) {
-          const navbarHeight = 80; // Approximately the height of the navbar
-          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+        if (anchor && anchor.hash && anchor.hash.startsWith('#') && anchor.origin + anchor.pathname === window.location.origin + window.location.pathname) {
+          e.preventDefault();
           
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
-          
-          // Optionally update URL
-          history.pushState(null, '', anchor.hash);
+          const targetElement = document.querySelector(anchor.hash);
+          if (targetElement) {
+            const navbarHeight = 80; // Approximately the height of the navbar
+            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+            
+            // Optionally update URL
+            history.pushState(null, '', anchor.hash);
+          }
         }
-      }
-    };
-    
-    document.addEventListener('click', handleAnchorClick);
-    
-    return () => {
-      document.removeEventListener('click', handleAnchorClick);
-    };
+      };
+      
+      document.addEventListener('click', handleAnchorClick);
+      
+      return () => {
+        document.removeEventListener('click', handleAnchorClick);
+      };
+    }
   }, []);
 
   return (
