@@ -3,55 +3,55 @@ import React from 'react';
 import FadeIn from './animations/FadeIn';
 import { 
   Map, 
-  Layers, 
+  Building, 
   Search, 
   Navigation, 
-  Share2, 
-  Zap, 
-  Globe, 
-  Lock 
+  TrendingUp, 
+  ShieldCheck, 
+  GraduationCap, 
+  Zap 
 } from 'lucide-react';
 
 const features = [
   {
     icon: <Search className="h-6 w-6 text-posh-green" />,
-    title: "Smart Search",
-    description: "Locate anything with intelligent search that understands context and natural language queries."
+    title: "AI-Powered Area Search",
+    description: "Find homes based on lifestyle preferences, not just price. Our AI understands what matters to you."
   },
   {
-    icon: <Layers className="h-6 w-6 text-posh-green" />,
-    title: "Custom Layers",
-    description: "Build detailed visualizations with multiple data layers that reveal deeper insights."
+    icon: <ShieldCheck className="h-6 w-6 text-posh-green" />,
+    title: "Crime & Safety Insights",
+    description: "Get detailed crime statistics and safety scores for any neighborhood with reliable data."
   },
   {
     icon: <Navigation className="h-6 w-6 text-posh-green" />,
-    title: "Precision Routing",
-    description: "Calculate optimal routes with real-time traffic data and predictive analysis."
+    title: "Transport & Walkability",
+    description: "Understand commute times, public transport access, and walkability scores for daily living."
   },
   {
-    icon: <Globe className="h-6 w-6 text-posh-green" />,
-    title: "Global Coverage",
-    description: "Access detailed maps for every corner of the globe with consistent quality and precision."
+    icon: <GraduationCap className="h-6 w-6 text-posh-green" />,
+    title: "School Quality Analysis",
+    description: "Compare local schools with detailed Ofsted reports and catchment area information."
   },
   {
-    icon: <Zap className="h-6 w-6 text-posh-green" />,
-    title: "AI Insights",
-    description: "Uncover patterns and trends with AI-powered analysis of location data."
+    icon: <TrendingUp className="h-6 w-6 text-posh-green" />,
+    title: "Future Value Predictions",
+    description: "Our AI forecasts property value trends to help you make smarter investment decisions."
   },
   {
-    icon: <Share2 className="h-6 w-6 text-posh-green" />,
-    title: "Seamless Sharing",
-    description: "Collaborate easily by sharing maps, routes, and insights with your team or clients."
-  },
-  {
-    icon: <Lock className="h-6 w-6 text-posh-green" />,
-    title: "Enterprise Security",
-    description: "Keep your location data secure with enterprise-grade encryption and compliance features."
+    icon: <Building className="h-6 w-6 text-posh-green" />,
+    title: "Neighborhood Vibe Score",
+    description: "Discover the atmosphere and community feel with insights from local residents."
   },
   {
     icon: <Map className="h-6 w-6 text-posh-green" />,
-    title: "3D Visualization",
-    description: "View terrain, buildings, and data in stunning 3D with intuitive controls."
+    title: "Visual Area Assessment",
+    description: "AI-powered analysis of street views to evaluate area aesthetics and maintenance."
+  },
+  {
+    icon: <Zap className="h-6 w-6 text-posh-green" />,
+    title: "Real-Time Data Updates",
+    description: "Always get the latest information with our continuously updated data sources."
   }
 ];
 
@@ -62,13 +62,13 @@ const FeaturesSection: React.FC = () => {
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
-              <span className="text-sm font-medium text-posh-green">Powerful Features</span>
+              <span className="text-sm font-medium text-posh-green">AI-Powered Insights</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-              Every Detail Designed for Excellence
+              Smarter Home Decisions with Deep Insights
             </h2>
             <p className="text-lg text-posh-dark/80">
-              Discover the tools and capabilities that make PoshMaps the premier choice for location intelligence.
+              We combine AI, real estate data, and user reviews to give you deep insights on every neighborhood – so you can buy with confidence.
             </p>
           </div>
         </FadeIn>

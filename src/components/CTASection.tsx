@@ -12,13 +12,13 @@ const CTASection: React.FC = () => {
           <FadeIn>
             <div className="text-center mb-16">
               <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
-                <span className="text-sm font-medium text-posh-green">Ready to Start?</span>
+                <span className="text-sm font-medium text-posh-green">Ready to Find Your Area?</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-                Begin Your PoshMaps Journey Today
+                Start Your Property Journey Today
               </h2>
               <p className="text-lg text-posh-dark/80 max-w-2xl mx-auto">
-                Join thousands of forward-thinking organizations already using PoshMaps to transform their location intelligence.
+                Join thousands of homebuyers and investors already making smarter property decisions with Posh Maps.
               </p>
             </div>
           </FadeIn>
@@ -29,26 +29,26 @@ const CTASection: React.FC = () => {
                 <div className="flex flex-col h-full">
                   <div className="flex items-center space-x-2 mb-6">
                     <MapPin className="h-6 w-6 text-posh-green" />
-                    <span className="font-display text-2xl font-semibold">PoshMaps</span>
+                    <span className="font-display text-2xl font-semibold">Posh Maps</span>
                   </div>
                   
-                  <h3 className="text-2xl font-bold mb-2">Start for Free</h3>
+                  <h3 className="text-2xl font-bold mb-2">Free Property Search</h3>
                   <p className="text-posh-dark/70 mb-8">
-                    Explore all features with our generous free tier. Upgrade anytime as your needs grow.
+                    Get started with our free plan to explore neighborhoods. Upgrade for advanced AI insights.
                   </p>
                   
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>Unlimited basic maps</span>
+                      <span>Basic area stats and insights</span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>Core AI features included</span>
+                      <span>Property listings integration</span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>Up to 5 team members</span>
+                      <span>School and transport information</span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
@@ -57,7 +57,7 @@ const CTASection: React.FC = () => {
                   </ul>
                   
                   <Button className="w-full bg-posh-green hover:bg-green-500 text-white rounded-full">
-                    Get Started For Free
+                    Start Free Search
                   </Button>
                 </div>
               </FadeIn>

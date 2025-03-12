@@ -5,21 +5,21 @@ import { Star } from 'lucide-react';
 
 const testimonials = [
   {
-    content: "PoshMaps revolutionized how we analyze customer locations. The AI insights have helped us optimize our delivery routes and save thousands in logistics costs.",
+    content: "Posh Maps helped us find the perfect family neighborhood. The crime stats and school information were incredibly accurate and saved us so much research time.",
     author: "Sarah Johnson",
-    position: "Operations Director, Deliveright Inc.",
+    position: "First-time homebuyer, London",
     rating: 5
   },
   {
-    content: "The elegant interface combined with powerful data visualization changed our approach to market analysis. Our team can now make location-based decisions with confidence.",
+    content: "As a property investor, the future value predictions have been invaluable. I've used these insights to make three purchases that have already appreciated significantly.",
     author: "Michael Chen",
-    position: "VP of Strategy, MarketPulse",
+    position: "Property Investor, Manchester",
     rating: 5
   },
   {
-    content: "I've used many mapping solutions, but PoshMaps stands apart with its attention to detail and intuitive design. It's simply the most elegant mapping tool available today.",
+    content: "The neighborhood vibe scores were spot on! After relocating for work, I found a community that perfectly matched my lifestyle preferences thanks to Posh Maps.",
     author: "Emily Watkins",
-    position: "Chief Design Officer, Visionary Tech",
+    position: "IT Professional, Bristol",
     rating: 5
   }
 ];
@@ -31,13 +31,13 @@ const TestimonialSection: React.FC = () => {
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
-              <span className="text-sm font-medium text-posh-green">Customer Stories</span>
+              <span className="text-sm font-medium text-posh-green">Success Stories</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-              Trusted by Industry Leaders
+              Real People, Real Results
             </h2>
             <p className="text-lg text-posh-dark/80">
-              See how organizations are transforming their approach to location intelligence with PoshMaps.
+              See how homebuyers and investors are finding their perfect locations with Posh Maps.
             </p>
           </div>
         </FadeIn>

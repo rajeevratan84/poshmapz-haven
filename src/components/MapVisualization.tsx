@@ -52,6 +52,25 @@ const MapVisualization: React.FC = () => {
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      // Draw grid lines (representing streets/city blocks)
+      ctx.strokeStyle = 'rgba(51, 195, 140, 0.1)';
+      ctx.lineWidth = 0.5;
+      
+      const gridSize = 50;
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      
       // Update point positions
       points.forEach(point => {
         point.y -= point.speed;
@@ -62,7 +81,7 @@ const MapVisualization: React.FC = () => {
       });
       
       // Draw connections
-      ctx.strokeStyle = 'rgba(51, 195, 240, 0.1)';
+      ctx.strokeStyle = 'rgba(51, 195, 140, 0.1)';
       ctx.lineWidth = 0.5;
       
       for (let i = 0; i < points.length; i++) {
@@ -80,13 +99,29 @@ const MapVisualization: React.FC = () => {
         }
       }
       
-      // Draw points
+      // Draw points (representing properties/locations)
       points.forEach(point => {
         ctx.beginPath();
         ctx.arc(point.x, point.y, point.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(51, 195, 240, 0.8)';
+        ctx.fillStyle = 'rgba(51, 195, 140, 0.8)';
         ctx.fill();
       });
+      
+      // Occasionally draw "property hotspots"
+      if (Math.random() < 0.01) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(51, 195, 140, 0.2)';
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(51, 195, 140, 0.6)';
+        ctx.fill();
+      }
       
       requestAnimationFrame(draw);
     };
