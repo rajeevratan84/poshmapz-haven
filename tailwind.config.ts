@@ -68,11 +68,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				posh: {
-					blue: '#33C3F0',
-					dark: '#1A1F2C',
-					light: '#F6F6F7',
+					green: '#22C55E',
+					dark: '#1A2C1E',
+					light: '#F2FCE2',
 					gray: '#8E9196',
-					accent: '#0EA5E9'
+					accent: '#10B981'
 				}
 			},
 			borderRadius: {

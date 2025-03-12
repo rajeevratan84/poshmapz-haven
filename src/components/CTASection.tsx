@@ -6,13 +6,13 @@ import { MapPin, CheckCircle } from 'lucide-react';
 
 const CTASection: React.FC = () => {
   return (
-    <section id="pricing" className="section-padding bg-gradient-to-b from-white to-slate-50">
+    <section id="pricing" className="section-padding bg-gradient-to-b from-white to-green-50">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <FadeIn>
             <div className="text-center mb-16">
-              <div className="inline-block mb-4 px-3 py-1 bg-blue-50 rounded-full">
-                <span className="text-sm font-medium text-posh-blue">Ready to Start?</span>
+              <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
+                <span className="text-sm font-medium text-posh-green">Ready to Start?</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
                 Begin Your PoshMaps Journey Today
@@ -28,7 +28,7 @@ const CTASection: React.FC = () => {
               <FadeIn direction="left" className="p-8 md:p-12">
                 <div className="flex flex-col h-full">
                   <div className="flex items-center space-x-2 mb-6">
-                    <MapPin className="h-6 w-6 text-posh-blue" />
+                    <MapPin className="h-6 w-6 text-posh-green" />
                     <span className="font-display text-2xl font-semibold">PoshMaps</span>
                   </div>
                   
@@ -39,30 +39,30 @@ const CTASection: React.FC = () => {
                   
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="h-5 w-5 text-posh-blue shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
                       <span>Unlimited basic maps</span>
                     </li>
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="h-5 w-5 text-posh-blue shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
                       <span>Core AI features included</span>
                     </li>
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="h-5 w-5 text-posh-blue shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
                       <span>Up to 5 team members</span>
                     </li>
                     <li className="flex items-start space-x-3">
-                      <CheckCircle className="h-5 w-5 text-posh-blue shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
                       <span>Community support</span>
                     </li>
                   </ul>
                   
-                  <Button className="w-full bg-posh-blue hover:bg-blue-500 text-white rounded-full">
+                  <Button className="w-full bg-posh-green hover:bg-green-500 text-white rounded-full">
                     Get Started For Free
                   </Button>
                 </div>
               </FadeIn>
               
-              <FadeIn direction="right" className="bg-slate-50 p-8 md:p-12">
+              <FadeIn direction="right" className="bg-green-50 p-8 md:p-12">
                 <form className="flex flex-col h-full">
                   <h3 className="text-2xl font-bold mb-6">Create Your Account</h3>
                   
@@ -72,7 +72,7 @@ const CTASection: React.FC = () => {
                       <input
                         type="text"
                         id="name"
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-300"
                         placeholder="Enter your name"
                       />
                     </div>
@@ -82,7 +82,7 @@ const CTASection: React.FC = () => {
                       <input
                         type="email"
                         id="email"
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-300"
                         placeholder="Enter your email"
                       />
                     </div>
@@ -92,7 +92,7 @@ const CTASection: React.FC = () => {
                       <input
                         type="password"
                         id="password"
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-300"
                         placeholder="Create a password"
                       />
                     </div>

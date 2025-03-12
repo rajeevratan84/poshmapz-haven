@@ -30,8 +30,8 @@ const TestimonialSection: React.FC = () => {
       <div className="container mx-auto px-6">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block mb-4 px-3 py-1 bg-blue-50 rounded-full">
-              <span className="text-sm font-medium text-posh-blue">Customer Stories</span>
+            <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
+              <span className="text-sm font-medium text-posh-green">Customer Stories</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
               Trusted by Industry Leaders
@@ -44,7 +44,12 @@ const TestimonialSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <FadeIn key={index} delay={`delay-${index * 200}`}>
+            <FadeIn 
+              key={index} 
+              delay={index === 0 ? "delay-0" : 
+                     index === 1 ? "delay-200" : 
+                     "delay-400"}
+            >
               <div className="testimonial-card h-full flex flex-col">
                 <div className="flex mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (

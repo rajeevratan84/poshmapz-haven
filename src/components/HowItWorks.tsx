@@ -48,12 +48,12 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section id="how-it-works" className="section-padding bg-slate-50">
+    <section id="how-it-works" className="section-padding bg-green-50">
       <div className="container mx-auto px-6">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block mb-4 px-3 py-1 bg-blue-50 rounded-full">
-              <span className="text-sm font-medium text-posh-blue">Simple Process</span>
+            <div className="inline-block mb-4 px-3 py-1 bg-green-100 rounded-full">
+              <span className="text-sm font-medium text-posh-green">Simple Process</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
               Getting Started is Effortless
@@ -66,10 +66,16 @@ const HowItWorks: React.FC = () => {
 
         <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 lg:gap-12">
           {steps.map((step, index) => (
-            <FadeIn key={index} delay={`delay-${Math.min(index * 200, 800)}`}>
+            <FadeIn 
+              key={index} 
+              delay={index === 0 ? "delay-0" : 
+                    index === 1 ? "delay-200" : 
+                    index === 2 ? "delay-400" : 
+                    "delay-600"}
+            >
               <div className="relative">
                 <div className="mb-6">
-                  <span className="text-5xl font-display font-bold text-posh-blue/10">
+                  <span className="text-5xl font-display font-bold text-posh-green/10">
                     {step.number}
                   </span>
                 </div>
@@ -78,7 +84,7 @@ const HowItWorks: React.FC = () => {
                 <ul className="space-y-2">
                   {step.benefits.map((benefit, benefitIndex) => (
                     <li key={benefitIndex} className="flex items-start space-x-2">
-                      <CheckCircle className="h-5 w-5 text-posh-blue shrink-0 mt-0.5" />
+                      <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
                       <span className="text-sm text-posh-dark/80">{benefit}</span>
                     </li>
                   ))}

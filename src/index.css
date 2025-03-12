@@ -7,33 +7,33 @@
 
 @layer base {
   :root {
-    --background: 210 30% 99%;
-    --foreground: 222 47% 11.2%;
+    --background: 100 30% 99%;
+    --foreground: 120 47% 11.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11.2%;
+    --card-foreground: 120 47% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11.2%;
+    --popover-foreground: 120 47% 11.2%;
 
-    --primary: 210 100% 50%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 355 100% 100%;
 
-    --secondary: 210 20% 96.1%;
-    --secondary-foreground: 222 47% 11.2%;
+    --secondary: 120 20% 96.1%;
+    --secondary-foreground: 120 47% 11.2%;
 
-    --muted: 210 20% 96.1%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 120 20% 96.1%;
+    --muted-foreground: 120 16% 47%;
 
-    --accent: 196 100% 56%;
-    --accent-foreground: 222 47% 11.2%;
+    --accent: 142 76% 46%;
+    --accent-foreground: 120 47% 11.2%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 47% 11.2%;
+    --border: 120 32% 91%;
+    --input: 120 32% 91%;
+    --ring: 120 47% 11.2%;
 
     --radius: 0.75rem;
   }
@@ -51,7 +51,7 @@
 
   /* Custom styles */
   .hero-gradient {
-    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(240,249,255,0.8) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(240,255,240,0.8) 100%);
   }
 
   .text-balance {
@@ -59,7 +59,7 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-posh-blue to-posh-accent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-posh-green to-posh-accent;
   }
 
   .glass-panel {
@@ -98,8 +98,8 @@
 
   /* Button styles */
   .btn-primary {
-    @apply bg-posh-blue text-white px-6 py-3 rounded-full font-medium transition-all duration-300
-    hover:bg-blue-500 hover:shadow-button focus:ring-2 focus:ring-blue-300 focus:outline-none;
+    @apply bg-posh-green text-white px-6 py-3 rounded-full font-medium transition-all duration-300
+    hover:bg-green-500 hover:shadow-button focus:ring-2 focus:ring-green-300 focus:outline-none;
   }
 
   .btn-secondary {

@@ -19,7 +19,7 @@ const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => (
         <li key={index}>
           <a 
             href={link.href} 
-            className="text-sm text-posh-dark/70 hover:text-posh-blue transition-colors"
+            className="text-sm text-posh-dark/70 hover:text-posh-green transition-colors"
           >
             {link.label}
           </a>
@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2">
             <div className="flex items-center space-x-2 text-posh-dark mb-4">
-              <MapPin className="h-5 w-5 text-posh-blue" />
+              <MapPin className="h-5 w-5 text-posh-green" />
               <span className="font-display text-lg font-semibold">PoshMaps</span>
             </div>
             <p className="text-sm text-posh-dark/70 mb-6 max-w-xs">
@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
                 <a 
                   key={social} 
                   href={`#${social}`} 
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-posh-dark/70 hover:bg-posh-blue hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-posh-dark/70 hover:bg-posh-green hover:text-white transition-colors"
                   aria-label={social}
                 >
                   <span className="sr-only">{social}</span>
@@ -98,9 +98,9 @@ const Footer: React.FC = () => {
             © {currentYear} PoshMaps. All rights reserved.
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="hover:text-posh-blue transition-colors">Privacy</a>
-            <a href="#" className="hover:text-posh-blue transition-colors">Terms</a>
-            <a href="#" className="hover:text-posh-blue transition-colors">Cookies</a>
+            <a href="#" className="hover:text-posh-green transition-colors">Privacy</a>
+            <a href="#" className="hover:text-posh-green transition-colors">Terms</a>
+            <a href="#" className="hover:text-posh-green transition-colors">Cookies</a>
           </div>
         </div>
       </div>
