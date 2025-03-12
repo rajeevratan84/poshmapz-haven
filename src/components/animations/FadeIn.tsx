@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, ReactNode } from 'react';
+import React, { useEffect, useRef, useState, ReactNode, memo } from 'react';
 import { cn } from "@/lib/utils";
 
 interface FadeInProps {
@@ -12,7 +12,7 @@ interface FadeInProps {
   once?: boolean;
 }
 
-export const FadeIn: React.FC<FadeInProps> = ({
+export const FadeIn: React.FC<FadeInProps> = memo(({
   children,
   className,
   direction = 'up',
@@ -22,30 +22,46 @@ export const FadeIn: React.FC<FadeInProps> = ({
   once = true,
 }) => {
   const elementRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (!element || typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true); // Fallback for SSR or old browsers
+      return;
+    }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            if (once) observer.unobserve(element);
-          } else if (!once) {
-            setIsVisible(false);
-          }
-        });
-      },
-      { threshold }
-    );
+    // Create observer only once
+    if (!observerRef.current) {
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setIsVisible(true);
+              if (once && observerRef.current) {
+                observerRef.current.unobserve(element);
+              }
+            } else if (!once) {
+              setIsVisible(false);
+            }
+          });
+        },
+        { 
+          threshold,
+          // Add rootMargin to trigger animations slightly before they come into view
+          rootMargin: '50px 0px'
+        }
+      );
 
-    observer.observe(element);
+      observerRef.current.observe(element);
+    }
 
     return () => {
-      if (element) observer.unobserve(element);
+      if (element && observerRef.current) {
+        observerRef.current.unobserve(element);
+        observerRef.current = null;
+      }
     };
   }, [threshold, once]);
 
@@ -76,6 +92,6 @@ export const FadeIn: React.FC<FadeInProps> = ({
       {children}
     </div>
   );
-};
+});
 
 export default FadeIn;
