@@ -54,7 +54,24 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         ],
       });
       
-      // If we have an address, geocode it
+      // Add a marker at the default location regardless of geocoding result
+      new google.maps.Marker({
+        map: mapInstanceRef.current,
+        position: defaultPosition,
+        animation: google.maps.Animation.DROP,
+      });
+      
+      // Add an info window
+      const infoWindow = new google.maps.InfoWindow({
+        content: `<div><strong>Richmond, London</strong><p>A beautiful riverside area with excellent parks and quality of life.</p></div>`,
+      });
+      
+      // Open info window on marker click
+      mapInstanceRef.current.addListener("click", () => {
+        infoWindow.open(mapInstanceRef.current);
+      });
+      
+      // If we have an address, try to geocode it
       if (address) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
@@ -62,25 +79,19 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             const location = results[0].geometry.location;
             mapInstanceRef.current.setCenter(location);
             
-            // Add a marker
+            // Update marker position
             new google.maps.Marker({
               map: mapInstanceRef.current,
               position: location,
               animation: google.maps.Animation.DROP,
             });
-            
-            // Add an info window
-            const infoWindow = new google.maps.InfoWindow({
-              content: `<div><strong>Richmond, London</strong><p>A beautiful riverside area with excellent parks and quality of life.</p></div>`,
-            });
-            
-            // Open info window on marker click
-            mapInstanceRef.current.addListener("click", () => {
-              infoWindow.open(mapInstanceRef.current);
-            });
           } else {
             console.error("Geocoding failed:", status);
-            toast.error("Could not find the specified location. Showing default view.");
+            if (status === "REQUEST_DENIED") {
+              toast.warning("Geocoding API is not enabled for this API key. The map is showing a default view of Richmond, London.");
+            } else {
+              toast.warning("Could not find the specified location. Showing default view of Richmond, London.");
+            }
           }
         });
       }
@@ -108,7 +119,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       
       return () => {
         // Clean up if component unmounts before script loads
-        document.head.removeChild(script);
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
       };
     } else {
       initMap();
@@ -118,9 +131,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   return (
     <div className={className}>
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
-      <p className="text-xs text-center mt-2 text-posh-dark/60">
-        Note: Add your Google Maps API key to environment variables as VITE_GOOGLE_MAPS_API_KEY
-      </p>
+      <div className="text-xs text-center mt-2 text-posh-dark/60">
+        <p>Viewing: Richmond, London</p>
+        <p className="mt-1">
+          Note: This map requires the Google Maps Geocoding API to be enabled in your Google Cloud Console
+        </p>
+      </div>
     </div>
   );
 };
