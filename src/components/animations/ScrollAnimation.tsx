@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, ReactNode, useState } from 'react';
+import React, { useEffect, useRef, ReactNode, useState, CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 
 type AnimationType = 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right' | 'zoom-in' | 'zoom-out' | 'sticky';
@@ -91,7 +91,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   }, [threshold, once, type, initialTop, stickyUntil]);
   
   // Generate styles based on animation type
-  const getStyles = () => {
+  const getStyles = (): React.CSSProperties => {
     if (!isVisible && type !== 'sticky') {
       // Initial hidden state
       switch (type) {
@@ -145,7 +145,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
       const sticky = scrollProgress > 0 && scrollProgress < 1;
       
       return {
-        position: sticky ? 'sticky' : 'relative',
+        position: sticky ? 'sticky' as const : 'relative' as const,
         top: sticky ? '20%' : 'auto',
         opacity: isVisible ? 1 - (scrollProgress > 0.8 ? (scrollProgress - 0.8) * 5 : 0) : 0,
         transition: `opacity ${duration}ms ease-out`,

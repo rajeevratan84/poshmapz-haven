@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 interface GoogleMapProps {
   address?: string;
@@ -77,6 +78,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             mapInstanceRef.current.addListener("click", () => {
               infoWindow.open(mapInstanceRef.current);
             });
+          } else {
+            console.error("Geocoding failed:", status);
+            toast.error("Could not find the specified location. Showing default view.");
           }
         });
       }
@@ -84,14 +88,26 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
     // Load Google Maps API if it's not already loaded
     if (!window.google?.maps) {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+      
+      if (!apiKey) {
+        console.warn("No Google Maps API key found in environment variables");
+        toast.warning("Google Maps requires an API key for full functionality");
+      }
+      
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = initMap;
+      script.onerror = () => {
+        console.error("Failed to load Google Maps API");
+        toast.error("Could not load Google Maps. Please try again later.");
+      };
       document.head.appendChild(script);
       
       return () => {
+        // Clean up if component unmounts before script loads
         document.head.removeChild(script);
       };
     } else {
@@ -103,7 +119,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     <div className={className}>
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
       <p className="text-xs text-center mt-2 text-posh-dark/60">
-        Note: You'll need to replace YOUR_API_KEY with a valid Google Maps API key.
+        Note: Add your Google Maps API key to environment variables as VITE_GOOGLE_MAPS_API_KEY
       </p>
     </div>
   );
