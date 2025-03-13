@@ -5,6 +5,8 @@ import GoogleMap from './GoogleMap';
 import ScrollAnimation from './animations/ScrollAnimation';
 
 const SearchExampleSection: React.FC = () => {
+  const iconColor = "#FF7F50"; // Coral color for icons
+  
   return (
     <section className="section-padding bg-white overflow-hidden">
       <div className="container mx-auto px-6">
@@ -33,7 +35,7 @@ const SearchExampleSection: React.FC = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-8">
                 <ScrollAnimation type="fade-up" delay={300} className="flex items-start space-x-3">
-                  <Gauge className="h-6 w-6 text-posh-green shrink-0 mt-1" />
+                  <Gauge className="h-6 w-6 text-coral shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Crime Rate</h3>
                     <p className="text-posh-dark/70">Low - 20% below London average</p>
@@ -41,7 +43,7 @@ const SearchExampleSection: React.FC = () => {
                 </ScrollAnimation>
                 
                 <ScrollAnimation type="fade-up" delay={400} className="flex items-start space-x-3">
-                  <Train className="h-6 w-6 text-posh-green shrink-0 mt-1" />
+                  <Train className="h-6 w-6 text-coral shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Transport Score</h3>
                     <p className="text-posh-dark/70">Excellent - 30 min to central London</p>
@@ -49,7 +51,7 @@ const SearchExampleSection: React.FC = () => {
                 </ScrollAnimation>
                 
                 <ScrollAnimation type="fade-up" delay={500} className="flex items-start space-x-3">
-                  <Footprints className="h-6 w-6 text-posh-green shrink-0 mt-1" />
+                  <Footprints className="h-6 w-6 text-coral shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Walkability</h3>
                     <p className="text-posh-dark/70">Very Walkable - 85/100</p>
@@ -57,12 +59,12 @@ const SearchExampleSection: React.FC = () => {
                 </ScrollAnimation>
                 
                 <ScrollAnimation type="fade-up" delay={600} className="flex items-start space-x-3 md:col-span-2">
-                  <MessageCircle className="h-6 w-6 text-posh-green shrink-0 mt-1" />
+                  <MessageCircle className="h-6 w-6 text-coral shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Local Reviews</h3>
                     <div className="flex items-center gap-2 mb-2">
                       <img 
-                        src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+                        src="https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257" 
                         alt="Local resident" 
                         className="w-8 h-8 rounded-full object-cover"
                         loading="lazy"
@@ -74,7 +76,7 @@ const SearchExampleSection: React.FC = () => {
                 </ScrollAnimation>
                 
                 <ScrollAnimation type="fade-up" delay={700} className="flex items-start space-x-3">
-                  <TrendingUp className="h-6 w-6 text-posh-green shrink-0 mt-1" />
+                  <TrendingUp className="h-6 w-6 text-coral shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Future Property Growth</h3>
                     <p className="text-posh-dark/70">+7% value increase predicted</p>

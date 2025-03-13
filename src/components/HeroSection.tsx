@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import MapVisualization from "./MapVisualization";
 import { MapPin, Search, Building, Star } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
 
@@ -10,12 +9,10 @@ const HeroSection: React.FC = () => {
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 hero-gradient z-0"></div>
-      <div className="absolute inset-0 opacity-10 z-0">
-        <MapVisualization />
-      </div>
-      {/* Background image overlay */}
-      <div className="absolute inset-0 bg-cover bg-center z-0 opacity-5" 
-           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d)' }}>
+      
+      {/* Background image overlay - UK Neighborhood */}
+      <div className="absolute inset-0 bg-cover bg-center z-0 opacity-10" 
+           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1543872084-c7bd3822856f)' }}>
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -54,9 +51,10 @@ const HeroSection: React.FC = () => {
           <div className="relative w-full h-[360px] md:h-[480px] rounded-2xl overflow-hidden shadow-glass bg-white/20 backdrop-blur-xs">
             <div className="absolute inset-0">
               <img 
-                src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
-                alt="Property map visualization" 
-                className="w-full h-full object-cover opacity-20"
+                src="https://images.unsplash.com/photo-1580359179460-0bfa067096e5" 
+                alt="UK neighborhood map" 
+                className="w-full h-full object-cover opacity-40"
+                loading="eager" // Load this important image eagerly
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">

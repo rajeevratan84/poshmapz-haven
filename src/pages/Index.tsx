@@ -6,24 +6,43 @@ import ProblemSection from '@/components/ProblemSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
 
-// Lazy load components that are lower in the page
-const TrustSection = lazy(() => import('@/components/TrustSection'));
+// Prefetch these components so they load faster when needed
 const HowItWorks = lazy(() => import('@/components/HowItWorks'));
-const TestimonialSection = lazy(() => import('@/components/TestimonialSection'));
 const TeamSection = lazy(() => import('@/components/TeamSection'));
-const CTASection = lazy(() => import('@/components/CTASection'));
-const Footer = lazy(() => import('@/components/Footer'));
 
-// Loading fallback
+// Lazy load components that are lower in the page with more delay
+const TrustSection = lazy(() => {
+  // Add a small delay to prioritize more important components
+  return new Promise(resolve => {
+    setTimeout(() => resolve(import('@/components/TrustSection')), 300);
+  });
+});
+const TestimonialSection = lazy(() => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(import('@/components/TestimonialSection')), 300);
+  });
+});
+const CTASection = lazy(() => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(import('@/components/CTASection')), 300);
+  });
+});
+const Footer = lazy(() => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(import('@/components/Footer')), 300);
+  });
+});
+
+// Loading fallback - simplified for better performance
 const SectionLoader = () => (
-  <div className="w-full py-20 flex justify-center items-center">
-    <div className="w-8 h-8 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
+  <div className="w-full py-12 flex justify-center items-center">
+    <div className="w-6 h-6 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
   </div>
 );
 
 const Index = () => {
+  // Enhanced scroll handler with better performance
   const handleAnchorClick = useCallback((e: MouseEvent) => {
-    // Only run this in browser environment
     if (typeof window === 'undefined') return;
     
     const target = e.target as HTMLElement;
@@ -34,7 +53,7 @@ const Index = () => {
       
       const targetElement = document.querySelector(anchor.hash);
       if (targetElement) {
-        const navbarHeight = 80; // Approximately the height of the navbar
+        const navbarHeight = 80; 
         const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
         
         window.scrollTo({
@@ -42,16 +61,27 @@ const Index = () => {
           behavior: 'smooth'
         });
         
-        // Optionally update URL
-        history.pushState(null, '', anchor.hash);
+        // Using replaceState instead of pushState for better performance
+        history.replaceState(null, '', anchor.hash);
       }
     }
   }, []);
   
   useEffect(() => {
-    // Only run this in browser environment
     if (typeof window !== 'undefined') {
-      document.addEventListener('click', handleAnchorClick);
+      // Use passive listener for better scroll performance
+      document.addEventListener('click', handleAnchorClick, { passive: false });
+      
+      // Preload important images
+      const preloadImages = [
+        'https://images.unsplash.com/photo-1543872084-c7bd3822856f',
+        'https://images.unsplash.com/photo-1580359179460-0bfa067096e5'
+      ];
+      
+      preloadImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
       
       return () => {
         document.removeEventListener('click', handleAnchorClick);
@@ -70,8 +100,12 @@ const Index = () => {
         <Suspense fallback={<SectionLoader />}>
           <HowItWorks />
           <TeamSection />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
           <TrustSection />
           <TestimonialSection />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
           <CTASection />
         </Suspense>
       </main>

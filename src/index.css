@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -36,6 +36,24 @@
     --ring: 120 47% 11.2%;
 
     --radius: 0.75rem;
+    
+    /* Added coral color */
+    --coral: 16 100% 65.9%;
+  }
+
+  /* Font display swap for better performance */
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500 800;
+    font-display: swap;
   }
 
   * {
@@ -47,6 +65,9 @@
   body {
     @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
+    /* Optimize rendering */
+    will-change: auto;
+    content-visibility: auto;
   }
 
   /* Custom styles */
@@ -91,9 +112,11 @@
     animation-delay: 800ms;
   }
 
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
+  /* Smooth scrolling - only if user hasn't requested reduced motion */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   /* Button styles */
@@ -131,6 +154,11 @@
     transform: translateY(0);
   }
 
+  /* Color classes */
+  .text-coral {
+    color: #FF7F50;
+  }
+
   /* Updated parallax effect with will-change */
   .parallax {
     transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
@@ -148,5 +176,21 @@
   
   .prose-green a {
     @apply text-posh-green hover:text-posh-green/80;
+  }
+  
+  /* Optimized animations */
+  @keyframes pulse-subtle {
+    0%, 100% { 
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.85;
+      transform: scale(0.98);
+    }
+  }
+  
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2.5s ease-in-out infinite;
   }
 }
