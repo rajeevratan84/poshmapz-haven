@@ -1,16 +1,25 @@
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, lazy, Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import ProblemSection from '@/components/ProblemSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
-import TrustSection from '@/components/TrustSection';
-import HowItWorks from '@/components/HowItWorks';
-import TestimonialSection from '@/components/TestimonialSection';
-import TeamSection from '@/components/TeamSection';
-import CTASection from '@/components/CTASection';
-import Footer from '@/components/Footer';
+
+// Lazy load components that are lower in the page
+const TrustSection = lazy(() => import('@/components/TrustSection'));
+const HowItWorks = lazy(() => import('@/components/HowItWorks'));
+const TestimonialSection = lazy(() => import('@/components/TestimonialSection'));
+const TeamSection = lazy(() => import('@/components/TeamSection'));
+const CTASection = lazy(() => import('@/components/CTASection'));
+const Footer = lazy(() => import('@/components/Footer'));
+
+// Loading fallback
+const SectionLoader = () => (
+  <div className="w-full py-20 flex justify-center items-center">
+    <div className="w-8 h-8 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const Index = () => {
   const handleAnchorClick = useCallback((e: MouseEvent) => {
@@ -58,13 +67,17 @@ const Index = () => {
         <ProblemSection />
         <FeaturesSection />
         <SearchExampleSection />
-        <HowItWorks />
-        <TeamSection />
-        <TrustSection />
-        <TestimonialSection />
-        <CTASection />
+        <Suspense fallback={<SectionLoader />}>
+          <HowItWorks />
+          <TeamSection />
+          <TrustSection />
+          <TestimonialSection />
+          <CTASection />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={<SectionLoader />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 };

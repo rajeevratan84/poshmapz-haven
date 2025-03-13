@@ -127,12 +127,12 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
 				'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite',
-				'fade-in-up': 'fade-in-up 0.7s ease-out forwards',
-				'fade-in': 'fade-in 0.7s ease-out forwards',
-				'slide-in-right': 'slide-in-right 0.7s ease-out forwards',
-				'slide-in-left': 'slide-in-left 0.7s ease-out forwards',
+				'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+				'fade-in': 'fade-in 0.5s ease-out forwards',
+				'slide-in-right': 'slide-in-right 0.5s ease-out forwards',
+				'slide-in-left': 'slide-in-left 0.5s ease-out forwards',
 				'rotate-slow': 'rotate-slow 15s linear infinite',
-				'scale-up': 'scale-up 0.7s ease-out forwards'
+				'scale-up': 'scale-up 0.5s ease-out forwards'
 			},
 			backdropBlur: {
 				'xs': '2px',
@@ -145,6 +145,9 @@ export default {
 				'feature': '0 2px 12px rgba(0, 0, 0, 0.07)',
 			},
 		}
+	},
+	future: {
+		hoverOnlyWhenSupported: true,
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;

@@ -6,7 +6,7 @@ import ScrollAnimation from './animations/ScrollAnimation';
 
 const SearchExampleSection: React.FC = () => {
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding bg-white overflow-hidden">
       <div className="container mx-auto px-6">
         <ScrollAnimation type="fade-up" className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
@@ -60,6 +60,15 @@ const SearchExampleSection: React.FC = () => {
                   <MessageCircle className="h-6 w-6 text-posh-green shrink-0 mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">Local Reviews</h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <img 
+                        src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+                        alt="Local resident" 
+                        className="w-8 h-8 rounded-full object-cover"
+                        loading="lazy"
+                      />
+                      <span className="text-sm font-medium">Sarah, local resident</span>
+                    </div>
                     <p className="text-posh-dark/70">"Great community with excellent parks and riverside walks. Family-friendly with good schools. Can be busy during weekends."</p>
                   </div>
                 </ScrollAnimation>

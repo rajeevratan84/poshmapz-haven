@@ -24,9 +24,9 @@ const TeamSection: React.FC = () => {
           <ScrollAnimation type="fade-up" delay={300}>
             <div className="bg-white rounded-2xl shadow-card overflow-hidden">
               <div className="flex flex-col lg:flex-row">
-                <div className="lg:w-1/3 p-8 bg-gradient-to-b from-posh-green/10 to-posh-green/5 flex flex-col items-center justify-center">
+                <div className="lg:w-1/3 p-8 bg-gradient-to-b from-posh-green/10 to-posh-gray/10 flex flex-col items-center justify-center">
                   <Avatar className="h-36 w-36 mb-6 border-4 border-white shadow-lg">
-                    <AvatarImage src="/placeholder.svg" alt="Rajeev Ratan" />
+                    <AvatarImage src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" alt="Rajeev Ratan" />
                     <AvatarFallback className="bg-posh-green text-white text-3xl">RR</AvatarFallback>
                   </Avatar>
                   
@@ -50,16 +50,13 @@ const TeamSection: React.FC = () => {
                   <h4 className="text-xl font-semibold mb-4">About Rajeev</h4>
                   <div className="prose prose-green max-w-none">
                     <p>
-                      Rajeev Ratan is a Principal Data Scientist at BPP University, leading AI-driven initiatives in education, leveraging Large Language Models (LLMs), Natural Language Processing (NLP), and predictive analytics to enhance student engagement, academic performance, and operational efficiency. He has nearly a decade of experience in data science, machine learning, and AI applications across diverse industries, including education, telecommunications, and computer vision.
+                      Rajeev Ratan is a Principal Data Scientist at BPP University, leading AI-driven initiatives in education, leveraging Large Language Models (LLMs), Natural Language Processing (NLP), and predictive analytics to enhance student engagement, academic performance, and operational efficiency.
                     </p>
                     <p>
-                      Before joining BPP University, Rajeev spent over six years working on deep learning and computer vision applications for various technology companies, including as a Senior Computer Vision Engineer at a U.S.-based AI startup. He has also worked extensively in the telecommunications sector, applying AI-driven solutions for network optimisation and anomaly detection.
+                      Before joining BPP University, Rajeev spent over six years working on deep learning and computer vision applications for various technology companies, including as a Senior Computer Vision Engineer at a U.S.-based AI startup.
                     </p>
                     <p>
-                      Beyond industry roles, Rajeev is passionate about AI education and knowledge sharing. He has published eight data science courses on Udemy, amassing over 75,000 students, and has authored multiple research publications in computer vision and probabilistic statistics. He co-founded PyDataTT, Trinidad's leading Python and data science community, fostering AI talent in the Caribbean.
-                    </p>
-                    <p>
-                      Rajeev holds an MSc in Artificial Intelligence from the University of Edinburgh and a BSc in Electrical and Computer Engineering.
+                      Beyond industry roles, Rajeev is passionate about AI education and knowledge sharing. He has published eight data science courses on Udemy, amassing over 75,000 students, and has authored multiple research publications in computer vision and probabilistic statistics.
                     </p>
                   </div>
                 </div>

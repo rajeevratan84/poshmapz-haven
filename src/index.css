@@ -51,7 +51,7 @@
 
   /* Custom styles */
   .hero-gradient {
-    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(240,255,240,0.8) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(240,255,240,0.7) 100%);
   }
 
   .text-balance {
@@ -67,7 +67,7 @@
   }
 
   .section-padding {
-    @apply py-20 md:py-24 lg:py-32;
+    @apply py-16 md:py-20 lg:py-28;
   }
 
   /* Animation delays */
@@ -118,11 +118,12 @@
     @apply p-8 rounded-2xl bg-white border border-slate-100 shadow-card;
   }
 
-  /* Apple-style scroll animations */
+  /* Improved performance for scroll animations */
   .scroll-reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    will-change: opacity, transform;
   }
 
   .scroll-reveal.active {
@@ -130,9 +131,10 @@
     transform: translateY(0);
   }
 
-  /* Parallax effect */
+  /* Updated parallax effect with will-change */
   .parallax {
-    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+    will-change: transform;
   }
 
   /* Prose styles for rich text */

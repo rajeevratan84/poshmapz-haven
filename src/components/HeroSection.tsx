@@ -10,8 +10,12 @@ const HeroSection: React.FC = () => {
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 hero-gradient z-0"></div>
-      <div className="absolute inset-0 opacity-20 z-0">
+      <div className="absolute inset-0 opacity-10 z-0">
         <MapVisualization />
+      </div>
+      {/* Background image overlay */}
+      <div className="absolute inset-0 bg-cover bg-center z-0 opacity-5" 
+           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d)' }}>
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -48,6 +52,13 @@ const HeroSection: React.FC = () => {
         
         <ScrollAnimation type="zoom-in" delay={800} className="max-w-4xl mx-auto">
           <div className="relative w-full h-[360px] md:h-[480px] rounded-2xl overflow-hidden shadow-glass bg-white/20 backdrop-blur-xs">
+            <div className="absolute inset-0">
+              <img 
+                src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
+                alt="Property map visualization" 
+                className="w-full h-full object-cover opacity-20"
+              />
+            </div>
             <div className="absolute inset-0 flex items-center justify-center">
               <MapPin className="w-20 h-20 text-posh-green/40 animate-pulse-subtle" />
             </div>
