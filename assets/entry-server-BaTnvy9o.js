@@ -1,4 +1,4 @@
-import{a as wr}from"./App-DxAk4zWR.js";var re={};/**
+import{a as wr}from"./App-BIKMYmOJ.js";var re={};/**
  * @license React
  * react-dom-server-legacy.browser.production.min.js
  *
