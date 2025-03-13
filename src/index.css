@@ -117,4 +117,34 @@
   .testimonial-card {
     @apply p-8 rounded-2xl bg-white border border-slate-100 shadow-card;
   }
+
+  /* Apple-style scroll animations */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .scroll-reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Parallax effect */
+  .parallax {
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  /* Prose styles for rich text */
+  .prose {
+    @apply text-posh-dark/80 leading-relaxed;
+  }
+  
+  .prose p {
+    @apply mb-4;
+  }
+  
+  .prose-green a {
+    @apply text-posh-green hover:text-posh-green/80;
+  }
 }

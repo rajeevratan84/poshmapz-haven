@@ -8,6 +8,7 @@ import SearchExampleSection from '@/components/SearchExampleSection';
 import TrustSection from '@/components/TrustSection';
 import HowItWorks from '@/components/HowItWorks';
 import TestimonialSection from '@/components/TestimonialSection';
+import TeamSection from '@/components/TeamSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 
@@ -58,6 +59,7 @@ const Index = () => {
         <FeaturesSection />
         <SearchExampleSection />
         <HowItWorks />
+        <TeamSection />
         <TrustSection />
         <TestimonialSection />
         <CTASection />

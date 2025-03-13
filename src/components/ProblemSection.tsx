@@ -1,7 +1,7 @@
 
 import React from 'react';
-import FadeIn from './animations/FadeIn';
 import { XCircle } from 'lucide-react';
+import ScrollAnimation from './animations/ScrollAnimation';
 
 const painPoints = [
   {
@@ -24,30 +24,26 @@ const painPoints = [
 
 const ProblemSection: React.FC = () => {
   return (
-    <section className="section-padding bg-gray-50">
+    <section id="problem" className="section-padding bg-gray-50">
       <div className="container mx-auto px-6">
-        <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
-              <span className="text-sm font-medium text-posh-green">The Problem</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-              Why Traditional Property Search Fails
-            </h2>
-            <p className="text-lg text-posh-dark/80">
-              Tired of generic property listings? Buying a home is more than just price – it's about safety, lifestyle, and future value. Existing platforms only show houses, not the neighborhoods that matter most to you.
-            </p>
+        <ScrollAnimation type="fade-up" className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
+            <span className="text-sm font-medium text-posh-green">The Problem</span>
           </div>
-        </FadeIn>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+            Why Traditional Property Search Fails
+          </h2>
+          <p className="text-lg text-posh-dark/80">
+            Tired of generic property listings? Buying a home is more than just price – it's about safety, lifestyle, and future value. Existing platforms only show houses, not the neighborhoods that matter most to you.
+          </p>
+        </ScrollAnimation>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {painPoints.map((point, index) => (
-            <FadeIn 
+            <ScrollAnimation 
               key={index} 
-              delay={index === 0 ? "delay-0" : 
-                     index === 1 ? "delay-200" : 
-                     index === 2 ? "delay-400" : 
-                     "delay-600"}
+              type="fade-up"
+              delay={200 * index}
             >
               <div className="bg-white p-8 rounded-2xl shadow-feature flex items-start space-x-4">
                 <div className="shrink-0">
@@ -58,7 +54,7 @@ const ProblemSection: React.FC = () => {
                   <p className="text-posh-dark/70">{point.description}</p>
                 </div>
               </div>
-            </FadeIn>
+            </ScrollAnimation>
           ))}
         </div>
       </div>
