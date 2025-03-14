@@ -55,17 +55,6 @@ const Index = () => {
       // Use passive listener for better scroll performance
       document.addEventListener('click', handleAnchorClick, { passive: false });
       
-      // Preload important images
-      const preloadImages = [
-        'https://images.unsplash.com/photo-1543872084-c7bd3822856f',
-        'https://images.unsplash.com/photo-1580359179460-0bfa067096e5'
-      ];
-      
-      preloadImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
-      
       return () => {
         document.removeEventListener('click', handleAnchorClick);
       };
@@ -77,9 +66,10 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
+        {/* Reordered sections as requested */}
+        <SearchExampleSection />
         <ProblemSection />
         <FeaturesSection />
-        <SearchExampleSection />
         <Suspense fallback={<SectionLoader />}>
           <HowItWorks />
           <TeamSection />

@@ -15,8 +15,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const scriptLoadedRef = useRef<boolean>(false);
-
+  const apiLoadedRef = useRef<boolean>(false);
+  
   useEffect(() => {
     // Skip during SSR
     if (typeof window === 'undefined' || !mapRef.current) return;
@@ -25,16 +25,16 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     const initMap = () => {
       if (mapInstanceRef.current) return;
       
-      // Default coordinates for Richmond, London
-      const defaultPosition = { lat: 51.461, lng: -0.306 };
-      
       try {
+        // Default coordinates for Richmond, London
+        const defaultPosition = { lat: 51.461, lng: -0.306 };
+        
         // Create the map instance
         mapInstanceRef.current = new google.maps.Map(mapRef.current, {
           zoom,
           center: defaultPosition,
-          mapTypeControl: false, // Reducing UI elements for performance
-          streetViewControl: false, // Reducing UI elements for performance
+          mapTypeControl: false,
+          streetViewControl: false,
           fullscreenControl: true,
           zoomControl: true,
           styles: [
@@ -86,30 +86,38 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     };
 
     // Load Google Maps API if it's not already loaded
-    if (!window.google?.maps && !scriptLoadedRef.current) {
-      scriptLoadedRef.current = true;
+    if (!window.google?.maps && !apiLoadedRef.current) {
+      apiLoadedRef.current = true;
+      
+      // Ensure we're using the right API key from .env
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
       
+      // Make sure we request geocoding explicitly
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async`; // Added async loading
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geocoding&callback=initGoogleMaps`;
       script.async = true;
       script.defer = true;
-      script.onload = initMap;
+      
+      // Use a global callback function to initialize the map
+      window.initGoogleMaps = initMap;
+      
       script.onerror = () => {
         console.error("Failed to load Google Maps API");
         toast.error("Could not load Google Maps. Please try again later.");
-        scriptLoadedRef.current = false;
+        apiLoadedRef.current = false;
       };
+      
       document.head.appendChild(script);
       
       return () => {
-        // Clean up if component unmounts before script loads
         if (script.parentNode) {
           script.parentNode.removeChild(script);
-          scriptLoadedRef.current = false;
+          apiLoadedRef.current = false;
+          delete window.initGoogleMaps;
         }
       };
     } else if (window.google?.maps) {
+      // If API is already loaded, initialize map directly
       initMap();
     }
   }, [address, zoom]);
@@ -123,5 +131,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     </div>
   );
 };
+
+// Add this to allow the window.initGoogleMaps global callback
+declare global {
+  interface Window {
+    initGoogleMaps: () => void;
+  }
+}
 
 export default GoogleMap;
