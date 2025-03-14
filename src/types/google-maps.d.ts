@@ -11,6 +11,8 @@ declare namespace google {
     class Marker {
       constructor(opts?: MarkerOptions);
       setMap(map: Map | null): void;
+      setPosition(latLng: LatLng | LatLngLiteral): void;
+      setTitle(title: string): void;
     }
 
     class Geocoder {
@@ -37,6 +39,16 @@ declare namespace google {
       position?: LatLng | LatLngLiteral;
       map?: Map;
       animation?: any;
+      title?: string;
+      label?: string | MarkerLabel;
+    }
+
+    interface MarkerLabel {
+      text: string;
+      color?: string;
+      fontFamily?: string;
+      fontSize?: string;
+      fontWeight?: string;
     }
 
     interface InfoWindowOptions {

@@ -59,12 +59,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           ],
         });
         
-        // Create a marker but don't set position yet (we'll do that after geocoding)
-        markerRef.current = new google.maps.Marker({
-          map: mapInstanceRef.current,
-          animation: google.maps.Animation.DROP,
-        });
-        
         // If we're showing North London areas, add those markers
         if (showNorthLondonAreas && mapInstanceRef.current) {
           const highbury = { lat: 51.5485, lng: -0.1019 };
@@ -103,6 +97,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           return;
         }
         
+        // Create a marker for Richmond but don't set position yet (we'll do that after geocoding)
+        markerRef.current = new google.maps.Marker({
+          map: mapInstanceRef.current,
+          animation: google.maps.Animation.DROP,
+        });
+        
         // If we have an address and we're not showing North London areas, try to geocode it
         if (address && markerRef.current) {
           const geocoder = new google.maps.Geocoder();
@@ -111,7 +111,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               const location = results[0].geometry.location;
               mapInstanceRef.current.setCenter(location);
               
-              // Update marker position instead of creating a new one
+              // Update marker position
               markerRef.current.setPosition(location);
             }
           });
@@ -162,7 +162,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     <div className={className}>
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
       <div className="text-xs text-center mt-2 text-posh-dark/60">
-        <p>Viewing: {showNorthLondonAreas ? "North London Areas" : "Richmond, London"}</p>
+        <p>Viewing: {showNorthLondonAreas ? "North London Areas" : address}</p>
       </div>
     </div>
   );
