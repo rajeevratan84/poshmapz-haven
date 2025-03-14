@@ -10,28 +10,11 @@ import SearchExampleSection from '@/components/SearchExampleSection';
 const HowItWorks = lazy(() => import('@/components/HowItWorks'));
 const TeamSection = lazy(() => import('@/components/TeamSection'));
 
-// Lazy load components that are lower in the page with more delay
-const TrustSection = lazy(() => {
-  // Add a small delay to prioritize more important components
-  return new Promise(resolve => {
-    setTimeout(() => resolve(import('@/components/TrustSection')), 300);
-  });
-});
-const TestimonialSection = lazy(() => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(import('@/components/TestimonialSection')), 300);
-  });
-});
-const CTASection = lazy(() => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(import('@/components/CTASection')), 300);
-  });
-});
-const Footer = lazy(() => {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(import('@/components/Footer')), 300);
-  });
-});
+// Lazy load components that are lower in the page
+const TrustSection = lazy(() => import('@/components/TrustSection'));
+const TestimonialSection = lazy(() => import('@/components/TestimonialSection'));
+const CTASection = lazy(() => import('@/components/CTASection'));
+const Footer = lazy(() => import('@/components/Footer'));
 
 // Loading fallback - simplified for better performance
 const SectionLoader = () => (
