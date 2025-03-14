@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building, Star } from "lucide-react";
@@ -14,7 +13,6 @@ const AnimatedSearchExample = () => {
   const searchQuery = "I want to live somewhere in North London that's within 10 mins of a pet groomer, a pub, chicken shop, tube stop, turkish restaurant, a post office and a pure gym";
   
   useEffect(() => {
-    // Typing animation
     if (searchPhase === 0) {
       let currentIndex = 0;
       const typingInterval = setInterval(() => {
@@ -30,7 +28,6 @@ const AnimatedSearchExample = () => {
       return () => clearInterval(typingInterval);
     }
     
-    // AI thinking animation
     if (searchPhase === 1) {
       setIsThinking(true);
       const thinkingTimer = setTimeout(() => {
@@ -41,11 +38,9 @@ const AnimatedSearchExample = () => {
       return () => clearTimeout(thinkingTimer);
     }
     
-    // Show results
     if (searchPhase === 2) {
       setShowResults(true);
       
-      // Reset animation after some time
       const resetTimer = setTimeout(() => {
         setSearchPhase(0);
         setSearchText('');
@@ -58,7 +53,7 @@ const AnimatedSearchExample = () => {
   }, [searchPhase]);
   
   return (
-    <div className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl">
+    <div className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
         <div className="flex-1 font-medium text-sm">PoshMaps AI Search</div>
@@ -117,7 +112,6 @@ const AnimatedSearchExample = () => {
 const HeroSection: React.FC = () => {
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
-      {/* Updated gradient background without stock image */}
       <div className="absolute inset-0 hero-gradient z-0"></div>
       
       <div className="container mx-auto px-6 relative z-10">

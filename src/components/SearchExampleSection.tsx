@@ -72,7 +72,7 @@ const SearchExampleSection: React.FC = () => {
                   <TrendingUp className="h-6 w-6 shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Future Property Growth</h3>
-                    <p className="text-posh-dark/70">+7% value increase predicted</p>
+                    <p className="text-posh-dark/70">Flats: +2.5% over 5 years, Houses: +3% over 5 years</p>
                   </div>
                 </ScrollAnimation>
                 
@@ -109,6 +109,29 @@ const SearchExampleSection: React.FC = () => {
                     PoshMaps can create unique, personalized metrics tailored specifically to your lifestyle. 
                     Whether you need proximity to specific amenities, care about particular school rankings, 
                     or have unique requirements, our AI will rank areas according to what matters most to you.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </ScrollAnimation>
+          
+          {/* North London Area Map for the search results */}
+          <ScrollAnimation type="fade-up" delay={400} className="mt-16">
+            <div className="relative bg-white rounded-2xl shadow-card overflow-hidden">
+              <div className="absolute top-6 left-6 bg-white px-4 py-2 rounded-full shadow-sm font-semibold z-10">
+                North London Search Results
+              </div>
+              
+              <div className="h-[400px] md:h-[500px] relative">
+                <GoogleMap showNorthLondonAreas={true} zoom={13} />
+              </div>
+              
+              <div className="bg-green-50 p-6 border-t border-green-100">
+                <div className="text-center">
+                  <h3 className="font-semibold text-posh-green mb-3">Your Search Results</h3>
+                  <p className="text-sm text-posh-dark/80 max-w-2xl mx-auto">
+                    Based on your search for a North London location within 10 minutes of a pet groomer, pub, chicken shop, 
+                    tube stop, Turkish restaurant, post office, and Pure Gym, these areas match your criteria.
                   </p>
                 </div>
               </div>

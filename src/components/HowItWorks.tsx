@@ -16,16 +16,6 @@ const steps = [
   },
   {
     number: "02",
-    title: "Import Your Data",
-    description: "Easily upload your location data or connect to your existing services.",
-    benefits: [
-      "Support for all major file formats",
-      "Direct integration with popular services",
-      "Automatic data cleaning and processing"
-    ]
-  },
-  {
-    number: "03",
     title: "Customize Your Maps",
     description: "Create beautiful, informative maps with our intuitive design tools.",
     benefits: [
@@ -35,7 +25,7 @@ const steps = [
     ]
   },
   {
-    number: "04",
+    number: "03",
     title: "Share & Collaborate",
     description: "Invite team members to view and edit your maps in real-time.",
     benefits: [
@@ -64,14 +54,13 @@ const HowItWorks: React.FC = () => {
           </div>
         </FadeIn>
 
-        <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 lg:gap-12">
+        <div className="space-y-12 md:space-y-0 md:grid md:grid-cols-3 gap-8 lg:gap-12">
           {steps.map((step, index) => (
             <FadeIn 
               key={index} 
               delay={index === 0 ? "delay-0" : 
                     index === 1 ? "delay-200" : 
-                    index === 2 ? "delay-400" : 
-                    "delay-600"}
+                    "delay-400"}
             >
               <div className="relative">
                 <div className="mb-6">

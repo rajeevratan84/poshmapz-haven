@@ -6,16 +6,19 @@ interface GoogleMapProps {
   address?: string;
   zoom?: number;
   className?: string;
+  showNorthLondonAreas?: boolean;
 }
 
 const GoogleMap: React.FC<GoogleMapProps> = ({
   address = "Richmond, London, UK",
   zoom = 14,
   className = "h-[400px] md:h-[500px] w-full rounded-lg",
+  showNorthLondonAreas = false,
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const apiLoadedRef = useRef<boolean>(false);
+  const markerRef = useRef<google.maps.Marker | null>(null);
   
   useEffect(() => {
     // Skip during SSR
@@ -56,27 +59,60 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           ],
         });
         
-        // Add a marker at the default location
-        new google.maps.Marker({
+        // Create a marker but don't set position yet (we'll do that after geocoding)
+        markerRef.current = new google.maps.Marker({
           map: mapInstanceRef.current,
-          position: defaultPosition,
           animation: google.maps.Animation.DROP,
         });
         
-        // If we have an address, try to geocode it
-        if (address) {
+        // If we're showing North London areas, add those markers
+        if (showNorthLondonAreas && mapInstanceRef.current) {
+          const highbury = { lat: 51.5485, lng: -0.1019 };
+          const islington = { lat: 51.5362, lng: -0.1033 };
+          const stokeNewington = { lat: 51.5629, lng: -0.0798 };
+          
+          new google.maps.Marker({
+            position: highbury,
+            map: mapInstanceRef.current,
+            animation: google.maps.Animation.DROP,
+            label: "H",
+            title: "Highbury - 94% match"
+          });
+          
+          new google.maps.Marker({
+            position: islington,
+            map: mapInstanceRef.current,
+            animation: google.maps.Animation.DROP,
+            label: "I",
+            title: "Islington - 91% match"
+          });
+          
+          new google.maps.Marker({
+            position: stokeNewington,
+            map: mapInstanceRef.current,
+            animation: google.maps.Animation.DROP,
+            label: "S",
+            title: "Stoke Newington - 87% match"
+          });
+          
+          // Center between the three areas
+          mapInstanceRef.current.setCenter({ lat: 51.5492, lng: -0.0950 });
+          mapInstanceRef.current.setZoom(13);
+          
+          // If showing North London areas, we don't need to geocode the address
+          return;
+        }
+        
+        // If we have an address and we're not showing North London areas, try to geocode it
+        if (address && markerRef.current) {
           const geocoder = new google.maps.Geocoder();
           geocoder.geocode({ address }, (results, status) => {
-            if (status === "OK" && results?.[0]?.geometry?.location && mapInstanceRef.current) {
+            if (status === "OK" && results?.[0]?.geometry?.location && mapInstanceRef.current && markerRef.current) {
               const location = results[0].geometry.location;
               mapInstanceRef.current.setCenter(location);
               
-              // Update marker position
-              new google.maps.Marker({
-                map: mapInstanceRef.current,
-                position: location,
-                animation: google.maps.Animation.DROP,
-              });
+              // Update marker position instead of creating a new one
+              markerRef.current.setPosition(location);
             }
           });
         }
@@ -120,13 +156,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       // If API is already loaded, initialize map directly
       initMap();
     }
-  }, [address, zoom]);
+  }, [address, zoom, showNorthLondonAreas]);
 
   return (
     <div className={className}>
       <div ref={mapRef} className="w-full h-full rounded-lg shadow-lg" />
       <div className="text-xs text-center mt-2 text-posh-dark/60">
-        <p>Viewing: Richmond, London</p>
+        <p>Viewing: {showNorthLondonAreas ? "North London Areas" : "Richmond, London"}</p>
       </div>
     </div>
   );
