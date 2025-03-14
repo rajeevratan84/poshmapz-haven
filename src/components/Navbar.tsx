@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
           </a>
         </nav>
 
-        {/* Call to Action */}
+        {/* Call to Action - Desktop only */}
         <div className="hidden md:flex items-center space-x-4">
           <a 
             href="#" 
@@ -135,7 +135,10 @@ const Navbar: React.FC = () => {
             >
               Log in
             </a>
-            <Button className="w-full bg-posh-green hover:bg-green-500 text-white rounded-full">
+            <Button 
+              className="w-full bg-posh-green hover:bg-green-500 text-white rounded-full"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               Get Started
             </Button>
           </div>
