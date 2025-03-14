@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building, Star } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
+import GoogleMap from './GoogleMap';
 
 // Animated search example component
 const AnimatedSearchExample = () => {
@@ -96,11 +98,8 @@ const AnimatedSearchExample = () => {
                 <div className="text-xs text-gray-500">Match: 87%</div>
               </div>
             </div>
-            <div className="border rounded overflow-hidden h-32 bg-slate-100 flex items-center justify-center">
-              <div className="text-sm text-center text-gray-500">
-                <MapPin className="w-8 h-8 text-posh-green/40 mx-auto mb-2" />
-                Interactive Map View
-              </div>
+            <div className="border rounded overflow-hidden h-64 bg-white">
+              <GoogleMap showNorthLondonAreas={true} zoom={13} />
             </div>
           </div>
         )}

@@ -26,7 +26,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
     // Initialize map only once
     const initMap = () => {
-      if (mapInstanceRef.current) return;
+      if (!mapRef.current) return;
       
       try {
         // Default coordinates for Richmond, London
@@ -92,32 +92,32 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           // Center between the three areas
           mapInstanceRef.current.setCenter({ lat: 51.5492, lng: -0.0950 });
           mapInstanceRef.current.setZoom(13);
-          
-          // If showing North London areas, we don't need to geocode the address
-          return;
-        }
-        
-        // Create a marker for Richmond but don't set position yet (we'll do that after geocoding)
-        markerRef.current = new google.maps.Marker({
-          map: mapInstanceRef.current,
-          animation: google.maps.Animation.DROP,
-        });
-        
-        // If we have an address and we're not showing North London areas, try to geocode it
-        if (address && markerRef.current) {
-          const geocoder = new google.maps.Geocoder();
-          geocoder.geocode({ address }, (results, status) => {
-            if (status === "OK" && results?.[0]?.geometry?.location && mapInstanceRef.current && markerRef.current) {
-              const location = results[0].geometry.location;
-              mapInstanceRef.current.setCenter(location);
-              
-              // Update marker position
-              markerRef.current.setPosition(location);
-            }
+        } 
+        // If we're showing Richmond (default)
+        else if (mapInstanceRef.current) {
+          // Single marker for Richmond
+          markerRef.current = new google.maps.Marker({
+            map: mapInstanceRef.current,
+            animation: google.maps.Animation.DROP,
+            position: defaultPosition,
+            title: "Richmond, London"
           });
+          
+          // If we have an address, try to geocode it
+          if (address) {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ address }, (results, status) => {
+              if (status === "OK" && results?.[0]?.geometry?.location && mapInstanceRef.current && markerRef.current) {
+                const location = results[0].geometry.location;
+                mapInstanceRef.current.setCenter(location);
+                markerRef.current.setPosition(location);
+              }
+            });
+          }
         }
       } catch (error) {
         console.error("Error initializing map:", error);
+        toast.error("Could not initialize Google Maps.");
       }
     };
 
@@ -125,18 +125,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     if (!window.google?.maps && !apiLoadedRef.current) {
       apiLoadedRef.current = true;
       
-      // Ensure we're using the right API key from .env
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
       
-      // Make sure we request geocoding explicitly
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geocoding&callback=initGoogleMaps`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geocoding`;
       script.async = true;
       script.defer = true;
       
-      // Use a global callback function to initialize the map
-      window.initGoogleMaps = initMap;
-      
+      script.onload = initMap;
       script.onerror = () => {
         console.error("Failed to load Google Maps API");
         toast.error("Could not load Google Maps. Please try again later.");
@@ -149,7 +145,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         if (script.parentNode) {
           script.parentNode.removeChild(script);
           apiLoadedRef.current = false;
-          delete window.initGoogleMaps;
         }
       };
     } else if (window.google?.maps) {
@@ -167,12 +162,5 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     </div>
   );
 };
-
-// Add this to allow the window.initGoogleMaps global callback
-declare global {
-  interface Window {
-    initGoogleMaps: () => void;
-  }
-}
 
 export default GoogleMap;
