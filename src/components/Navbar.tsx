@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MapPin, Menu, X } from "lucide-react";
 
@@ -69,19 +68,6 @@ const Navbar: React.FC = () => {
           </a>
         </nav>
 
-        {/* Call to Action - Desktop only */}
-        <div className="hidden md:flex items-center space-x-4">
-          <a 
-            href="#" 
-            className="text-sm text-posh-dark/80 font-medium hover:text-posh-green transition-colors"
-          >
-            Log in
-          </a>
-          <Button className="bg-posh-green hover:bg-green-500 text-white rounded-full">
-            Get Started
-          </Button>
-        </div>
-
         {/* Mobile Menu Button */}
         <button 
           className="md:hidden text-posh-dark"
@@ -128,20 +114,6 @@ const Navbar: React.FC = () => {
           >
             Pricing
           </a>
-          <div className="pt-4 flex flex-col space-y-4">
-            <a 
-              href="#" 
-              className="text-lg text-posh-dark font-medium hover:text-posh-green transition-colors"
-            >
-              Log in
-            </a>
-            <Button 
-              className="w-full bg-posh-green hover:bg-green-500 text-white rounded-full"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Get Started
-            </Button>
-          </div>
         </div>
       </div>
     </header>
