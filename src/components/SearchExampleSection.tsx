@@ -72,7 +72,11 @@ const SearchExampleSection: React.FC = () => {
                   <TrendingUp className="h-6 w-6 shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
                     <h3 className="font-semibold mb-1">Future Property Growth</h3>
-                    <p className="text-posh-dark/70">Flats: +2.5% over 5 years, Houses: +3% over 5 years</p>
+                    <p className="text-posh-dark/70">
+                      Flats: +2.5% over 5 years better than 57% of London
+                      <br />
+                      Houses: +3% over 5 years better than 42% of London
+                    </p>
                   </div>
                 </ScrollAnimation>
                 

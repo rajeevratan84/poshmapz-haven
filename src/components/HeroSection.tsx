@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building, Star } from "lucide-react";
+import { MapPin, Search, Building, Star, RefreshCw } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
 import GoogleMap from './GoogleMap';
 
@@ -11,10 +11,22 @@ const AnimatedSearchExample = () => {
   const [searchText, setSearchText] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
+  const [animationRunning, setAnimationRunning] = useState(true);
   
-  const searchQuery = "I want to live somewhere in North London that's within 10 mins of a pet groomer, a pub, chicken shop, tube stop, turkish restaurant, a post office and a pure gym";
+  const searchQuery = "I want to live somewhere in north London that's within 10 mins of a pet groomer, a pub, chicken shop, tube stop, Turkish restaurant, a post office and a Pure Gym";
+  
+  const resetAnimation = () => {
+    setSearchPhase(0);
+    setSearchText('');
+    setIsThinking(false);
+    setShowResults(false);
+    setAnimationRunning(true);
+  };
   
   useEffect(() => {
+    if (!animationRunning) return;
+    
     if (searchPhase === 0) {
       let currentIndex = 0;
       const typingInterval = setInterval(() => {
@@ -42,23 +54,28 @@ const AnimatedSearchExample = () => {
     
     if (searchPhase === 2) {
       setShowResults(true);
-      
-      const resetTimer = setTimeout(() => {
-        setSearchPhase(0);
-        setSearchText('');
-        setIsThinking(false);
-        setShowResults(false);
-      }, 6000);
-      
-      return () => clearTimeout(resetTimer);
+      setAnimationComplete(true);
+      setAnimationRunning(false);
     }
-  }, [searchPhase]);
+  }, [searchPhase, animationRunning, searchQuery]);
   
   return (
     <div className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
         <div className="flex-1 font-medium text-sm">PoshMaps AI Search</div>
+        
+        {animationComplete && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1 text-xs"
+            onClick={resetAnimation}
+          >
+            <RefreshCw className="h-3 w-3" />
+            Watch Again
+          </Button>
+        )}
       </div>
       
       <div className="relative">
@@ -81,28 +98,31 @@ const AnimatedSearchExample = () => {
           </div>
         )}
         
-        {showResults && (
-          <div className="mt-3 bg-green-50 p-4 rounded-lg">
-            <div className="text-sm font-medium mb-2 text-posh-green">PoshMaps has found 3 areas matching your criteria:</div>
-            <div className="grid grid-cols-3 gap-3 mb-3">
-              <div className="bg-white p-2 rounded border border-green-100 text-center">
-                <div className="font-medium">Highbury</div>
-                <div className="text-xs text-gray-500">Match: 94%</div>
+        {/* Placeholder div with fixed height to prevent layout shift */}
+        <div className={`${(!showResults && !isThinking) ? 'h-0' : ''} transition-all duration-300`}>
+          {showResults && (
+            <div className="mt-3 bg-green-50 p-4 rounded-lg">
+              <div className="text-sm font-medium mb-2 text-posh-green">PoshMaps has found 3 areas matching your criteria:</div>
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <div className="bg-white p-2 rounded border border-green-100 text-center">
+                  <div className="font-medium">Highbury</div>
+                  <div className="text-xs text-gray-500">Match: 94%</div>
+                </div>
+                <div className="bg-white p-2 rounded border border-green-100 text-center">
+                  <div className="font-medium">Islington</div>
+                  <div className="text-xs text-gray-500">Match: 91%</div>
+                </div>
+                <div className="bg-white p-2 rounded border border-green-100 text-center">
+                  <div className="font-medium">Stoke Newington</div>
+                  <div className="text-xs text-gray-500">Match: 87%</div>
+                </div>
               </div>
-              <div className="bg-white p-2 rounded border border-green-100 text-center">
-                <div className="font-medium">Islington</div>
-                <div className="text-xs text-gray-500">Match: 91%</div>
-              </div>
-              <div className="bg-white p-2 rounded border border-green-100 text-center">
-                <div className="font-medium">Stoke Newington</div>
-                <div className="text-xs text-gray-500">Match: 87%</div>
+              <div className="border rounded overflow-hidden h-64 bg-white">
+                <GoogleMap showNorthLondonAreas={true} zoom={13} />
               </div>
             </div>
-            <div className="border rounded overflow-hidden h-64 bg-white">
-              <GoogleMap showNorthLondonAreas={true} zoom={13} />
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
