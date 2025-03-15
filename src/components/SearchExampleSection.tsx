@@ -22,7 +22,7 @@ const SearchExampleSection: React.FC = () => {
           </p>
         </ScrollAnimation>
 
-        <div className="max-w-5xl mx-auto">
+        <div id="richmond-example" className="max-w-5xl mx-auto">
           <ScrollAnimation type="fade-up" delay={200}>
             <div className="relative bg-white rounded-2xl shadow-card overflow-hidden">
               <div className="absolute top-6 left-6 bg-white px-4 py-2 rounded-full shadow-sm font-semibold z-10">

@@ -1,10 +1,34 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import FadeIn from './animations/FadeIn';
-import { MapPin, CheckCircle } from 'lucide-react';
+import { MapPin, CheckCircle, Mail } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 const CTASection: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call - in a real app, this would send data to a server
+    setTimeout(() => {
+      // This email would be sent to mail@rajeevratan.com in a production environment
+      console.log(`Waitlist signup: ${name} (${email})`);
+      toast({
+        title: "You've joined the waitlist!",
+        description: "We'll notify you when Posh Maps launches.",
+      });
+      setIsSubmitting(false);
+      setEmail('');
+      setName('');
+    }, 1000);
+  };
+
   return (
     <section id="pricing" className="section-padding bg-gradient-to-b from-white to-green-50">
       <div className="container mx-auto px-6">
@@ -12,13 +36,13 @@ const CTASection: React.FC = () => {
           <FadeIn>
             <div className="text-center mb-16">
               <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
-                <span className="text-sm font-medium text-posh-green">Ready to Find Your Area?</span>
+                <span className="text-sm font-medium text-posh-green">Coming Soon!</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-                Start Your Property Journey Today
+                Join Our Waitlist Today
               </h2>
               <p className="text-lg text-posh-dark/80 max-w-2xl mx-auto">
-                Join thousands of homebuyers and investors already making smarter property decisions with Posh Maps.
+                Be among the first to access Posh Maps when we launch. Sign up now to get early access and special offers.
               </p>
             </div>
           </FadeIn>
@@ -32,39 +56,42 @@ const CTASection: React.FC = () => {
                     <span className="font-display text-2xl font-semibold">Posh Maps</span>
                   </div>
                   
-                  <h3 className="text-2xl font-bold mb-2">Free Property Search</h3>
+                  <h3 className="text-2xl font-bold mb-2">Coming Soon!</h3>
                   <p className="text-posh-dark/70 mb-8">
-                    Get started with our free plan to explore neighborhoods. Upgrade for advanced AI insights.
+                    We're currently in development. Join our waitlist to be notified when we launch.
                   </p>
                   
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>Basic area stats and insights</span>
+                      <span>AI-powered neighborhood matching</span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>Property listings integration</span>
+                      <span>Custom area ratings based on your preferences</span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>School and transport information</span>
+                      <span>Comprehensive local insights</span>
                     </li>
                     <li className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span>Community support</span>
+                      <span>Early access for waitlist members</span>
                     </li>
                   </ul>
                   
-                  <Button className="w-full bg-posh-green hover:bg-green-500 text-white rounded-full">
-                    Start Free Search
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-posh-green" />
+                    <a href="mailto:mail@rajeevratan.com" className="text-posh-green hover:underline">
+                      Contact us
+                    </a>
+                  </div>
                 </div>
               </FadeIn>
               
               <FadeIn direction="right" className="bg-green-50 p-8 md:p-12">
-                <form className="flex flex-col h-full">
-                  <h3 className="text-2xl font-bold mb-6">Create Your Account</h3>
+                <form onSubmit={handleSubmit} className="flex flex-col h-full">
+                  <h3 className="text-2xl font-bold mb-6">Join the Waitlist</h3>
                   
                   <div className="space-y-4 flex-grow">
                     <div>
@@ -72,8 +99,11 @@ const CTASection: React.FC = () => {
                       <input
                         type="text"
                         id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-300"
                         placeholder="Enter your name"
+                        required
                       />
                     </div>
                     
@@ -82,28 +112,25 @@ const CTASection: React.FC = () => {
                       <input
                         type="email"
                         id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-300"
                         placeholder="Enter your email"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-                      <input
-                        type="password"
-                        id="password"
-                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-300"
-                        placeholder="Create a password"
+                        required
                       />
                     </div>
                   </div>
                   
-                  <Button type="submit" className="w-full bg-posh-dark hover:bg-black text-white rounded-full mt-6">
-                    Create Free Account
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-posh-dark hover:bg-black text-white rounded-full mt-6"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Joining...' : 'Join Waitlist'}
                   </Button>
                   
                   <p className="text-xs text-center text-posh-dark/60 mt-4">
-                    By signing up, you agree to our Terms of Service and Privacy Policy.
+                    By joining, you agree to receive updates about our launch. We respect your privacy.
                   </p>
                 </form>
               </FadeIn>

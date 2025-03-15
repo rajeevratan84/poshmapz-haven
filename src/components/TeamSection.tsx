@@ -53,7 +53,10 @@ const TeamSection: React.FC = () => {
                       Rajeev Ratan is a Principal Data Scientist at BPP University, leading AI-driven initiatives in education, leveraging Large Language Models (LLMs), Natural Language Processing (NLP), and predictive analytics to enhance student engagement, academic performance, and operational efficiency.
                     </p>
                     <p>
-                      Before joining BPP University, Rajeev spent over six years working on deep learning and computer vision applications for various technology companies, including as a Senior Computer Vision Engineer at a U.S.-based AI startup.
+                      Rajeev has been obsessed with maps since childhood, spending hours poring over atlases and creating his own imaginary maps. This lifelong passion led him to create Posh Maps after experiencing firsthand the challenge of finding the perfect area to buy a flat in London.
+                    </p>
+                    <p>
+                      "When I was looking to buy a flat in London, I was completely overwhelmed by the choices. I found myself spending countless hours researching different neighborhoods, trying to piece together information from various sources. I wanted a tool that could understand my specific needs and recommend areas that truly matched my lifestyle," says Rajeev.
                     </p>
                     <p>
                       Beyond industry roles, Rajeev is passionate about AI education and knowledge sharing. He has published eight data science courses on Udemy, amassing over 75,000 students, and has authored multiple research publications in computer vision and probabilistic statistics.

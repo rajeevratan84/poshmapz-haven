@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building, Star, RefreshCw } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
@@ -60,7 +59,7 @@ const AnimatedSearchExample = () => {
   }, [searchPhase, animationRunning, searchQuery]);
   
   return (
-    <div className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+    <div id="search-demo" className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
         <div className="flex-1 font-medium text-sm">PoshMaps AI Search</div>
@@ -129,6 +128,17 @@ const AnimatedSearchExample = () => {
 };
 
 const HeroSection: React.FC = () => {
+  const searchDemoRef = useRef<HTMLDivElement>(null);
+  const handleDemoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById('search-demo')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSearchClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById('richmond-example')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
       <div className="absolute inset-0 hero-gradient z-0"></div>
@@ -137,7 +147,7 @@ const HeroSection: React.FC = () => {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <ScrollAnimation type="fade-down" duration={600}>
             <div className="inline-block mb-4 px-3 py-1 bg-posh-green/10 rounded-full">
-              <span className="text-sm font-medium text-posh-green">AI-Powered Property Research</span>
+              <span className="text-sm font-medium text-posh-green">Coming Soon - AI-Powered Property Research</span>
             </div>
           </ScrollAnimation>
           
@@ -155,10 +165,10 @@ const HeroSection: React.FC = () => {
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Button className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
+              <Button onClick={handleSearchClick} className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
                 Start Your Search
               </Button>
-              <Button variant="outline" className="w-full sm:w-auto rounded-full px-8 py-6 text-base">
+              <Button onClick={handleDemoClick} variant="outline" className="w-full sm:w-auto rounded-full px-8 py-6 text-base">
                 Watch Demo
               </Button>
             </div>
