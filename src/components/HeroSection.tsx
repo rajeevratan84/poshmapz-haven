@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building, Star, RefreshCw } from "lucide-react";
@@ -102,18 +103,30 @@ const AnimatedSearchExample = () => {
           {showResults && (
             <div className="mt-3 bg-green-50 p-4 rounded-lg">
               <div className="text-sm font-medium mb-2 text-posh-green">PoshMaps has found 3 areas matching your criteria:</div>
-              <div className="grid grid-cols-3 gap-3 mb-3">
-                <div className="bg-white p-2 rounded border border-green-100 text-center">
-                  <div className="font-medium">Highbury</div>
-                  <div className="text-xs text-gray-500">Match: 94%</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                <div className="bg-white p-3 rounded border border-green-100">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="font-medium">Highbury</div>
+                    <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 94%</div>
+                  </div>
+                  <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 80/100</div>
+                  <div className="text-xs text-gray-600">Leafy, affluent, and home to professionals. Less flashy than neighbouring Islington but still well-regarded.</div>
                 </div>
-                <div className="bg-white p-2 rounded border border-green-100 text-center">
-                  <div className="font-medium">Islington</div>
-                  <div className="text-xs text-gray-500">Match: 91%</div>
+                <div className="bg-white p-3 rounded border border-green-100">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="font-medium">Islington</div>
+                    <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 91%</div>
+                  </div>
+                  <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 85/100</div>
+                  <div className="text-xs text-gray-600">Trendy, wealthy, and full of period townhouses, upscale restaurants, and boutique shops. A strong mix of old wealth and gentrification.</div>
                 </div>
-                <div className="bg-white p-2 rounded border border-green-100 text-center">
-                  <div className="font-medium">Stoke Newington</div>
-                  <div className="text-xs text-gray-500">Match: 87%</div>
+                <div className="bg-white p-3 rounded border border-green-100">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="font-medium">Stoke Newington</div>
+                    <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 87%</div>
+                  </div>
+                  <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 75/100</div>
+                  <div className="text-xs text-gray-600">Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives.</div>
                 </div>
               </div>
               <div className="border rounded overflow-hidden h-64 bg-white">
