@@ -26,7 +26,7 @@ const TeamSection: React.FC = () => {
               <div className="flex flex-col lg:flex-row">
                 <div className="lg:w-1/3 p-8 bg-gradient-to-b from-posh-green/10 to-posh-gray/10 flex flex-col items-center justify-center">
                   <Avatar className="h-36 w-36 mb-6 border-4 border-white shadow-lg">
-                    <AvatarImage src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" alt="Rajeev Ratan" />
+                    <AvatarImage src="/lovable-uploads/cf066783-275d-4b56-82f3-996162b2bbfb.png" alt="Rajeev Ratan" />
                     <AvatarFallback className="bg-posh-green text-white text-3xl">RR</AvatarFallback>
                   </Avatar>
                   
