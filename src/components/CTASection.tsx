@@ -6,7 +6,7 @@ import { ArrowRight, Mail } from 'lucide-react';
 
 const CTASection: React.FC = () => {
   return (
-    <section id="cta" className="section-padding bg-gradient-to-br from-posh-green/90 to-posh-green relative overflow-hidden">
+    <section id="cta" className="section-padding bg-navy text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-pattern opacity-5"></div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -23,7 +23,7 @@ const CTASection: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button className="bg-white hover:bg-gray-50 text-posh-green rounded-full px-8 py-6 text-base">
+              <Button className="bg-gold hover:bg-gold/90 text-navy rounded-full px-8 py-6 text-base">
                 Get Early Access
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
