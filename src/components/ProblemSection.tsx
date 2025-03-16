@@ -3,60 +3,30 @@ import React from 'react';
 import { XCircle } from 'lucide-react';
 import ScrollAnimation from './animations/ScrollAnimation';
 
-const painPoints = [
-  {
-    title: "No real insights on safety & crime",
-    description: "Traditional platforms don't tell you if an area is actually safe to live in."
-  },
-  {
-    title: "No vibe or lifestyle filtering",
-    description: "Can't search based on the community feel or lifestyle preferences that matter to you."
-  },
-  {
-    title: "Difficult to compare schools & transport",
-    description: "School catchment areas and commute times are hard to evaluate across neighborhoods."
-  },
-  {
-    title: "No future property value predictions",
-    description: "Missing crucial data on which areas are likely to appreciate in the coming years."
-  }
-];
-
 const ProblemSection: React.FC = () => {
   return (
     <section id="problem" className="section-padding bg-gray-50">
       <div className="container mx-auto px-6">
-        <ScrollAnimation type="fade-up" className="text-center max-w-3xl mx-auto mb-16">
+        <ScrollAnimation type="fade-up" className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
             <span className="text-sm font-medium text-posh-green">The Problem</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
             Why Traditional Property Search Fails
           </h2>
-          <p className="text-lg text-posh-dark/80">
-            Tired of generic property listings? Buying a home is more than just price – it's about safety, lifestyle, and future value. Existing platforms only show houses, not the neighborhoods that matter most to you.
+          <p className="text-lg text-posh-dark/80 max-w-2xl mx-auto">
+            Finding the right place to live or invest can be overwhelming. Platforms like Rightmove or Zoopla offer basic property listings, but insights—like crime trends, school rankings, and future growth forecasts—are scattered across multiple sites. This results in guesswork, missed opportunities, and uncertainty.
           </p>
         </ScrollAnimation>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {painPoints.map((point, index) => (
-            <ScrollAnimation 
-              key={index} 
-              type="fade-up"
-              delay={200 * index}
-            >
-              <div className="bg-white p-8 rounded-2xl shadow-feature flex items-start space-x-4">
-                <div className="shrink-0">
-                  <XCircle className="h-8 w-8 text-red-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-xl mb-2">{point.title}</h3>
-                  <p className="text-posh-dark/70">{point.description}</p>
-                </div>
-              </div>
-            </ScrollAnimation>
-          ))}
-        </div>
+        <ScrollAnimation type="fade-up" delay={300} className="max-w-3xl mx-auto">
+          <div className="bg-white p-8 rounded-2xl shadow-feature">
+            <h3 className="text-2xl font-semibold mb-6">Solution: Comprehensive, Data-Rich Property Analysis</h3>
+            <p className="text-posh-dark/80 mb-4">
+              PoshMaps consolidates all those disparate data sources into one visually interactive map. Our AI-powered system forecasts neighbourhood desirability and future property value, giving you real-time insights and predictive analytics—plus features like a 'posh index', heatmaps, and user-generated reviews.
+            </p>
+          </div>
+        </ScrollAnimation>
       </div>
     </section>
   );

@@ -5,14 +5,9 @@ import HeroSection from '@/components/HeroSection';
 import ProblemSection from '@/components/ProblemSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
-
-// Prefetch these components so they load faster when needed
-const HowItWorks = lazy(() => import('@/components/HowItWorks'));
-const TeamSection = lazy(() => import('@/components/TeamSection'));
+import TeamSection from '@/components/TeamSection';
 
 // Lazy load components that are lower in the page
-const TrustSection = lazy(() => import('@/components/TrustSection'));
-const TestimonialSection = lazy(() => import('@/components/TestimonialSection'));
 const CTASection = lazy(() => import('@/components/CTASection'));
 const Footer = lazy(() => import('@/components/Footer'));
 
@@ -66,18 +61,10 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
-        {/* Reordered sections as requested */}
         <SearchExampleSection />
         <ProblemSection />
         <FeaturesSection />
-        <Suspense fallback={<SectionLoader />}>
-          <HowItWorks />
-          <TeamSection />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <TrustSection />
-          <TestimonialSection />
-        </Suspense>
+        <TeamSection />
         <Suspense fallback={<SectionLoader />}>
           <CTASection />
         </Suspense>
