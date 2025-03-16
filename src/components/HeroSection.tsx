@@ -32,11 +32,27 @@ const HeroSection: React.FC = () => {
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
       <div className="absolute inset-0 hero-gradient z-0"></div>
       
+      {/* Decorative images */}
+      <div className="absolute top-40 -left-16 w-40 h-40 opacity-10 rounded-full overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1486726708062-8ba7d8fa06c5" 
+          alt="British row houses" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="absolute bottom-20 -right-16 w-40 h-40 opacity-10 rounded-full overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1472396961693-142e6e269027" 
+          alt="London park" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <ScrollAnimation type="fade-down" duration={600}>
             <div className="inline-block mb-4 px-3 py-1 bg-posh-green/10 rounded-full">
-              <span className="text-sm font-medium text-posh-green">Coming Soon - AI-Powered Property Research</span>
+              <span className="text-sm font-medium text-posh-green">Coming Soon - AI-Powered Local Insights</span>
             </div>
           </ScrollAnimation>
           
@@ -48,7 +64,7 @@ const HeroSection: React.FC = () => {
           
           <ScrollAnimation type="fade-up" delay={400} duration={800}>
             <p className="text-lg md:text-xl text-posh-dark/80 mb-8 text-balance max-w-2xl mx-auto">
-              PoshMaps empowers you to make confident property decisions by combining local crime statistics, school performance, transport links, and more—delivered in one intuitive map.
+              PoshMaps empowers you to make confident property decisions by combining local crime statistics, school performance, transport links, and more—delivered in one intuitive map to help you <span className="text-gold font-medium">find the neighborhood vibe that perfectly matches your lifestyle</span>.
             </p>
           </ScrollAnimation>
           

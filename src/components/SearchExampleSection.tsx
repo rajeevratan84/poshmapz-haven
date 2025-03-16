@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Gauge, Train, Footprints, MessageCircle, TrendingUp, Award, Sliders } from 'lucide-react';
+import { MapPin, Gauge, Train, Footprints, MessageCircle, TrendingUp, Award, Sliders, Coffee, Beer, Building, Smile } from 'lucide-react';
 import GoogleMap from './GoogleMap';
 import ScrollAnimation from './animations/ScrollAnimation';
 
@@ -18,14 +18,15 @@ const SearchExampleSection: React.FC = () => {
             What Posh Maps Reveals About an Area
           </h2>
           <p className="text-lg text-posh-dark/80">
-            Here's a real example of the rich insights you'll get about any neighborhood with our AI-powered platform.
+            Here's a real example of the rich insights you'll get about any neighborhood with our AI-powered platform, designed to help you <span className="text-gold font-medium">find the perfect area vibe</span> that matches your preferences.
           </p>
         </ScrollAnimation>
 
         <div id="richmond-example" className="max-w-5xl mx-auto">
           <ScrollAnimation type="fade-up" delay={200}>
             <div className="relative bg-white rounded-2xl shadow-card overflow-hidden">
-              <div className="absolute top-6 left-6 bg-white px-4 py-2 rounded-full shadow-sm font-semibold z-10">
+              <div className="absolute top-6 left-6 bg-white px-4 py-2 rounded-full shadow-sm font-semibold z-10 flex items-center">
+                <MapPin className="h-4 w-4 text-gold mr-1" />
                 Richmond, London
               </div>
               
@@ -81,10 +82,14 @@ const SearchExampleSection: React.FC = () => {
                 </ScrollAnimation>
                 
                 <ScrollAnimation type="fade-up" delay={800} className="flex items-start space-x-3">
-                  <Sliders className="h-6 w-6 shrink-0 mt-1" style={{ color: iconColor }} />
+                  <Smile className="h-6 w-6 shrink-0 mt-1" style={{ color: iconColor }} />
                   <div>
-                    <h3 className="font-semibold mb-1">Custom Metrics</h3>
-                    <p className="text-posh-dark/70">Personalized for your unique preferences</p>
+                    <h3 className="font-semibold mb-1">Area Vibe</h3>
+                    <p className="text-posh-dark/70">
+                      <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-1">Family-friendly</span>
+                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1">Upscale</span>
+                      <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Riverside</span>
+                    </p>
                   </div>
                 </ScrollAnimation>
                 
@@ -106,15 +111,42 @@ const SearchExampleSection: React.FC = () => {
                 </ScrollAnimation>
               </div>
               
-              <div className="bg-green-50 p-6 border-t border-green-100">
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 border-t border-green-100">
                 <div className="text-center">
-                  <h3 className="font-semibold text-posh-green mb-3">Custom Metrics Based on Your Personal Preferences</h3>
+                  <h3 className="font-semibold text-posh-green mb-3">Find Your Perfect Neighborhood Vibe</h3>
                   <p className="text-sm text-posh-dark/80 max-w-2xl mx-auto">
-                    PoshMaps can create unique, personalized metrics tailored specifically to your lifestyle. 
-                    Whether you need proximity to specific amenities, care about particular school rankings, 
-                    or have unique requirements, our AI will rank areas according to what matters most to you.
+                    PoshMaps creates a unique "vibe profile" for each area based on local amenities, community characteristics, 
+                    and resident reviews. Whether you're seeking a trendy urban hotspot, a family-friendly suburb, 
+                    or a quiet village atmosphere, we'll help you find the perfect match for your lifestyle.
                   </p>
                 </div>
+              </div>
+            </div>
+          </ScrollAnimation>
+        </div>
+        
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          <ScrollAnimation type="fade-up" delay={300} className="col-span-2">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden h-40 relative">
+              <img 
+                src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be" 
+                alt="London row houses" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent flex items-end">
+                <p className="text-white font-semibold p-4">Classic London Terraces</p>
+              </div>
+            </div>
+          </ScrollAnimation>
+          <ScrollAnimation type="fade-up" delay={400} className="col-span-2">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden h-40 relative">
+              <img 
+                src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8" 
+                alt="British countryside" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/70 to-transparent flex items-end">
+                <p className="text-white font-semibold p-4">Peaceful Village Green</p>
               </div>
             </div>
           </ScrollAnimation>

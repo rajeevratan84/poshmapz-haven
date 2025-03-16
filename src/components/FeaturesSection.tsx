@@ -82,7 +82,7 @@ const FeaturesSection: React.FC = () => {
               Smarter Home Decisions with Deep Insights
             </h2>
             <p className="text-lg text-posh-dark/80">
-              We combine AI, real estate data, and user reviews to give you deep insights on every neighborhood – so you can buy with confidence.
+              We combine AI, real estate data, and user reviews to give you <span className="text-gold font-medium">deep insights on every neighborhood's unique vibe</span> – so you can find the perfect match for your lifestyle.
             </p>
           </div>
         </FadeIn>
@@ -122,7 +122,8 @@ const FeaturesSection: React.FC = () => {
             {audienceSegments.map((segment, index) => (
               <FadeIn 
                 key={index} 
-                delay={index * 200} 
+                delay={index === 0 ? "delay-0" : 
+                      index === 1 ? "delay-200" : "delay-400"} 
                 className="h-full"
               >
                 <div className="h-full bg-white p-8 rounded-2xl shadow-feature">
@@ -151,41 +152,59 @@ const FeaturesSection: React.FC = () => {
                 PoshMaps represents a significant opportunity in the PropTech space, with a clear roadmap for growth and multiple revenue streams.
               </p>
               
-              <h3 className="text-xl font-semibold mb-4">Development Roadmap</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="p-5 bg-green-50 rounded-xl">
-                  <div className="font-bold text-posh-green mb-2">Phase 1</div>
-                  <p className="text-sm text-posh-dark/90">Residential property analysis and user-growth.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">Development Roadmap</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="p-5 bg-green-50 rounded-xl">
+                      <div className="font-bold text-posh-green mb-2">Phase 1</div>
+                      <p className="text-sm text-posh-dark/90">Residential property analysis and user-growth.</p>
+                    </div>
+                    <div className="p-5 bg-green-50 rounded-xl">
+                      <div className="font-bold text-posh-green mb-2">Phase 2</div>
+                      <p className="text-sm text-posh-dark/90">Advanced real estate investment tools, commercial real estate features.</p>
+                    </div>
+                    <div className="p-5 bg-green-50 rounded-xl">
+                      <div className="font-bold text-posh-green mb-2">Phase 3</div>
+                      <p className="text-sm text-posh-dark/90">Integration with urban planning, council services, insurance/finance models.</p>
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-xl font-semibold mb-4">Revenue Streams</h3>
+                  <ul className="space-y-2 mb-6">
+                    <li className="flex items-start gap-2">
+                      <span className="text-posh-green font-bold">•</span>
+                      <span className="text-posh-dark/80">Premium subscription tiers for advanced features and insights</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-posh-green font-bold">•</span>
+                      <span className="text-posh-dark/80">Strategic partnerships with property portals and agencies</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-posh-green font-bold">•</span>
+                      <span className="text-posh-dark/80">Custom analytics for property developers and institutions</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-posh-green font-bold">•</span>
+                      <span className="text-posh-dark/80">API access for integration with other property tech platforms</span>
+                    </li>
+                  </ul>
                 </div>
-                <div className="p-5 bg-green-50 rounded-xl">
-                  <div className="font-bold text-posh-green mb-2">Phase 2</div>
-                  <p className="text-sm text-posh-dark/90">Advanced real estate investment tools, commercial real estate features.</p>
-                </div>
-                <div className="p-5 bg-green-50 rounded-xl">
-                  <div className="font-bold text-posh-green mb-2">Phase 3</div>
-                  <p className="text-sm text-posh-dark/90">Integration with urban planning, council services, insurance/finance models.</p>
+                
+                <div className="relative rounded-xl overflow-hidden h-full min-h-[320px]">
+                  <img 
+                    src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
+                    alt="Property analysis" 
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-navy/50 flex items-center justify-center">
+                    <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-lg">
+                      <h3 className="text-2xl font-bold text-white mb-2">Join Our Vision</h3>
+                      <p className="text-white/90">Become part of the future of property tech</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              <h3 className="text-xl font-semibold mb-4">Revenue Streams</h3>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2">
-                  <span className="text-posh-green font-bold">•</span>
-                  <span className="text-posh-dark/80">Premium subscription tiers for advanced features and insights</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-posh-green font-bold">•</span>
-                  <span className="text-posh-dark/80">Strategic partnerships with property portals and agencies</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-posh-green font-bold">•</span>
-                  <span className="text-posh-dark/80">Custom analytics for property developers and institutions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-posh-green font-bold">•</span>
-                  <span className="text-posh-dark/80">API access for integration with other property tech platforms</span>
-                </li>
-              </ul>
               
               <div className="bg-green-50 p-5 rounded-xl">
                 <h3 className="text-lg font-semibold mb-2">Data Governance & Trust</h3>

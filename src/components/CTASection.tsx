@@ -6,7 +6,7 @@ import { ArrowRight, Mail } from 'lucide-react';
 
 const CTASection: React.FC = () => {
   return (
-    <section id="cta" className="section-padding bg-navy text-white relative overflow-hidden">
+    <section id="cta" className="section-padding bg-gradient-to-br from-navy to-navy-dark text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-pattern opacity-5"></div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -19,7 +19,7 @@ const CTASection: React.FC = () => {
               Join PoshMaps Today
             </h2>
             <p className="text-lg text-white/90 mb-8">
-              Ready to explore your next neighbourhood? Join our waitlist to experience PoshMaps. Have questions about investing? Get in touch to discuss partnership opportunities.
+              Ready to explore your next neighbourhood? Join our waitlist to experience PoshMaps and discover the perfect area <span className="text-gold font-medium">that matches your unique vibe</span>. Have questions about investing? Get in touch to discuss partnership opportunities.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -27,13 +27,21 @@ const CTASection: React.FC = () => {
                 Get Early Access
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 py-6 text-base">
+              <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40 rounded-full px-8 py-6 text-base">
                 Investors—Contact Us
                 <Mail className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </div>
         </FadeIn>
+      </div>
+      
+      <div className="absolute -bottom-16 right-0 w-64 h-64 opacity-10">
+        <img 
+          src="https://images.unsplash.com/photo-1459767129954-1b1c1f9b9ace" 
+          alt="British architecture" 
+          className="w-full h-full object-cover"
+        />
       </div>
     </section>
   );
