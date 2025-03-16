@@ -77,9 +77,13 @@ export default {
 					light: '#FF9B76',
 					dark: '#E56B40',
 				},
-				charcoal: '#333333',
-				'light-bg': '#F8F8F8',
-				'text-dark': '#212121',
+				charcoal: {
+					DEFAULT: '#121212',
+					light: '#1a1a1a',
+					dark: '#0a0a0a',
+				},
+				'light-bg': '#1a1a1a',
+				'text-dark': '#EFEFEF',
 				posh: {
 					green: '#22C55E',
 					dark: '#1A2C1E',
