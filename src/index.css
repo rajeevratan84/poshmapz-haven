@@ -19,13 +19,13 @@
     --primary: 210 100% 12%; /* Deep Navy */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 55% 52%; /* Gold */
+    --secondary: 16 100% 65.9%; /* Coral Red */
     --secondary-foreground: 210 100% 12%;
 
     --muted: 210 10% 96%;
     --muted-foreground: 220 15% 47%;
 
-    --accent: 45 55% 52%;
+    --accent: 16 100% 65.9%;
     --accent-foreground: 210 100% 12%;
 
     --destructive: 0 84% 60%;
@@ -39,13 +39,10 @@
     
     /* Color scheme variables */
     --navy: #001F3F;
-    --gold: #D4AF37;
+    --coral: #FF7F50;
     --charcoal: #333333;
     --light-bg: #F8F8F8;
     --text-dark: #212121;
-    
-    /* Keep the coral color */
-    --coral: 16 100% 65.9%;
   }
 
   /* Font display swap for better performance */
@@ -87,7 +84,7 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-navy to-gold;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-navy to-coral;
   }
 
   .glass-panel {
@@ -166,8 +163,8 @@
     color: var(--navy);
   }
   
-  .text-gold {
-    color: var(--gold);
+  .text-coral {
+    color: var(--coral);
   }
   
   .text-charcoal {
@@ -178,8 +175,8 @@
     background-color: var(--navy);
   }
   
-  .bg-gold {
-    background-color: var(--gold);
+  .bg-coral {
+    background-color: var(--coral);
   }
   
   .bg-charcoal {
@@ -188,11 +185,6 @@
   
   .bg-light {
     background-color: var(--light-bg);
-  }
-  
-  /* Keep original color classes */
-  .text-coral {
-    color: #FF7F50;
   }
 
   /* Updated parallax effect with will-change */

@@ -6,14 +6,6 @@ import ScrollAnimation from './animations/ScrollAnimation';
 const ProblemSection: React.FC = () => {
   return (
     <section id="problem" className="section-padding bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
-        <img 
-          src="https://images.unsplash.com/photo-1513377888081-794d8e958972" 
-          alt="London street" 
-          className="w-full h-full object-cover"
-        />
-      </div>
-      
       <div className="container mx-auto px-6 relative z-10">
         <ScrollAnimation type="fade-up" className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
@@ -58,10 +50,10 @@ const ProblemSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={500}>
-            <div className="bg-white p-8 rounded-2xl shadow-feature border-2 border-posh-green/20 h-full">
+            <div className="bg-white p-8 rounded-2xl shadow-feature border-2 border-coral/20 h-full">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle className="h-8 w-8 text-posh-green" />
+                <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-coral" />
                 </div>
               </div>
               <h3 className="text-xl font-semibold mb-4 text-center">The PoshMaps Solution</h3>
@@ -69,7 +61,7 @@ const ProblemSection: React.FC = () => {
                 PoshMaps consolidates all those disparate data sources into one visually interactive map. Our AI-powered system forecasts neighbourhood desirability and future property value, giving you real-time insights and predictive analytics—plus features like a 'posh index', heatmaps, and user-generated reviews.
               </p>
               <p className="text-posh-dark/80 font-medium">
-                Most importantly, we help you <span className="text-gold">understand the unique "vibe" of each area</span> so you can find the perfect match for your lifestyle and preferences.
+                Most importantly, we help you <span className="text-coral font-medium">understand the unique "vibe" of each area</span> so you can find the perfect match for your lifestyle and preferences.
               </p>
             </div>
           </ScrollAnimation>

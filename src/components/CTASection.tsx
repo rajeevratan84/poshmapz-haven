@@ -19,15 +19,15 @@ const CTASection: React.FC = () => {
               Join PoshMaps Today
             </h2>
             <p className="text-lg text-white/90 mb-8">
-              Ready to explore your next neighbourhood? Join our waitlist to experience PoshMaps and discover the perfect area <span className="text-gold font-medium">that matches your unique vibe</span>. Have questions about investing? Get in touch to discuss partnership opportunities.
+              Ready to explore your next neighbourhood? Join our waitlist to experience PoshMaps and discover the perfect area <span className="text-coral font-medium">that matches your unique vibe</span>. Have questions about investing? Get in touch to discuss partnership opportunities.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button className="bg-gold hover:bg-gold/90 text-navy rounded-full px-8 py-6 text-base">
+              <Button className="bg-coral hover:bg-coral/90 text-white rounded-full px-8 py-6 text-base">
                 Get Early Access
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40 rounded-full px-8 py-6 text-base">
+              <Button className="bg-white/20 hover:bg-white/30 text-white rounded-full px-8 py-6 text-base">
                 Investors—Contact Us
                 <Mail className="ml-2 h-5 w-5" />
               </Button>

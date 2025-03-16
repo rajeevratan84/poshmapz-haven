@@ -18,7 +18,7 @@ const SearchExampleSection: React.FC = () => {
             What Posh Maps Reveals About an Area
           </h2>
           <p className="text-lg text-posh-dark/80">
-            Here's a real example of the rich insights you'll get about any neighborhood with our AI-powered platform, designed to help you <span className="text-gold font-medium">find the perfect area vibe</span> that matches your preferences.
+            Here's a real example of the rich insights you'll get about any neighborhood with our AI-powered platform, designed to help you <span className="text-coral font-medium">find the perfect area vibe</span> that matches your preferences.
           </p>
         </ScrollAnimation>
 
@@ -26,7 +26,7 @@ const SearchExampleSection: React.FC = () => {
           <ScrollAnimation type="fade-up" delay={200}>
             <div className="relative bg-white rounded-2xl shadow-card overflow-hidden">
               <div className="absolute top-6 left-6 bg-white px-4 py-2 rounded-full shadow-sm font-semibold z-10 flex items-center">
-                <MapPin className="h-4 w-4 text-gold mr-1" />
+                <MapPin className="h-4 w-4 text-coral mr-1" />
                 Richmond, London
               </div>
               
@@ -129,7 +129,7 @@ const SearchExampleSection: React.FC = () => {
           <ScrollAnimation type="fade-up" delay={300} className="col-span-2">
             <div className="bg-white rounded-xl shadow-md overflow-hidden h-40 relative">
               <img 
-                src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be" 
+                src="https://images.unsplash.com/photo-1459767129954-1b1c1f9b9ace" 
                 alt="London row houses" 
                 className="w-full h-full object-cover"
               />
