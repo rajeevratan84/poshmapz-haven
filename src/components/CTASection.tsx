@@ -12,8 +12,8 @@ const CTASection: React.FC = () => {
       <div className="container mx-auto px-6 relative z-10">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-block mb-4 px-3 py-1 bg-coral/20 rounded-full">
-              <span className="text-sm font-medium text-coral">Ready to Explore?</span>
+            <div className="inline-block mb-4 px-3 py-1 bg-white/20 rounded-full">
+              <span className="text-sm font-medium text-white">Ready to Explore?</span>
             </div>
             <h2 className="text-3xl md:text-4xl text-white font-display font-bold mb-6">
               Join PoshMaps Today
