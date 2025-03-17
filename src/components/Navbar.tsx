@@ -44,19 +44,19 @@ const Navbar: React.FC = () => {
         <nav className="hidden md:flex items-center space-x-8">
           <a 
             href="#features" 
-            className="text-sm text-white/80 font-medium hover:text-coral transition-colors"
+            className="text-sm text-white/90 font-medium hover:text-coral transition-colors"
           >
             Features
           </a>
           <a 
             href="#search-demo" 
-            className="text-sm text-white/80 font-medium hover:text-coral transition-colors"
+            className="text-sm text-white/90 font-medium hover:text-coral transition-colors"
           >
             See It In Action
           </a>
           <a 
             href="#problem" 
-            className="text-sm text-white/80 font-medium hover:text-coral transition-colors"
+            className="text-sm text-white/90 font-medium hover:text-coral transition-colors"
           >
             Our Solution
           </a>

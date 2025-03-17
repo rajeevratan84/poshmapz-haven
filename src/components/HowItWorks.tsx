@@ -38,17 +38,17 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section id="how-it-works" className="section-padding bg-green-50">
+    <section id="how-it-works" className="section-padding bg-black">
       <div className="container mx-auto px-6">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block mb-4 px-3 py-1 bg-green-100 rounded-full">
+            <div className="inline-block mb-4 px-3 py-1 bg-posh-green/20 rounded-full">
               <span className="text-sm font-medium text-posh-green">Simple Process</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">
               Getting Started is Effortless
             </h2>
-            <p className="text-lg text-posh-dark/80">
+            <p className="text-lg text-white/80">
               We've streamlined every step so you can focus on what matters — understanding your location data.
             </p>
           </div>
@@ -64,17 +64,17 @@ const HowItWorks: React.FC = () => {
             >
               <div className="relative">
                 <div className="mb-6">
-                  <span className="text-5xl font-display font-bold text-posh-green/10">
+                  <span className="text-5xl font-display font-bold text-posh-green/20">
                     {step.number}
                   </span>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                <p className="text-posh-dark/70 mb-6">{step.description}</p>
+                <h3 className="text-xl font-semibold mb-3 text-white">{step.title}</h3>
+                <p className="text-white/70 mb-6">{step.description}</p>
                 <ul className="space-y-2">
                   {step.benefits.map((benefit, benefitIndex) => (
                     <li key={benefitIndex} className="flex items-start space-x-2">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span className="text-sm text-posh-dark/80">{benefit}</span>
+                      <span className="text-sm text-white/80">{benefit}</span>
                     </li>
                   ))}
                 </ul>

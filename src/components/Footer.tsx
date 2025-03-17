@@ -13,13 +13,13 @@ interface FooterColumnProps {
 
 const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => (
   <div>
-    <h3 className="font-semibold text-sm text-posh-dark mb-4">{title}</h3>
+    <h3 className="font-semibold text-sm text-white mb-4">{title}</h3>
     <ul className="space-y-3">
       {links.map((link, index) => (
         <li key={index}>
           <a 
             href={link.href} 
-            className="text-sm text-posh-dark/70 hover:text-posh-green transition-colors"
+            className="text-sm text-white/70 hover:text-coral transition-colors"
           >
             {link.label}
           </a>
@@ -33,15 +33,15 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-white pt-20 pb-10 border-t border-slate-100">
+    <footer className="bg-black pt-20 pb-10 border-t border-white/10">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2">
-            <div className="flex items-center space-x-2 text-posh-dark mb-4">
-              <MapPin className="h-5 w-5 text-posh-green" />
+            <div className="flex items-center space-x-2 text-white mb-4">
+              <MapPin className="h-5 w-5 text-coral" />
               <span className="font-display text-lg font-semibold">PoshMaps</span>
             </div>
-            <p className="text-sm text-posh-dark/70 mb-6 max-w-xs">
+            <p className="text-sm text-white/70 mb-6 max-w-xs">
               Transforming location intelligence with elegant, powerful mapping solutions powered by AI.
             </p>
             <div className="flex space-x-4">
@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
                 <a 
                   key={social} 
                   href={`#${social}`} 
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-posh-dark/70 hover:bg-posh-green hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-coral hover:text-white transition-colors"
                   aria-label={social}
                 >
                   <span className="sr-only">{social}</span>
@@ -93,14 +93,14 @@ const Footer: React.FC = () => {
           />
         </div>
         
-        <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center text-sm text-posh-dark/60">
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-sm text-white/60">
           <div className="mb-4 md:mb-0">
             © {currentYear} PoshMaps. All rights reserved.
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="hover:text-posh-green transition-colors">Privacy</a>
-            <a href="#" className="hover:text-posh-green transition-colors">Terms</a>
-            <a href="#" className="hover:text-posh-green transition-colors">Cookies</a>
+            <a href="#" className="hover:text-coral transition-colors">Privacy</a>
+            <a href="#" className="hover:text-coral transition-colors">Terms</a>
+            <a href="#" className="hover:text-coral transition-colors">Cookies</a>
           </div>
         </div>
       </div>

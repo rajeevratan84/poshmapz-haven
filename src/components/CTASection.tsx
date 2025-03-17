@@ -6,7 +6,7 @@ import { ArrowRight, Mail } from 'lucide-react';
 
 const CTASection: React.FC = () => {
   return (
-    <section id="cta" className="section-padding bg-gradient-to-br from-black to-gray-900 text-white relative overflow-hidden">
+    <section id="cta" className="section-padding bg-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-pattern opacity-10"></div>
       
       <div className="container mx-auto px-6 relative z-10">

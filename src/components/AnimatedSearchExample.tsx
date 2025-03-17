@@ -61,7 +61,7 @@ const AnimatedSearchExample: React.FC = () => {
     <div id="search-demo" className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
-        <div className="flex-1 font-medium text-sm">PoshMaps AI Search</div>
+        <div className="flex-1 font-medium text-sm text-gray-800">PoshMaps AI Search</div>
         
         {animationComplete && (
           <Button 
@@ -78,7 +78,7 @@ const AnimatedSearchExample: React.FC = () => {
       
       <div className="relative">
         <textarea 
-          className="w-full p-3 border border-gray-200 rounded-lg text-sm h-20 bg-white resize-none"
+          className="w-full p-3 border border-gray-200 rounded-lg text-sm h-20 bg-white resize-none text-gray-800"
           value={searchText}
           readOnly
         />
@@ -90,7 +90,7 @@ const AnimatedSearchExample: React.FC = () => {
         )}
         
         {isThinking && (
-          <div className="mt-3 flex items-center gap-2 text-sm">
+          <div className="mt-3 flex items-center gap-2 text-sm text-gray-700">
             <div className="w-4 h-4 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
             <span>AI is analyzing your preferences...</span>
           </div>
@@ -104,7 +104,7 @@ const AnimatedSearchExample: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                 <div className="bg-white p-3 rounded border border-green-100">
                   <div className="flex justify-between items-center mb-1">
-                    <div className="font-medium">Highbury</div>
+                    <div className="font-medium text-gray-800">Highbury</div>
                     <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 94%</div>
                   </div>
                   <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 80/100</div>
@@ -112,7 +112,7 @@ const AnimatedSearchExample: React.FC = () => {
                 </div>
                 <div className="bg-white p-3 rounded border border-green-100">
                   <div className="flex justify-between items-center mb-1">
-                    <div className="font-medium">Islington</div>
+                    <div className="font-medium text-gray-800">Islington</div>
                     <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 91%</div>
                   </div>
                   <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 85/100</div>
@@ -120,7 +120,7 @@ const AnimatedSearchExample: React.FC = () => {
                 </div>
                 <div className="bg-white p-3 rounded border border-green-100">
                   <div className="flex justify-between items-center mb-1">
-                    <div className="font-medium">Stoke Newington</div>
+                    <div className="font-medium text-gray-800">Stoke Newington</div>
                     <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 87%</div>
                   </div>
                   <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 75/100</div>
