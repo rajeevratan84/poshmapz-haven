@@ -26,17 +26,17 @@ const Navbar: React.FC = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300",
-        scrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        scrolled ? "bg-black/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <a 
           href="#" 
-          className="flex items-center space-x-2 text-posh-dark"
+          className="flex items-center space-x-2 text-white"
           aria-label="PoshMaps"
         >
-          <MapPin className="h-6 w-6 text-posh-green" />
+          <MapPin className="h-6 w-6 text-coral" />
           <span className="font-display text-xl font-semibold">PoshMaps</span>
         </a>
 
@@ -44,33 +44,27 @@ const Navbar: React.FC = () => {
         <nav className="hidden md:flex items-center space-x-8">
           <a 
             href="#features" 
-            className="text-sm text-posh-dark/80 font-medium hover:text-posh-green transition-colors"
+            className="text-sm text-white/80 font-medium hover:text-coral transition-colors"
           >
             Features
           </a>
           <a 
-            href="#how-it-works" 
-            className="text-sm text-posh-dark/80 font-medium hover:text-posh-green transition-colors"
+            href="#search-demo" 
+            className="text-sm text-white/80 font-medium hover:text-coral transition-colors"
           >
-            How It Works
+            See It In Action
           </a>
           <a 
-            href="#testimonials" 
-            className="text-sm text-posh-dark/80 font-medium hover:text-posh-green transition-colors"
+            href="#problem" 
+            className="text-sm text-white/80 font-medium hover:text-coral transition-colors"
           >
-            Testimonials
-          </a>
-          <a 
-            href="#pricing" 
-            className="text-sm text-posh-dark/80 font-medium hover:text-posh-green transition-colors"
-          >
-            Pricing
+            Our Solution
           </a>
         </nav>
 
         {/* Mobile Menu Button */}
         <button 
-          className="md:hidden text-posh-dark"
+          className="md:hidden text-white"
           onClick={toggleMobileMenu}
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -81,38 +75,31 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <div 
         className={cn(
-          "fixed inset-x-0 top-[72px] bg-white shadow-lg md:hidden transition-transform duration-300 ease-in-out",
+          "fixed inset-x-0 top-[72px] bg-black/90 shadow-lg md:hidden transition-transform duration-300 ease-in-out",
           mobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}
       >
         <div className="container mx-auto px-6 py-8 flex flex-col space-y-6">
           <a 
             href="#features" 
-            className="text-lg text-posh-dark font-medium hover:text-posh-green transition-colors"
+            className="text-lg text-white font-medium hover:text-coral transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Features
           </a>
           <a 
-            href="#how-it-works" 
-            className="text-lg text-posh-dark font-medium hover:text-posh-green transition-colors"
+            href="#search-demo" 
+            className="text-lg text-white font-medium hover:text-coral transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
-            How It Works
+            See It In Action
           </a>
           <a 
-            href="#testimonials" 
-            className="text-lg text-posh-dark font-medium hover:text-posh-green transition-colors"
+            href="#problem" 
+            className="text-lg text-white font-medium hover:text-coral transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Testimonials
-          </a>
-          <a 
-            href="#pricing" 
-            className="text-lg text-posh-dark font-medium hover:text-posh-green transition-colors"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Pricing
+            Our Solution
           </a>
         </div>
       </div>
