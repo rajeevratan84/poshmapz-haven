@@ -62,7 +62,7 @@ const HowItWorks: React.FC = () => {
                     index === 1 ? "delay-200" : 
                     "delay-400"}
             >
-              <div className="relative">
+              <div className="relative bg-black/60 border border-white/10 p-6 rounded-xl">
                 <div className="mb-6">
                   <span className="text-5xl font-display font-bold text-posh-green/20">
                     {step.number}
@@ -74,7 +74,7 @@ const HowItWorks: React.FC = () => {
                   {step.benefits.map((benefit, benefitIndex) => (
                     <li key={benefitIndex} className="flex items-start space-x-2">
                       <CheckCircle className="h-5 w-5 text-posh-green shrink-0 mt-0.5" />
-                      <span className="text-sm text-white/80">{benefit}</span>
+                      <span className="text-white/80">{benefit}</span>
                     </li>
                   ))}
                 </ul>
