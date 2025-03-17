@@ -11,7 +11,7 @@ const SearchExampleSection: React.FC = () => {
     <section id="see-it-in-action" className="section-padding bg-black overflow-hidden">
       <div className="container mx-auto px-6">
         <ScrollAnimation type="fade-up" className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-block mb-4 px-3 py-1 bg-green-50 rounded-full">
+          <div className="inline-block mb-4 px-3 py-1 bg-green-50/20 rounded-full">
             <span className="text-sm font-medium text-posh-green">See It In Action</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">

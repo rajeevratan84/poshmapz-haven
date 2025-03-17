@@ -52,8 +52,8 @@ const ProblemSection: React.FC = () => {
           <ScrollAnimation type="fade-up" delay={500}>
             <div className="bg-black/60 p-8 rounded-2xl shadow-feature border-2 border-coral/20 h-full">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center">
-                  <CheckCircle className="h-8 w-8 text-coral" />
+                <div className="w-16 h-16 rounded-full bg-posh-green/20 flex items-center justify-center">
+                  <CheckCircle className="h-8 w-8 text-posh-green" />
                 </div>
               </div>
               <h3 className="text-xl font-semibold mb-4 text-center text-white">The PoshMaps Solution</h3>
@@ -61,7 +61,7 @@ const ProblemSection: React.FC = () => {
                 PoshMaps consolidates all those disparate data sources into one visually interactive map. Our AI-powered system forecasts neighbourhood desirability and future property value, giving you real-time insights and predictive analytics—plus features like a 'posh index', heatmaps, and user-generated reviews.
               </p>
               <p className="text-white/80 font-medium">
-                Most importantly, we help you <span className="text-coral font-medium">understand the unique "vibe" of each area</span> so you can find the perfect match for your lifestyle and preferences.
+                Most importantly, we help you <span className="text-posh-green font-medium">understand the unique "vibe" of each area</span> so you can find the perfect match for your lifestyle and preferences.
               </p>
             </div>
           </ScrollAnimation>
