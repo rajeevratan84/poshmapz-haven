@@ -1,4 +1,3 @@
-
 import React, { useEffect, useCallback, lazy, Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
@@ -6,7 +5,6 @@ import ProblemSection from '@/components/ProblemSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
 import TeamSection from '@/components/TeamSection';
-import HowItWorks from '@/components/HowItWorks';
 
 // Lazy load components that are lower in the page
 const CTASection = lazy(() => import('@/components/CTASection'));
@@ -60,12 +58,11 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col overflow-hidden">
       <Navbar />
-      <main>
+      <main className="space-y-8">
         <HeroSection />
         <SearchExampleSection />
         <ProblemSection />
         <FeaturesSection />
-        <HowItWorks />
         <TeamSection />
         <Suspense fallback={<SectionLoader />}>
           <CTASection />

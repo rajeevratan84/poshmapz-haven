@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, Search, Building, Star, RefreshCw } from "lucide-react";
@@ -69,12 +68,9 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Button onClick={handleEarlyAccessClick} className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
+            <div className="flex justify-center items-center">
+              <Button onClick={handleEarlyAccessClick} className="bg-[#ea384c] hover:bg-[#ea384c]/90 text-white rounded-full px-8 py-6 text-base">
                 Get Early Access
-              </Button>
-              <Button onClick={handleInvestorClick} variant="outline" className="w-full sm:w-auto rounded-full px-8 py-6 text-base text-white border-white/20 hover:bg-white/10">
-                Investor Relations
               </Button>
             </div>
           </ScrollAnimation>

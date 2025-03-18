@@ -15,7 +15,7 @@ const ProblemSection: React.FC = () => {
             Why Traditional Property Search Fails
           </h2>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Finding the right place to live or invest can be overwhelming. Platforms like Rightmove or Zoopla offer basic property listings, but insights—like crime trends, school rankings, and future growth forecasts—are scattered across multiple sites. This results in guesswork, missed opportunities, and uncertainty.
+            Finding the right place to live or invest can be overwhelming. Current platforms lack comprehensive data and real insights about neighborhoods.
           </p>
         </ScrollAnimation>
 
@@ -31,38 +31,62 @@ const ProblemSection: React.FC = () => {
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
                   <XCircle className="h-5 w-5 shrink-0 mt-0.5 text-red-500" />
-                  <span className="text-white/80">Multiple websites needed for complete research</span>
+                  <span className="text-white/80"><strong>Multiple websites needed</strong> for complete research on schools, crime, and transport</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <XCircle className="h-5 w-5 shrink-0 mt-0.5 text-red-500" />
-                  <span className="text-white/80">No way to compare area "vibes" or neighborhood culture</span>
+                  <span className="text-white/80"><strong>Impossible to visit all areas</strong> to determine if they truly fit your lifestyle</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <XCircle className="h-5 w-5 shrink-0 mt-0.5 text-red-500" />
-                  <span className="text-white/80">Outdated or incomplete data on important factors</span>
+                  <span className="text-white/80"><strong>Complex data interpretation</strong> that doesn't paint the full picture of an area</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <XCircle className="h-5 w-5 shrink-0 mt-0.5 text-red-500" />
-                  <span className="text-white/80">No AI-powered predictions for future area changes</span>
+                  <span className="text-white/80">No way to understand the true <strong>neighborhood culture and community</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <XCircle className="h-5 w-5 shrink-0 mt-0.5 text-red-500" />
+                  <span className="text-white/80">Lack of <strong>AI-powered predictions</strong> for future area changes</span>
                 </li>
               </ul>
             </div>
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={500}>
-            <div className="bg-black/60 p-8 rounded-2xl shadow-feature border-2 border-coral/20 h-full">
+            <div className="bg-black/60 p-8 rounded-2xl shadow-feature border-2 border-[#ea384c]/20 h-full">
               <div className="flex justify-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-posh-green/20 flex items-center justify-center">
                   <CheckCircle className="h-8 w-8 text-posh-green" />
                 </div>
               </div>
               <h3 className="text-xl font-semibold mb-4 text-center text-white">The PoshMaps Solution</h3>
-              <p className="text-white/80 mb-6">
-                PoshMaps consolidates all those disparate data sources into one visually interactive map. Our AI-powered system forecasts neighbourhood desirability and future property value, giving you real-time insights and predictive analytics—plus features like a 'posh index', heatmaps, and user-generated reviews.
-              </p>
-              <p className="text-white/80 font-medium">
-                Most importantly, we help you <span className="text-posh-green font-medium">understand the unique "vibe" of each area</span> so you can find the perfect match for your lifestyle and preferences.
-              </p>
+              <ul className="space-y-4 text-white/80">
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-5 w-5 shrink-0 mt-0.5 text-posh-green" />
+                  <span>
+                    <strong className="text-posh-green">All-in-one platform</strong> consolidating property data, area insights, and predictive analytics
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-5 w-5 shrink-0 mt-0.5 text-posh-green" />
+                  <span>
+                    <strong className="text-posh-green">AI-powered forecasting</strong> for neighborhood desirability and property values
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-5 w-5 shrink-0 mt-0.5 text-posh-green" />
+                  <span>
+                    <strong className="text-posh-green">Interactive visualization</strong> with heatmaps and custom scoring
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-5 w-5 shrink-0 mt-0.5 text-posh-green" />
+                  <span>
+                    <strong className="text-posh-green">Community insights</strong> through user reviews and local perspectives
+                  </span>
+                </li>
+              </ul>
             </div>
           </ScrollAnimation>
         </div>
