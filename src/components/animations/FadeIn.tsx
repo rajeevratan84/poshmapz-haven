@@ -17,7 +17,7 @@ export const FadeIn: React.FC<FadeInProps> = memo(({
   className,
   direction = 'up',
   delay = 'delay-0',
-  duration = 'duration-700',
+  duration = 'duration-500',
   threshold = 0.1,
   once = true,
 }) => {
@@ -49,8 +49,8 @@ export const FadeIn: React.FC<FadeInProps> = memo(({
         },
         { 
           threshold,
-          // Add rootMargin to trigger animations slightly before they come into view
-          rootMargin: '50px 0px'
+          // Trigger animations sooner for a more responsive feel
+          rootMargin: '100px 0px'
         }
       );
 

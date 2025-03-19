@@ -40,6 +40,11 @@ const features = [
     icon: <Users className="h-6 w-6 text-posh-green" />,
     title: "Community Engagement",
     description: "Crowd-sourced reviews, Q&A, and photos for real neighbourhood insights."
+  },
+  {
+    icon: <Zap className="h-6 w-6 text-posh-green" />,
+    title: "Recommend Perfect Areas",
+    description: "Get personalized area recommendations based on your preferences and travel times."
   }
 ];
 
@@ -75,7 +80,7 @@ const FeaturesSection: React.FC = () => {
     <section id="features" className="section-padding bg-black">
       <div className="container mx-auto px-6">
         <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <div className="inline-block mb-4 px-3 py-1 bg-green-50/20 rounded-full">
               <span className="text-sm font-medium text-posh-green">Key Features</span>
             </div>
@@ -96,7 +101,7 @@ const FeaturesSection: React.FC = () => {
                     index % 3 === 1 ? "delay-200" : "delay-400"} 
               className="h-full"
             >
-              <div className="feature-card h-full flex flex-col p-6 bg-black/60 border border-white/10 rounded-xl shadow-md">
+              <div className="feature-card h-full flex flex-col p-6 bg-black/60 border border-white/10 rounded-xl shadow-md hover-lift hover-glow">
                 <div className="mb-4 p-3 bg-posh-green/20 rounded-xl w-fit">
                   {feature.icon}
                 </div>
@@ -107,9 +112,9 @@ const FeaturesSection: React.FC = () => {
           ))}
         </div>
         
-        <div className="mt-24" id="why-poshmaps">
+        <div className="mt-16" id="why-poshmaps">
           <FadeIn>
-            <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="text-center max-w-3xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">
                 Why PoshMaps?
               </h2>
@@ -124,11 +129,11 @@ const FeaturesSection: React.FC = () => {
               <ScrollAnimation 
                 key={index} 
                 type="fade-up"
-                delay={index * 200}
-                duration={800}
+                delay={index * 150}
+                duration={600}
                 className="h-full"
               >
-                <div className="h-full bg-black/60 border border-white/10 p-8 rounded-2xl shadow-feature">
+                <div className="h-full bg-black/60 border border-white/10 p-6 rounded-2xl shadow-feature hover-lift hover-glow">
                   <h3 className="text-xl font-semibold mb-4 text-white">{segment.title}</h3>
                   <ul className="space-y-3">
                     {segment.benefits.map((benefit, idx) => (
@@ -144,9 +149,9 @@ const FeaturesSection: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-24" id="investor-section">
-          <ScrollAnimation type="fade-up" duration={800}>
-            <div className="bg-black/60 border border-white/10 p-8 rounded-2xl shadow-feature max-w-5xl mx-auto">
+        <div className="mt-16" id="investor-section">
+          <ScrollAnimation type="fade-up" duration={600}>
+            <div className="bg-black/60 border border-white/10 p-8 rounded-2xl shadow-feature max-w-5xl mx-auto hover-glow">
               <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-white">
                 Investor Perspective
               </h2>
@@ -154,19 +159,19 @@ const FeaturesSection: React.FC = () => {
                 PoshMaps represents a significant opportunity in the PropTech space, with a clear roadmap for growth and multiple revenue streams.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-xl font-semibold mb-4 text-white">Development Roadmap</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="p-5 bg-black/80 border border-posh-green/30 rounded-xl">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="p-4 bg-black/80 border border-posh-green/30 rounded-xl hover-scale">
                       <div className="font-bold text-posh-green mb-2">Phase 1</div>
                       <p className="text-sm text-white/90">Residential property analysis and user-growth.</p>
                     </div>
-                    <div className="p-5 bg-black/80 border border-posh-green/30 rounded-xl">
+                    <div className="p-4 bg-black/80 border border-posh-green/30 rounded-xl hover-scale">
                       <div className="font-bold text-posh-green mb-2">Phase 2</div>
                       <p className="text-sm text-white/90">Advanced real estate investment tools, commercial real estate features.</p>
                     </div>
-                    <div className="p-5 bg-black/80 border border-posh-green/30 rounded-xl">
+                    <div className="p-4 bg-black/80 border border-posh-green/30 rounded-xl hover-scale">
                       <div className="font-bold text-posh-green mb-2">Phase 3</div>
                       <p className="text-sm text-white/90">Integration with urban planning, council services, insurance/finance models.</p>
                     </div>
@@ -197,7 +202,7 @@ const FeaturesSection: React.FC = () => {
                   <img 
                     src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
                     alt="Property analysis" 
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-navy/80 flex items-center justify-center">
                     <div className="text-center p-6 bg-black/60 backdrop-blur-sm rounded-lg">
@@ -208,7 +213,7 @@ const FeaturesSection: React.FC = () => {
                 </div>
               </div>
               
-              <div className="bg-black/80 border border-posh-green/30 p-5 rounded-xl">
+              <div className="bg-black/80 border border-posh-green/30 p-5 rounded-xl mt-6 hover-scale">
                 <h3 className="text-lg font-semibold mb-2 text-white">Data Governance & Trust</h3>
                 <p className="text-sm text-white/90">
                   PoshMaps complies with GDPR and prioritizes transparency. All data sources are properly cited, and we maintain the highest standards of data protection and privacy.
@@ -223,4 +228,3 @@ const FeaturesSection: React.FC = () => {
 };
 
 export default FeaturesSection;
-

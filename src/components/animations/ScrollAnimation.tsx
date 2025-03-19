@@ -22,8 +22,8 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   className,
   delay = 0,
   threshold = 0.1,
-  duration = 800,
-  distance = 50,
+  duration = 600,
+  distance = 30,
   once = true,
   stickyUntil
 }) => {
@@ -63,7 +63,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
       },
       { 
         threshold,
-        rootMargin: '0px'
+        rootMargin: '100px 0px' // Trigger animations sooner
       }
     );
     
@@ -99,42 +99,42 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
           return { 
             opacity: 0, 
             transform: `translateY(${distance}px)`,
-            transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             transitionDelay: `${delay}ms`
           };
         case 'fade-down':
           return { 
             opacity: 0, 
             transform: `translateY(-${distance}px)`,
-            transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             transitionDelay: `${delay}ms`
           };
         case 'fade-left':
           return { 
             opacity: 0, 
             transform: `translateX(${distance}px)`,
-            transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             transitionDelay: `${delay}ms`
           };
         case 'fade-right':
           return { 
             opacity: 0, 
             transform: `translateX(-${distance}px)`,
-            transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             transitionDelay: `${delay}ms`
           };
         case 'zoom-in':
           return { 
             opacity: 0, 
-            transform: 'scale(0.8)',
-            transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+            transform: 'scale(0.9)',
+            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             transitionDelay: `${delay}ms`
           };
         case 'zoom-out':
           return { 
             opacity: 0, 
-            transform: 'scale(1.2)',
-            transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+            transform: 'scale(1.1)',
+            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
             transitionDelay: `${delay}ms`
           };
         default:
@@ -148,7 +148,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
         position: sticky ? 'sticky' as const : 'relative' as const,
         top: sticky ? '20%' : 'auto',
         opacity: isVisible ? 1 - (scrollProgress > 0.8 ? (scrollProgress - 0.8) * 5 : 0) : 0,
-        transition: `opacity ${duration}ms ease-out`,
+        transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
         transitionDelay: `${delay}ms`
       };
     }
@@ -157,7 +157,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
     return { 
       opacity: 1, 
       transform: 'translate(0, 0) scale(1)',
-      transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+      transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
       transitionDelay: `${delay}ms`
     };
   };

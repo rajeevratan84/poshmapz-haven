@@ -6,7 +6,6 @@ import ProblemSection from '@/components/ProblemSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
 import TeamSection from '@/components/TeamSection';
-import HowItWorks from '@/components/HowItWorks';
 
 // Lazy load components that are lower in the page
 const CTASection = lazy(() => import('@/components/CTASection'));
@@ -14,7 +13,7 @@ const Footer = lazy(() => import('@/components/Footer'));
 
 // Loading fallback - simplified for better performance
 const SectionLoader = () => (
-  <div className="w-full py-12 flex justify-center items-center">
+  <div className="w-full py-8 flex justify-center items-center">
     <div className="w-6 h-6 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
   </div>
 );
@@ -65,7 +64,6 @@ const Index = () => {
         <SearchExampleSection />
         <ProblemSection />
         <FeaturesSection />
-        <HowItWorks />
         <TeamSection />
         <Suspense fallback={<SectionLoader />}>
           <CTASection />
