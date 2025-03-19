@@ -55,7 +55,8 @@ const audienceSegments = [
       "Compare areas quickly and make informed decisions",
       "Save time by accessing multiple data sources in one place", 
       "Get reliable real-time insights on neighborhood safety and quality"
-    ]
+    ],
+    bgColor: "bg-gradient-to-br from-green-900/40 to-green-800/20"
   },
   {
     title: "For Property Investors",
@@ -63,7 +64,8 @@ const audienceSegments = [
       "Identify undervalued areas with growth potential",
       "Reduce risk with data-backed analysis",
       "Expand portfolios confidently with predictive insights"
-    ]
+    ],
+    bgColor: "bg-gradient-to-br from-blue-900/40 to-blue-800/20"
   },
   {
     title: "For Strategic Partners & Councils",
@@ -71,20 +73,21 @@ const audienceSegments = [
       "Make data-driven policy decisions",
       "Enhance area promotion with accurate data",
       "Integrate with local services for better community planning"
-    ]
+    ],
+    bgColor: "bg-gradient-to-br from-purple-900/40 to-purple-800/20"
   }
 ];
 
 const FeaturesSection: React.FC = () => {
   return (
-    <section id="features" className="section-padding bg-black">
+    <section id="features" className="py-10 md:py-12 bg-black">
       <div className="container mx-auto px-6">
         <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="inline-block mb-4 px-3 py-1 bg-green-50/20 rounded-full">
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <div className="inline-block mb-3 px-3 py-1 bg-green-50/20 rounded-full">
               <span className="text-sm font-medium text-posh-green">Key Features</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
               Smarter Home Decisions with Deep Insights
             </h2>
             <p className="text-lg text-white/80">
@@ -93,7 +96,7 @@ const FeaturesSection: React.FC = () => {
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-5xl mx-auto">
           {features.map((feature, index) => (
             <FadeIn 
               key={index} 
@@ -112,10 +115,10 @@ const FeaturesSection: React.FC = () => {
           ))}
         </div>
         
-        <div className="mt-16" id="why-poshmaps">
+        <div className="mt-12" id="why-poshmaps">
           <FadeIn>
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">
+            <div className="text-center max-w-3xl mx-auto mb-8">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
                 Why PoshMaps?
               </h2>
               <p className="text-lg text-white/80">
@@ -124,16 +127,16 @@ const FeaturesSection: React.FC = () => {
             </div>
           </FadeIn>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {audienceSegments.map((segment, index) => (
               <ScrollAnimation 
                 key={index} 
                 type="fade-up"
                 delay={index * 150}
-                duration={600}
+                duration={500}
                 className="h-full"
               >
-                <div className="h-full bg-black/60 border border-white/10 p-6 rounded-2xl shadow-feature hover-lift hover-glow">
+                <div className={`h-full ${segment.bgColor} border border-white/10 p-6 rounded-2xl shadow-feature hover-lift hover-glow`}>
                   <h3 className="text-xl font-semibold mb-4 text-white">{segment.title}</h3>
                   <ul className="space-y-3">
                     {segment.benefits.map((benefit, idx) => (
@@ -147,80 +150,6 @@ const FeaturesSection: React.FC = () => {
               </ScrollAnimation>
             ))}
           </div>
-        </div>
-        
-        <div className="mt-16" id="investor-section">
-          <ScrollAnimation type="fade-up" duration={600}>
-            <div className="bg-black/60 border border-white/10 p-8 rounded-2xl shadow-feature max-w-5xl mx-auto hover-glow">
-              <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-white">
-                Investor Perspective
-              </h2>
-              <p className="text-white/80 mb-6">
-                PoshMaps represents a significant opportunity in the PropTech space, with a clear roadmap for growth and multiple revenue streams.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-white">Development Roadmap</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div className="p-4 bg-black/80 border border-posh-green/30 rounded-xl hover-scale">
-                      <div className="font-bold text-posh-green mb-2">Phase 1</div>
-                      <p className="text-sm text-white/90">Residential property analysis and user-growth.</p>
-                    </div>
-                    <div className="p-4 bg-black/80 border border-posh-green/30 rounded-xl hover-scale">
-                      <div className="font-bold text-posh-green mb-2">Phase 2</div>
-                      <p className="text-sm text-white/90">Advanced real estate investment tools, commercial real estate features.</p>
-                    </div>
-                    <div className="p-4 bg-black/80 border border-posh-green/30 rounded-xl hover-scale">
-                      <div className="font-bold text-posh-green mb-2">Phase 3</div>
-                      <p className="text-sm text-white/90">Integration with urban planning, council services, insurance/finance models.</p>
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold mb-4 text-white">Revenue Streams</h3>
-                  <ul className="space-y-2 mb-6">
-                    <li className="flex items-start gap-2">
-                      <span className="text-posh-green font-bold">•</span>
-                      <span className="text-white/80">Premium subscription tiers for advanced features and insights</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-posh-green font-bold">•</span>
-                      <span className="text-white/80">Strategic partnerships with property portals and agencies</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-posh-green font-bold">•</span>
-                      <span className="text-white/80">Custom analytics for property developers and institutions</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-posh-green font-bold">•</span>
-                      <span className="text-white/80">API access for integration with other property tech platforms</span>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className="relative rounded-xl overflow-hidden h-full min-h-[320px]">
-                  <img 
-                    src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
-                    alt="Property analysis" 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-navy/80 flex items-center justify-center">
-                    <div className="text-center p-6 bg-black/60 backdrop-blur-sm rounded-lg">
-                      <h3 className="text-2xl font-bold text-white mb-2">Join Our Vision</h3>
-                      <p className="text-white/90">Become part of the future of property tech</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-black/80 border border-posh-green/30 p-5 rounded-xl mt-6 hover-scale">
-                <h3 className="text-lg font-semibold mb-2 text-white">Data Governance & Trust</h3>
-                <p className="text-sm text-white/90">
-                  PoshMaps complies with GDPR and prioritizes transparency. All data sources are properly cited, and we maintain the highest standards of data protection and privacy.
-                </p>
-              </div>
-            </div>
-          </ScrollAnimation>
         </div>
       </div>
     </section>

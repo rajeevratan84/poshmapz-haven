@@ -9,6 +9,15 @@ interface GoogleMapProps {
   showNorthLondonAreas?: boolean;
 }
 
+interface AreaInfo {
+  position: { lat: number, lng: number };
+  label: string;
+  title: string;
+  match: string;
+  description: string;
+  poshScore: string;
+}
+
 const GoogleMap: React.FC<GoogleMapProps> = ({
   address = "Richmond, London, UK",
   zoom = 14,
@@ -19,6 +28,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const apiLoadedRef = useRef<boolean>(false);
   const markerRef = useRef<google.maps.Marker | null>(null);
+  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   
   useEffect(() => {
     // Skip during SSR
@@ -59,34 +69,83 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           ],
         });
         
+        // Create info window for tooltips
+        infoWindowRef.current = new google.maps.InfoWindow();
+
         // If we're showing North London areas, add those markers
         if (showNorthLondonAreas && mapInstanceRef.current) {
-          const highbury = { lat: 51.5485, lng: -0.1019 };
-          const islington = { lat: 51.5362, lng: -0.1033 };
-          const stokeNewington = { lat: 51.5629, lng: -0.0798 };
+          const northLondonAreas: AreaInfo[] = [
+            {
+              position: { lat: 51.5485, lng: -0.1019 },
+              label: "H",
+              title: "Highbury",
+              match: "94% match",
+              description: "Leafy, affluent, and home to professionals. Less flashy than neighbouring Islington but still well-regarded.",
+              poshScore: "Posh Score: 80/100"
+            },
+            {
+              position: { lat: 51.5362, lng: -0.1033 },
+              label: "I",
+              title: "Islington",
+              match: "91% match",
+              description: "Trendy, wealthy, and full of period townhouses, upscale restaurants, and boutique shops. A strong mix of old wealth and gentrification.",
+              poshScore: "Posh Score: 85/100"
+            },
+            {
+              position: { lat: 51.5629, lng: -0.0798 },
+              label: "S",
+              title: "Stoke Newington",
+              match: "87% match",
+              description: "Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives.",
+              poshScore: "Posh Score: 75/100"
+            }
+          ];
           
-          new google.maps.Marker({
-            position: highbury,
-            map: mapInstanceRef.current,
-            animation: google.maps.Animation.DROP,
-            label: "H",
-            title: "Highbury - 94% match"
-          });
-          
-          new google.maps.Marker({
-            position: islington,
-            map: mapInstanceRef.current,
-            animation: google.maps.Animation.DROP,
-            label: "I",
-            title: "Islington - 91% match"
-          });
-          
-          new google.maps.Marker({
-            position: stokeNewington,
-            map: mapInstanceRef.current,
-            animation: google.maps.Animation.DROP,
-            label: "S",
-            title: "Stoke Newington - 87% match"
+          northLondonAreas.forEach(area => {
+            const marker = new google.maps.Marker({
+              position: area.position,
+              map: mapInstanceRef.current,
+              animation: google.maps.Animation.DROP,
+              label: area.label,
+              title: `${area.title} - ${area.match}`
+            });
+            
+            // Create HTML content for info window
+            const contentString = `
+              <div class="p-3 max-w-xs">
+                <div class="flex justify-between items-center mb-1">
+                  <div class="font-medium text-gray-800">${area.title}</div>
+                  <div class="text-xs bg-green-600 text-white px-1.5 py-0.5 rounded">${area.match}</div>
+                </div>
+                <div class="text-xs font-semibold text-green-600 mb-1">${area.poshScore}</div>
+                <div class="text-xs text-gray-600">${area.description}</div>
+              </div>
+            `;
+            
+            // Add event listeners for hover
+            marker.addListener("mouseover", () => {
+              if (infoWindowRef.current && mapInstanceRef.current) {
+                infoWindowRef.current.setContent(contentString);
+                infoWindowRef.current.open(mapInstanceRef.current, marker);
+              }
+            });
+            
+            // Optional: close on mouseout
+            marker.addListener("mouseout", () => {
+              setTimeout(() => {
+                if (infoWindowRef.current) {
+                  infoWindowRef.current.close();
+                }
+              }, 1000);
+            });
+            
+            // Also show info on click for mobile devices
+            marker.addListener("click", () => {
+              if (infoWindowRef.current && mapInstanceRef.current) {
+                infoWindowRef.current.setContent(contentString);
+                infoWindowRef.current.open(mapInstanceRef.current, marker);
+              }
+            });
           });
           
           // Center between the three areas

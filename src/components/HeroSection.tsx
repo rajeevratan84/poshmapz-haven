@@ -23,11 +23,6 @@ const HeroSection: React.FC = () => {
     document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleInvestorClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    document.getElementById('investor-section')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-black">
       <div className="absolute inset-0 hero-gradient z-0"></div>
@@ -57,7 +52,7 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={200} duration={800}>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 text-balance text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 max-w-3xl tracking-wide leading-tight text-white">
               Find Your Perfect Neighbourhood with <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-pink-500">Real-Time, AI-Enhanced Insights</span>
             </h1>
           </ScrollAnimation>
@@ -73,14 +68,11 @@ const HeroSection: React.FC = () => {
               <Button onClick={handleEarlyAccessClick} className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
                 Get Early Access
               </Button>
-              <Button onClick={handleInvestorClick} variant="outline" className="w-full sm:w-auto rounded-full px-8 py-6 text-base text-white border-white/20 hover:bg-white/10">
-                Investor Relations
-              </Button>
             </div>
           </ScrollAnimation>
         </div>
         
-        <ScrollAnimation type="zoom-in" delay={800} className="max-w-4xl mx-auto">
+        <ScrollAnimation type="zoom-in" delay={800} className="max-w-5xl mx-auto">
           <AnimatedSearchExample />
         </ScrollAnimation>
 

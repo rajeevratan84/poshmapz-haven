@@ -1,172 +1,112 @@
 
-import React, { useEffect, useRef, ReactNode, useState, CSSProperties } from 'react';
-import { cn } from '@/lib/utils';
-
-type AnimationType = 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right' | 'zoom-in' | 'zoom-out' | 'sticky';
+import React, { useEffect, useRef, useState, ReactNode } from 'react';
+import { cn } from "@/lib/utils";
 
 interface ScrollAnimationProps {
   children: ReactNode;
-  type: AnimationType;
-  className?: string;
+  type?: 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right' | 'zoom-in' | 'zoom-out';
   delay?: number;
-  threshold?: number;
   duration?: number;
-  distance?: number;
+  className?: string;
   once?: boolean;
-  stickyUntil?: number;
+  threshold?: number;
 }
 
 const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   children,
-  type,
-  className,
+  type = 'fade-up',
   delay = 0,
-  threshold = 0.1,
-  duration = 600,
-  distance = 30,
+  duration = 500,
+  className,
   once = true,
-  stickyUntil
+  threshold = 0.05,
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [initialTop, setInitialTop] = useState(0);
-  
-  useEffect(() => {
-    // Skip animations during SSR
-    if (typeof window === 'undefined') {
-      setIsVisible(true);
-      return;
-    }
-    
-    const element = ref.current;
-    if (!element) return;
+  const elementRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-    // Store initial top position for sticky elements
-    if (type === 'sticky') {
-      setInitialTop(element.getBoundingClientRect().top + window.scrollY);
+  // Initialize styles based on animation type
+  const getInitialStyles = () => {
+    switch (type) {
+      case 'fade-up':
+        return { opacity: 0, transform: 'translateY(20px)' };
+      case 'fade-down':
+        return { opacity: 0, transform: 'translateY(-20px)' };
+      case 'fade-left':
+        return { opacity: 0, transform: 'translateX(20px)' };
+      case 'fade-right':
+        return { opacity: 0, transform: 'translateX(-20px)' };
+      case 'zoom-in':
+        return { opacity: 0, transform: 'scale(0.95)' };
+      case 'zoom-out':
+        return { opacity: 0, transform: 'scale(1.05)' };
+      default:
+        return { opacity: 0 };
     }
-    
-    // Create IntersectionObserver for triggering animations
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            if (once && type !== 'sticky') {
-              observer.unobserve(element);
-            }
-          } else if (!once) {
-            setIsVisible(false);
-          }
-        });
-      },
-      { 
-        threshold,
-        rootMargin: '100px 0px' // Trigger animations sooner
-      }
-    );
-    
-    observer.observe(element);
-    
-    // Scroll handler for progress-based animations
-    const handleScroll = () => {
-      if (type === 'sticky' && stickyUntil) {
-        const scrollTop = window.scrollY;
-        const start = initialTop - window.innerHeight / 2;
-        const end = initialTop + stickyUntil;
-        
-        // Calculate how far through the section we've scrolled (0-1)
-        const progress = Math.max(0, Math.min(1, (scrollTop - start) / (end - start)));
-        setScrollProgress(progress);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      observer.unobserve(element);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [threshold, once, type, initialTop, stickyUntil]);
-  
-  // Generate styles based on animation type
-  const getStyles = (): React.CSSProperties => {
-    if (!isVisible && type !== 'sticky') {
-      // Initial hidden state
-      switch (type) {
-        case 'fade-up':
-          return { 
-            opacity: 0, 
-            transform: `translateY(${distance}px)`,
-            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-            transitionDelay: `${delay}ms`
-          };
-        case 'fade-down':
-          return { 
-            opacity: 0, 
-            transform: `translateY(-${distance}px)`,
-            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-            transitionDelay: `${delay}ms`
-          };
-        case 'fade-left':
-          return { 
-            opacity: 0, 
-            transform: `translateX(${distance}px)`,
-            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-            transitionDelay: `${delay}ms`
-          };
-        case 'fade-right':
-          return { 
-            opacity: 0, 
-            transform: `translateX(-${distance}px)`,
-            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-            transitionDelay: `${delay}ms`
-          };
-        case 'zoom-in':
-          return { 
-            opacity: 0, 
-            transform: 'scale(0.9)',
-            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-            transitionDelay: `${delay}ms`
-          };
-        case 'zoom-out':
-          return { 
-            opacity: 0, 
-            transform: 'scale(1.1)',
-            transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-            transitionDelay: `${delay}ms`
-          };
-        default:
-          return {};
-      }
-    } else if (type === 'sticky') {
-      // For sticky elements, apply progress-based styles
-      const sticky = scrollProgress > 0 && scrollProgress < 1;
-      
-      return {
-        position: sticky ? 'sticky' as const : 'relative' as const,
-        top: sticky ? '20%' : 'auto',
-        opacity: isVisible ? 1 - (scrollProgress > 0.8 ? (scrollProgress - 0.8) * 5 : 0) : 0,
-        transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-        transitionDelay: `${delay}ms`
-      };
-    }
-    
-    // Visible state
-    return { 
-      opacity: 1, 
-      transform: 'translate(0, 0) scale(1)',
-      transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
-      transitionDelay: `${delay}ms`
+  };
+
+  // Animation styles when visible
+  const getVisibleStyles = () => {
+    return { opacity: 1, transform: 'translate(0, 0) scale(1)' };
+  };
+
+  // Transition styles
+  const getTransitionStyles = () => {
+    return {
+      transition: `opacity ${duration / 1000}s ease-out, transform ${duration / 1000}s ease-out`,
+      transitionDelay: `${delay / 1000}s`,
     };
   };
-  
+
+  useEffect(() => {
+    const element = elementRef.current;
+    if (!element || typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true); // Fallback for SSR or old browsers
+      return;
+    }
+
+    // Create observer only once
+    if (!observerRef.current) {
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setIsVisible(true);
+              if (once && observerRef.current) {
+                observerRef.current.unobserve(element);
+              }
+            } else if (!once) {
+              setIsVisible(false);
+            }
+          });
+        },
+        { 
+          threshold,
+          // Trigger animations sooner for a more responsive feel
+          rootMargin: '150px 0px'
+        }
+      );
+
+      observerRef.current.observe(element);
+    }
+
+    return () => {
+      if (element && observerRef.current) {
+        observerRef.current.unobserve(element);
+        observerRef.current = null;
+      }
+    };
+  }, [threshold, once]);
+
   return (
-    <div 
-      ref={ref}
-      className={cn(className)}
-      style={getStyles()}
+    <div
+      ref={elementRef}
+      className={cn('transition-gpu will-change-transform', className)}
+      style={{
+        ...getInitialStyles(),
+        ...(isVisible ? getVisibleStyles() : {}),
+        ...getTransitionStyles(),
+      }}
     >
       {children}
     </div>

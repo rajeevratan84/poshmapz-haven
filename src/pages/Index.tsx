@@ -13,8 +13,8 @@ const Footer = lazy(() => import('@/components/Footer'));
 
 // Loading fallback - simplified for better performance
 const SectionLoader = () => (
-  <div className="w-full py-8 flex justify-center items-center">
-    <div className="w-6 h-6 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
+  <div className="w-full py-6 flex justify-center items-center">
+    <div className="w-5 h-5 border-2 border-posh-green border-t-transparent rounded-full animate-spin"></div>
   </div>
 );
 
@@ -59,7 +59,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col overflow-hidden">
       <Navbar />
-      <main>
+      <main className="space-y-0">
         <HeroSection />
         <SearchExampleSection />
         <ProblemSection />

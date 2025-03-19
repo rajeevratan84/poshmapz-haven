@@ -58,7 +58,7 @@ const AnimatedSearchExample: React.FC = () => {
   }, [searchPhase, animationRunning, searchQuery]);
   
   return (
-    <div id="search-demo" className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+    <div id="search-demo" className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-4xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
         <div className="flex-1 font-medium text-sm text-gray-800">PoshMaps AI Search</div>
@@ -127,7 +127,7 @@ const AnimatedSearchExample: React.FC = () => {
                   <div className="text-xs text-gray-600">Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives.</div>
                 </div>
               </div>
-              <div className="border rounded overflow-hidden h-64 bg-white">
+              <div className="border rounded overflow-hidden h-72 bg-white">
                 <GoogleMap showNorthLondonAreas={true} zoom={13} />
               </div>
             </div>

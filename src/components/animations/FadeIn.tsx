@@ -17,8 +17,8 @@ export const FadeIn: React.FC<FadeInProps> = memo(({
   className,
   direction = 'up',
   delay = 'delay-0',
-  duration = 'duration-500',
-  threshold = 0.1,
+  duration = 'duration-400',
+  threshold = 0.05,
   once = true,
 }) => {
   const elementRef = useRef<HTMLDivElement>(null);
@@ -50,7 +50,7 @@ export const FadeIn: React.FC<FadeInProps> = memo(({
         { 
           threshold,
           // Trigger animations sooner for a more responsive feel
-          rootMargin: '100px 0px'
+          rootMargin: '150px 0px'
         }
       );
 
