@@ -1,6 +1,7 @@
 
 import React from 'react';
 import FadeIn from './animations/FadeIn';
+import ScrollAnimation from './animations/ScrollAnimation';
 import { 
   Map, 
   Building, 
@@ -120,10 +121,11 @@ const FeaturesSection: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {audienceSegments.map((segment, index) => (
-              <FadeIn 
+              <ScrollAnimation 
                 key={index} 
-                delay={index === 0 ? "delay-0" : 
-                      index === 1 ? "delay-200" : "delay-400"} 
+                type="fade-up"
+                delay={index * 200}
+                duration={800}
                 className="h-full"
               >
                 <div className="h-full bg-black/60 border border-white/10 p-8 rounded-2xl shadow-feature">
@@ -137,13 +139,13 @@ const FeaturesSection: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-              </FadeIn>
+              </ScrollAnimation>
             ))}
           </div>
         </div>
         
         <div className="mt-24" id="investor-section">
-          <FadeIn>
+          <ScrollAnimation type="fade-up" duration={800}>
             <div className="bg-black/60 border border-white/10 p-8 rounded-2xl shadow-feature max-w-5xl mx-auto">
               <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-white">
                 Investor Perspective
@@ -213,7 +215,7 @@ const FeaturesSection: React.FC = () => {
                 </p>
               </div>
             </div>
-          </FadeIn>
+          </ScrollAnimation>
         </div>
       </div>
     </section>
@@ -221,3 +223,4 @@ const FeaturesSection: React.FC = () => {
 };
 
 export default FeaturesSection;
+
