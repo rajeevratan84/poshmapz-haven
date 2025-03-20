@@ -1,4 +1,3 @@
-
 declare namespace google {
   namespace maps {
     class Map {
@@ -13,6 +12,7 @@ declare namespace google {
       setMap(map: Map | null): void;
       setPosition(latLng: LatLng | LatLngLiteral): void;
       setTitle(title: string): void;
+      addListener(eventName: string, handler: Function): MapsEventListener;
     }
 
     class Geocoder {
@@ -23,6 +23,8 @@ declare namespace google {
     class InfoWindow {
       constructor(opts?: InfoWindowOptions);
       open(map: Map, anchor?: Marker): void;
+      setContent(content: string | Node): void;
+      close(): void;
     }
 
     interface MapOptions {
