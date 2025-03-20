@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Search, Map, Lightbulb, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
 interface SearchLoadingAnimationProps {
   isVisible: boolean;
@@ -9,6 +10,7 @@ interface SearchLoadingAnimationProps {
 
 const SearchLoadingAnimation: React.FC<SearchLoadingAnimationProps> = ({ isVisible }) => {
   const [tipIndex, setTipIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   
   const tips = [
     "Consider commute times to work or school when choosing an area",
@@ -22,20 +24,39 @@ const SearchLoadingAnimation: React.FC<SearchLoadingAnimationProps> = ({ isVisib
   ];
   
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible) {
+      setProgress(0);
+      return;
+    }
     
-    const interval = setInterval(() => {
+    // Tip rotation
+    const tipInterval = setInterval(() => {
       setTipIndex(prev => (prev + 1) % tips.length);
     }, 3000);
     
-    return () => clearInterval(interval);
+    // Progress bar animation (approximately 20 seconds)
+    const totalDuration = 20000; // 20 seconds
+    const updateInterval = 200; // Update every 200ms
+    const progressStep = (updateInterval / totalDuration) * 100;
+    
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + progressStep;
+        return newProgress > 99 ? 99 : newProgress; // Don't quite reach 100% in case search completes sooner
+      });
+    }, updateInterval);
+    
+    return () => {
+      clearInterval(tipInterval);
+      clearInterval(progressInterval);
+    };
   }, [isVisible, tips.length]);
   
   if (!isVisible) return null;
   
   return (
     <div className="w-full bg-black/20 rounded-xl p-4 mb-6 border border-white/10 animate-fade-in">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="absolute inset-0 bg-posh-green/20 rounded-full animate-ping"></div>
@@ -59,6 +80,20 @@ const SearchLoadingAnimation: React.FC<SearchLoadingAnimationProps> = ({ isVisib
           <div key={tipIndex} className="text-white/90 text-sm animate-fade-in">
             <span className="font-medium text-amber-400">Tip:</span> {tips[tipIndex]}
           </div>
+        </div>
+      </div>
+      
+      {/* Progress bar - NEW */}
+      <div className="w-full">
+        <Progress 
+          value={progress} 
+          className="h-2 bg-white/10" 
+          indicatorClassName="bg-posh-green"
+        />
+        <div className="flex justify-between mt-1">
+          <span className="text-xs text-white/50">Collecting data</span>
+          <span className="text-xs text-white/50">Analyzing areas</span>
+          <span className="text-xs text-white/50">Generating results</span>
         </div>
       </div>
     </div>

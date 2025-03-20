@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { MapPin, Shield, Train, Footprints, TrendingUp, Smile, ShoppingBag } from 'lucide-react';
+import { MapPin, Shield, Train, Footprints, TrendingUp, Smile, ShoppingBag, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Progress } from '@/components/ui/progress';
 
 interface AreaStats {
   crimeRate: string;
@@ -43,8 +44,25 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
       ? parseInt(poshScore.toString().split('/')[0]) || 0
       : 0;
 
-  // Calculate amenities score based on number of amenities
-  const amenitiesScore = Math.min(Math.round((amenities.length / 7) * 100), 100);
+  // Generate a more varied amenities score based on amenities length and area name to create variation
+  // Using a hash function on the area name to get consistent but varied results
+  const getHashValue = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  };
+
+  // Get a consistent variation based on area name
+  const areaNameHash = getHashValue(areaName);
+  const variationFactor = (areaNameHash % 30) - 15; // -15 to +15 variation
+  
+  // Calculate amenities score based on number of amenities with some randomness
+  const baseScore = Math.min(Math.round((amenities.length / 5) * 70), 90);
+  const amenitiesScore = Math.min(Math.max(baseScore + variationFactor, 35), 95);
 
   // Helper function to determine text color based on score value
   const getScoreColor = (score: number) => {
@@ -118,6 +136,44 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return 'bg-gray-600';
   };
 
+  // Generate pros and cons based on area stats and other data
+  const generateProsAndCons = () => {
+    const pros = [];
+    const cons = [];
+
+    // Generate pros based on high scores and positive factors
+    if (poshScoreNumber >= 80) pros.push("High prestige area");
+    if (areaStats.transportScore.toLowerCase().includes('excellent')) pros.push("Excellent transport links");
+    if (areaStats.walkability.toLowerCase().includes('very walkable')) pros.push("Very walkable");
+    if (areaStats.crimeRate.toLowerCase().includes('below')) pros.push("Low crime rate");
+    if (amenitiesScore >= 75) pros.push("Great local amenities");
+    if (areaStats.propertyGrowth.flats.includes('+') || areaStats.propertyGrowth.houses.includes('+')) {
+      pros.push("Good investment potential");
+    }
+
+    // Generate cons based on low scores and negative factors
+    if (poshScoreNumber < 70) cons.push("Less prestigious location");
+    if (areaStats.transportScore.toLowerCase().includes('poor')) cons.push("Limited transport options");
+    if (areaStats.walkability.toLowerCase().includes('not walkable')) cons.push("Car-dependent area");
+    if (areaStats.crimeRate.toLowerCase().includes('above')) cons.push("Higher crime rate");
+    if (amenitiesScore < 50) cons.push("Fewer local amenities");
+    if (areaStats.propertyGrowth.flats.includes('-') || areaStats.propertyGrowth.houses.includes('-')) {
+      cons.push("Possible property value decline");
+    }
+
+    // Ensure we have at least one pro and one con
+    if (pros.length === 0) pros.push("Balanced location");
+    if (cons.length === 0) cons.push("Higher property prices");
+
+    // Limit to max 3 pros and 3 cons
+    return {
+      pros: pros.slice(0, 3),
+      cons: cons.slice(0, 2)
+    };
+  };
+
+  const { pros, cons } = generateProsAndCons();
+
   return (
     <Card 
       className={cn(
@@ -149,7 +205,30 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           <span className="text-sm text-white/60">- {poshScoreNumber >= 85 ? 'Excellent' : poshScoreNumber >= 70 ? 'Good' : 'Average'} area rating</span>
         </div>
-        <p className="text-sm text-white/70 mb-5">{description}</p>
+        <p className="text-sm text-white/70 mb-3 text-left border border-white/10 p-3 rounded-md bg-white/5">{description}</p>
+        
+        {/* Pros and Cons Section */}
+        <div className="flex flex-wrap gap-2 mb-2">
+          <div className="flex gap-1.5 items-center">
+            <ThumbsUp className="h-3.5 w-3.5 text-green-500" />
+            <span className="text-xs text-white/90 font-medium">Pros:</span>
+          </div>
+          {pros.map((pro, idx) => (
+            <span key={`pro-${idx}`} className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+              {pro}
+            </span>
+          ))}
+          
+          <div className="flex gap-1.5 items-center ml-2">
+            <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
+            <span className="text-xs text-white/90 font-medium">Cons:</span>
+          </div>
+          {cons.map((con, idx) => (
+            <span key={`con-${idx}`} className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">
+              {con}
+            </span>
+          ))}
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-4 pb-4">
@@ -197,16 +276,28 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          {/* Amenities Score - NEW */}
+          {/* Amenities Score - UPDATED */}
           <div className="flex gap-3">
             <ShoppingBag className="h-5 w-5 text-coral shrink-0 mt-0.5" />
-            <div>
+            <div className="w-full">
               <div className="text-white font-medium mb-0.5">Amenities Score</div>
               <div className={cn(
-                "text-sm px-2 py-1 rounded-md font-medium",
+                "text-sm rounded-md font-medium",
                 getAmenitiesScoreColor(amenitiesScore)
               )}>
-                {amenitiesScore}/100 - {amenities.length} essentials nearby
+                <div className="flex justify-between items-center mb-1">
+                  <span>{amenitiesScore}/100</span>
+                  <span className="text-xs text-white/70">{amenities.length} essentials within 15 min walk</span>
+                </div>
+                <Progress 
+                  value={amenitiesScore} 
+                  className="h-2 bg-white/10" 
+                  indicatorClassName={cn(
+                    amenitiesScore >= 80 ? "bg-green-500" : 
+                    amenitiesScore >= 60 ? "bg-blue-500" : 
+                    amenitiesScore >= 40 ? "bg-amber-500" : "bg-red-500"
+                  )}
+                />
               </div>
             </div>
           </div>

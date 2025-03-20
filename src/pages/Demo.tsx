@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MapPin, ArrowLeft, Sparkles } from "lucide-react";
 import { toast } from 'sonner';
@@ -45,8 +44,8 @@ const DemoPage: React.FC = () => {
       const areas = await analyzeAreaPreferences(searchInput, apiKey);
       const elapsedTime = Date.now() - startTime;
       
-      if (elapsedTime < 3000) {
-        await new Promise(resolve => setTimeout(resolve, 3000 - elapsedTime));
+      if (elapsedTime < 15000) {
+        await new Promise(resolve => setTimeout(resolve, 15000 - elapsedTime));
       }
       
       if (areas && areas.length > 0) {
@@ -64,13 +63,13 @@ const DemoPage: React.FC = () => {
     }
   };
 
-  const handleAreaClick = (area: AreaMatch) => {
+  function handleAreaClick(area: AreaMatch) {
     setSelectedArea(area);
-  };
+  }
 
-  const toggleWizard = (show: boolean) => {
+  function toggleWizard(show: boolean) {
     setShowWizard(show);
-  };
+  }
 
   return (
     <div className="min-h-screen bg-black pb-20">
@@ -119,7 +118,6 @@ const DemoPage: React.FC = () => {
         </div>
         
         <div className="bg-black/20 rounded-xl p-4 shadow-lg">
-          {/* Load animation is now positioned above the map */}
           {isSearching && <SearchLoadingAnimation isVisible={isSearching} />}
           
           <AreaMapComponent 
