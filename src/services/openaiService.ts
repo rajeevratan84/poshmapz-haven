@@ -12,6 +12,16 @@ interface AreaMatch {
     lng: number;
   };
   amenities: string[];
+  areaStats: {
+    crimeRate: string;
+    transportScore: string;
+    walkability: string;
+    propertyGrowth: {
+      flats: string;
+      houses: string;
+    };
+    areaVibe: string[];
+  };
 }
 
 export async function analyzeAreaPreferences(
@@ -34,6 +44,12 @@ For each area, provide:
 4. A "Posh Score" between 60-95
 5. Coordinates (latitude and longitude) within London
 6. A list of 3-7 amenities or features that match the user's request
+7. Detailed area statistics including:
+   - Crime rate (Low/Medium/High with percentage compared to London average)
+   - Transport score (Poor/Good/Excellent with time to central London)
+   - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
+   - Property growth (percentage growth over 5 years for flats and houses, compared to London average)
+   - Area vibe (2-4 tags like: Family-friendly, Upscale, Riverside, Trendy, Historic, etc.)
 
 Format the response as a valid JSON array with objects having these exact keys:
 [
@@ -46,7 +62,17 @@ Format the response as a valid JSON array with objects having these exact keys:
       "lat": 51.5074,
       "lng": -0.1278
     },
-    "amenities": ["amenity1", "amenity2", "amenity3"]
+    "amenities": ["amenity1", "amenity2", "amenity3"],
+    "areaStats": {
+      "crimeRate": "Low - 20% below London average",
+      "transportScore": "Excellent - 30 min to central London",
+      "walkability": "Very Walkable - 85/100",
+      "propertyGrowth": {
+        "flats": "+2.5% over 5 years better than 57% of London",
+        "houses": "+3% over 5 years better than 42% of London"
+      },
+      "areaVibe": ["Family-friendly", "Upscale", "Riverside"]
+    }
   }
 ]
 

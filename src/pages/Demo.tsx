@@ -1,11 +1,24 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
-import { MapPin, ArrowLeft, Search } from "lucide-react";
+import { MapPin, ArrowLeft, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
 import { analyzeAreaPreferences } from '@/services/openaiService';
 import { Link } from 'react-router-dom';
+import AreaDetailCard from '@/components/AreaDetailCard';
+
+interface AreaStats {
+  crimeRate: string;
+  transportScore: string;
+  walkability: string;
+  propertyGrowth: {
+    flats: string;
+    houses: string;
+  };
+  areaVibe: string[];
+}
 
 interface AreaMatch {
   name: string;
@@ -17,6 +30,7 @@ interface AreaMatch {
     lng: number;
   };
   amenities: string[];
+  areaStats: AreaStats;
 }
 
 const DemoPage: React.FC = () => {
@@ -101,6 +115,7 @@ const DemoPage: React.FC = () => {
 
     setIsSearching(true);
     setResults([]);
+    setSelectedArea(null);
     
     markersRef.current.forEach(marker => marker.setMap(null));
     markersRef.current = [];
@@ -186,6 +201,12 @@ const DemoPage: React.FC = () => {
         infoWindowRef.current.setContent(contentString);
         infoWindowRef.current.open(mapInstanceRef.current, marker);
         setSelectedArea(area);
+        
+        // Scroll to the selected area's card if on mobile
+        const areaElement = document.getElementById(`area-${area.name.replace(/\s+/g, '-').toLowerCase()}`);
+        if (areaElement && window.innerWidth < 768) {
+          areaElement.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     });
     
@@ -197,6 +218,24 @@ const DemoPage: React.FC = () => {
       processSearch();
     }
   };
+
+  const handleAreaClick = (area: AreaMatch) => {
+    setSelectedArea(area);
+    const marker = markersRef.current.find(m => m.getTitle()?.startsWith(area.name));
+    if (marker && mapInstanceRef.current) {
+      mapInstanceRef.current.panTo(marker.getPosition()!);
+      mapInstanceRef.current.setZoom(14);
+      google.maps.event.trigger(marker, 'click');
+    }
+  };
+
+  // Example suggestions for the search
+  const searchSuggestions = [
+    "Family-friendly area with good schools and parks",
+    "Young professional area with great nightlife and transport",
+    "Quiet residential area with good amenities",
+    "Trendy area with cafes and cultural activities"
+  ];
 
   return (
     <div className="min-h-screen bg-black pb-20">
@@ -234,7 +273,9 @@ const DemoPage: React.FC = () => {
             <Button 
               onClick={processSearch}
               disabled={isSearching}
-              className="bg-posh-green hover:bg-green-600 text-white min-w-[120px] h-12"
+              variant="glow"
+              size="lg"
+              className="min-w-[120px] h-12"
             >
               {isSearching ? 
                 <div className="flex items-center space-x-2">
@@ -249,9 +290,26 @@ const DemoPage: React.FC = () => {
             </Button>
           </div>
           
-          <div className="text-xs text-white/60 mb-8">
-            <p>Try queries like "near a tube station and park" or "family-friendly with good schools"</p>
-            <p className="mt-1 text-posh-green font-semibold">This demo is currently limited to London areas only</p>
+          <div className="text-white/70 mb-4 text-sm">
+            <p className="mb-2">Try queries like:</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {searchSuggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  className="bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-full text-xs transition-colors"
+                  onClick={() => {
+                    setUserInput(suggestion);
+                  }}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center gap-2 text-xs text-posh-green font-semibold bg-black/30 py-2 px-4 rounded-full mx-auto w-fit">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Early Access Beta - London areas only</span>
           </div>
         </div>
         
@@ -259,55 +317,36 @@ const DemoPage: React.FC = () => {
           <div ref={mapRef} className="w-full h-[500px] rounded-lg mb-6"></div>
           
           <div className="mt-6">
-            <h2 className="text-xl font-display font-semibold mb-4 text-white">
-              {results.length > 0 ? 'Recommended Areas in London' : 'Enter your preferences to see London matches'}
+            <h2 className="text-xl font-display font-semibold mb-4 text-white flex items-center gap-2">
+              {results.length > 0 ? (
+                <>
+                  <MapPin className="h-5 w-5 text-coral" />
+                  <span>Recommended Areas in London</span>
+                  <span className="text-sm bg-posh-green text-white px-2 py-0.5 rounded-full ml-2">
+                    {results.length} matches
+                  </span>
+                </>
+              ) : (
+                'Enter your preferences to see London matches'
+              )}
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {results.map((area) => (
                 <div 
                   key={area.name}
-                  className={cn(
-                    "p-4 rounded-lg transition-all duration-200 cursor-pointer",
-                    selectedArea?.name === area.name 
-                      ? "bg-white/15 border border-posh-green" 
-                      : "bg-white/10 border border-transparent hover:bg-white/15"
-                  )}
-                  onClick={() => {
-                    setSelectedArea(area);
-                    const marker = markersRef.current.find(m => m.getTitle()?.startsWith(area.name));
-                    if (marker && mapInstanceRef.current) {
-                      mapInstanceRef.current.panTo(marker.getPosition()!);
-                      mapInstanceRef.current.setZoom(14);
-                      google.maps.event.trigger(marker, 'click');
-                    }
-                  }}
+                  id={`area-${area.name.replace(/\s+/g, '-').toLowerCase()}`}
                 >
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-white">{area.name}</h3>
-                    <span className={cn(
-                      "text-xs px-2 py-1 rounded-full",
-                      area.matchPercentage > 90 ? "bg-green-600 text-white" :
-                      area.matchPercentage > 80 ? "bg-green-500 text-white" :
-                      "bg-green-400 text-white"
-                    )}>
-                      {area.matchPercentage}% Match
-                    </span>
-                  </div>
-                  <div className="text-xs text-posh-green mb-2">Posh Score: {area.poshScore}/100</div>
-                  <p className="text-sm text-white/70">{area.description}</p>
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {area.amenities.slice(0, 3).map((amenity, idx) => (
-                      <span key={idx} className="text-xs bg-white/10 px-2 py-1 rounded">
-                        {amenity}
-                      </span>
-                    ))}
-                    {area.amenities.length > 3 && (
-                      <span className="text-xs bg-white/10 px-2 py-1 rounded">
-                        +{area.amenities.length - 3} more
-                      </span>
-                    )}
-                  </div>
+                  <AreaDetailCard 
+                    areaName={area.name}
+                    matchPercentage={area.matchPercentage}
+                    description={area.description}
+                    poshScore={area.poshScore}
+                    amenities={area.amenities}
+                    areaStats={area.areaStats}
+                    isSelected={selectedArea?.name === area.name}
+                    onClick={() => handleAreaClick(area)}
+                  />
                 </div>
               ))}
             </div>
@@ -315,6 +354,29 @@ const DemoPage: React.FC = () => {
             {results.length === 0 && !isSearching && userInput && (
               <div className="bg-white/10 rounded-lg p-6 text-center">
                 <p className="text-white/80">No areas matching your criteria were found. Try broadening your search.</p>
+              </div>
+            )}
+            
+            {!results.length && !userInput && (
+              <div className="bg-gradient-to-br from-black/40 to-black/20 rounded-lg p-8 text-center border border-white/10">
+                <MapPin className="h-12 w-12 text-coral mx-auto mb-4 opacity-80" />
+                <h3 className="text-xl font-display font-medium text-white mb-2">Discover Your Perfect London Area</h3>
+                <p className="text-white/70 mb-6 max-w-xl mx-auto">
+                  Get detailed area insights including transport links, walkability scores, property growth forecasts, 
+                  and more - tailored to your unique lifestyle preferences.
+                </p>
+                <Button
+                  onClick={() => {
+                    const inputEl = document.querySelector('input');
+                    if (inputEl) inputEl.focus();
+                  }}
+                  variant="glow"
+                  size="lg"
+                  className="mx-auto"
+                >
+                  <Search className="h-4 w-4" />
+                  <span>Start Your Search</span>
+                </Button>
               </div>
             )}
           </div>

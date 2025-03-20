@@ -20,6 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         highlight: "bg-posh-green hover:bg-posh-green/90 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)] hover:shadow-[0_0_20px_rgba(34,197,94,0.7)] scale-100 hover:scale-105 transition-all duration-300",
+        glow: "relative bg-posh-green text-white overflow-hidden shadow-[0_0_15px_rgba(34,197,94,0.5)] hover:shadow-[0_0_25px_rgba(34,197,94,0.8)] scale-100 hover:scale-105 transition-all duration-300 before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-all before:duration-1000 before:ease-in-out",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -28,6 +29,7 @@ const buttonVariants = cva(
         icon: "h-10 w-10",
         mobile: "h-12 px-6 py-3 text-base",
         xl: "h-14 px-8 py-4 text-lg font-semibold rounded-xl", // Added XL size for more prominent buttons
+        xxl: "h-16 px-10 py-5 text-xl font-bold rounded-xl", // XXL size for even more prominent buttons
       },
     },
     defaultVariants: {
