@@ -69,6 +69,7 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       title: `${title} - ${matchText}`,
       icon: {
         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(markerSvg),
+        // Fix: Use fully qualified class names with proper type references
         scaledSize: new google.maps.Size(36, 36),
         anchor: new google.maps.Point(18, 18)
       }
