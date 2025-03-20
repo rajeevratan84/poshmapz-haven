@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
-import { MapPin, Menu, X } from "lucide-react";
+import { MapPin, Menu, X, Sparkles } from "lucide-react";
 import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -61,11 +62,12 @@ const Navbar: React.FC = () => {
           >
             Our Solution
           </a>
-          <Link 
-            to="/demo" 
-            className="text-sm bg-posh-green px-4 py-2 rounded-full text-white font-medium hover:bg-green-600 transition-colors"
-          >
-            Try Demo
+          <Link to="/demo">
+            <Button variant="highlight" size="lg" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              <span>Try Demo</span>
+              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">Beta</span>
+            </Button>
           </Link>
         </nav>
 
@@ -103,10 +105,13 @@ const Navbar: React.FC = () => {
           </a>
           <Link 
             to="/demo" 
-            className="text-lg text-white font-medium bg-posh-green px-4 py-2 rounded-full text-center"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Try Demo
+            <Button variant="highlight" size="mobile" className="w-full flex items-center justify-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              <span>Try Demo</span>
+              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">Beta</span>
+            </Button>
           </Link>
         </div>
       </div>

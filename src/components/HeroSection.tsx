@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building, Star, RefreshCw } from "lucide-react";
+import { MapPin, Search, Building, Star, RefreshCw, Sparkles, Rocket } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
 import GoogleMap from './GoogleMap';
 import AnimatedSearchExample from './AnimatedSearchExample';
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   const searchDemoRef = useRef<HTMLDivElement>(null);
+  
   const handleDemoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     document.getElementById('search-demo')?.scrollIntoView({ behavior: 'smooth' });
@@ -65,15 +66,27 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Button onClick={handleEarlyAccessClick} className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
+              <Button onClick={handleEarlyAccessClick} size="xl" className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
+                <Star className="mr-2 h-5 w-5" />
                 Get Early Access
               </Button>
-              <Link to="/demo" className="w-full sm:w-auto">
-                <Button variant="outline" className="w-full bg-black/60 text-white border border-white/20 rounded-full px-8 py-6 text-base hover:bg-black/80">
-                  Try the Demo
-                </Button>
-              </Link>
+              
+              <div className="relative w-full sm:w-auto group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-posh-green to-pink-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
+                <Link to="/demo" className="w-full relative">
+                  <Button variant="highlight" size="xl" className="w-full relative flex items-center gap-3 px-8 py-7">
+                    <Rocket className="h-5 w-5" />
+                    <span className="font-bold">Try Our Interactive Demo</span>
+                    <span className="absolute -top-3 -right-3 bg-coral text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse-subtle">BETA</span>
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-sm text-white/60 italic">
+              <Sparkles className="inline-block h-3 w-3 mr-1" />
+              <span>Our London beta demo showcases real-time AI-powered insights</span>
             </div>
           </ScrollAnimation>
         </div>

@@ -19,13 +19,15 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        highlight: "bg-posh-green hover:bg-posh-green/90 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)] hover:shadow-[0_0_20px_rgba(34,197,94,0.7)] scale-100 hover:scale-105 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
-        mobile: "h-12 px-6 py-3 text-base", // Added mobile size variant
+        mobile: "h-12 px-6 py-3 text-base",
+        xl: "h-14 px-8 py-4 text-lg font-semibold rounded-xl", // Added XL size for more prominent buttons
       },
     },
     defaultVariants: {
