@@ -94,13 +94,6 @@ const Navbar: React.FC = () => {
           >
             See It In Action
           </a>
-          <a 
-            href="#problem" 
-            className="text-lg text-white font-medium hover:text-coral transition-colors"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Our Solution
-          </a>
         </div>
       </div>
     </header>

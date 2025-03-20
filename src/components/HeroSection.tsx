@@ -52,14 +52,14 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={200} duration={800}>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 max-w-3xl tracking-wide leading-tight text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 max-w-3xl mx-auto tracking-wide leading-tight text-white">
               Find Your Perfect Neighbourhood with <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-pink-500">Real-Time, AI-Enhanced Insights</span>
             </h1>
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={400} duration={800}>
-            <p className="text-lg md:text-xl text-white/90 mb-8 text-balance max-w-2xl mx-auto">
-              PoshMaps empowers you to make confident property decisions by combining local crime statistics, school performance, transport links, and more—delivered in one intuitive map to help you <span className="text-coral font-medium">find the neighborhood vibe that perfectly matches your lifestyle</span>.
+            <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+              Find your ideal area with PoshMaps—combining crime data, schools, transport, and local amenities in one intuitive map to <span className="text-coral font-medium">match your perfect lifestyle</span>.
             </p>
           </ScrollAnimation>
           

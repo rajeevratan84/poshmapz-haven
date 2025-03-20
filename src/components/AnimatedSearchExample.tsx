@@ -78,7 +78,7 @@ const AnimatedSearchExample: React.FC = () => {
       
       <div className="relative">
         <textarea 
-          className="w-full p-3 border border-gray-200 rounded-lg text-sm h-20 bg-white resize-none text-gray-800"
+          className="w-full p-3 border border-gray-200 rounded-lg text-sm h-24 bg-white resize-none text-gray-800"
           value={searchText}
           readOnly
         />
@@ -127,7 +127,7 @@ const AnimatedSearchExample: React.FC = () => {
                   <div className="text-xs text-gray-600">Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives.</div>
                 </div>
               </div>
-              <div className="border rounded overflow-hidden h-72 bg-white">
+              <div className="border rounded overflow-hidden h-80 bg-white">
                 <GoogleMap showNorthLondonAreas={true} zoom={13} />
               </div>
             </div>
