@@ -29,7 +29,7 @@ const DemoPage: React.FC = () => {
   const markersRef = useRef<google.maps.Marker[]>([]);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   
-  const apiKey = "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";
+  const apiKey = "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";
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
