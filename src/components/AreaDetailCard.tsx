@@ -58,6 +58,43 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return 'text-amber-500 bg-amber-500/10';
   };
 
+  // Get the transport score color
+  const getTransportColor = (transport: string) => {
+    const lowerTransport = transport.toLowerCase();
+    if (lowerTransport.includes('excellent')) return 'text-green-500 bg-green-500/10';
+    if (lowerTransport.includes('good')) return 'text-blue-500 bg-blue-500/10';
+    if (lowerTransport.includes('poor')) return 'text-red-500 bg-red-500/10';
+    return 'text-amber-500 bg-amber-500/10';
+  };
+
+  // Get the walkability color
+  const getWalkabilityColor = (walkability: string) => {
+    const lowerWalk = walkability.toLowerCase();
+    if (lowerWalk.includes('very walkable')) return 'text-green-500 bg-green-500/10';
+    if (lowerWalk.includes('moderately')) return 'text-amber-500 bg-amber-500/10';
+    if (lowerWalk.includes('not walkable')) return 'text-red-500 bg-red-500/10';
+    return 'text-gray-500';
+  };
+
+  // Get property growth color
+  const getPropertyGrowthColor = (growth: string) => {
+    if (growth.includes('+')) {
+      const percentage = parseFloat(growth.match(/\+(\d+\.?\d*)%/)?.[1] || "0");
+      if (percentage >= 3) return 'text-green-600 bg-green-500/10';
+      if (percentage >= 1) return 'text-blue-600 bg-blue-500/10';
+      return 'text-amber-500 bg-amber-500/10';
+    } else if (growth.includes('-')) {
+      return 'text-red-500 bg-red-500/10';
+    }
+    return 'text-gray-500';
+  };
+  
+  // Format property growth to be less wordy
+  const formatPropertyGrowth = (growth: string) => {
+    const match = growth.match(/([+-]\d+\.?\d*)%/);
+    return match ? match[0] : growth;
+  };
+
   // Get the vibe tag color
   const getVibeTagColor = (vibe: string) => {
     const vibeLower = vibe.toLowerCase();
@@ -121,32 +158,54 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          {/* Transport Score */}
+          {/* Transport Score - Now with color coding */}
           <div className="flex gap-3">
             <Train className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Transport Score</div>
-              <div className="text-sm text-white/70">{areaStats.transportScore}</div>
+              <div className={cn(
+                "text-sm px-2 py-1 rounded-md font-medium",
+                getTransportColor(areaStats.transportScore)
+              )}>
+                {areaStats.transportScore}
+              </div>
             </div>
           </div>
           
-          {/* Walkability */}
+          {/* Walkability - Now with color coding */}
           <div className="flex gap-3">
             <Footprints className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Walkability</div>
-              <div className="text-sm text-white/70">{areaStats.walkability}</div>
+              <div className={cn(
+                "text-sm px-2 py-1 rounded-md font-medium",
+                getWalkabilityColor(areaStats.walkability)
+              )}>
+                {areaStats.walkability}
+              </div>
             </div>
           </div>
           
-          {/* Future Property Growth */}
+          {/* Future Property Growth - Now less wordy and color coded */}
           <div className="flex gap-3">
             <TrendingUp className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Future Property Growth</div>
-              <div className="text-sm text-white/70">
-                <div>Flats: {areaStats.propertyGrowth.flats}</div>
-                <div>Houses: {areaStats.propertyGrowth.houses}</div>
+              <div className="flex flex-col gap-1">
+                <div className={cn(
+                  "text-sm px-2 py-1 rounded-md font-medium flex justify-between",
+                  getPropertyGrowthColor(areaStats.propertyGrowth.flats)
+                )}>
+                  <span>Flats:</span> 
+                  <span>{formatPropertyGrowth(areaStats.propertyGrowth.flats)}</span>
+                </div>
+                <div className={cn(
+                  "text-sm px-2 py-1 rounded-md font-medium flex justify-between",
+                  getPropertyGrowthColor(areaStats.propertyGrowth.houses)
+                )}>
+                  <span>Houses:</span> 
+                  <span>{formatPropertyGrowth(areaStats.propertyGrowth.houses)}</span>
+                </div>
               </div>
             </div>
           </div>

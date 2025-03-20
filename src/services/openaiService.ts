@@ -48,9 +48,9 @@ For each area, provide:
 6. A list of 3-7 amenities or features that match the user's request
 7. Detailed area statistics including:
    - Crime rate (Low/Medium/High with percentage compared to London average)
-   - Transport score (Poor/Good/Excellent with time to central London)
+   - Transport score (Poor/Good/Excellent with specific tube lines and time to central London, e.g., "Excellent - 15 min to central via Northern Line")
    - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
-   - Property growth (percentage growth over 5 years for flats and houses, compared to London average)
+   - Property growth (use "+" or "-" followed by percentage for clear growth indicators, e.g., "+3.5%" or "-1.2%")
    - Area vibe (2-4 tags like: Family-friendly, Upscale, Riverside, Trendy, Historic, etc.)
 
 Format the response as a valid JSON array with objects having these exact keys:
@@ -67,11 +67,11 @@ Format the response as a valid JSON array with objects having these exact keys:
     "amenities": ["amenity1", "amenity2", "amenity3"],
     "areaStats": {
       "crimeRate": "Low - 20% below London average",
-      "transportScore": "Excellent - 30 min to central London",
+      "transportScore": "Excellent - 15 min to central via Northern Line",
       "walkability": "Very Walkable - 85/100",
       "propertyGrowth": {
-        "flats": "+2.5% over 5 years better than 57% of London",
-        "houses": "+3% over 5 years better than 42% of London"
+        "flats": "+2.5%",
+        "houses": "+3%"
       },
       "areaVibe": ["Family-friendly", "Upscale", "Riverside"]
     }
