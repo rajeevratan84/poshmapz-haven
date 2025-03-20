@@ -5,9 +5,16 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
-hydrateRoot(
-  document.getElementById('root') as HTMLElement,
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-);
+// Ensure the DOM is loaded
+const root = document.getElementById('root');
+
+if (!root) {
+  console.error('Root element not found!');
+} else {
+  hydrateRoot(
+    root,
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+}

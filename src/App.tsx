@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import { Routes, Route } from 'react-router-dom';
 import Index from './pages/Index';
 import Demo from './pages/Demo';
 import NotFound from './pages/NotFound';
@@ -9,13 +10,11 @@ function App() {
   return (
     <>
       <Toaster richColors position="top-center" />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/demo" element={<Demo />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/demo" element={<Demo />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   );
 }
