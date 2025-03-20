@@ -40,17 +40,26 @@ export const loadGoogleMapsScript = (
 // Create map styles for consistent styling - using a light theme
 export const mapStyles = [
   {
-    "featureType": "poi",
-    "elementType": "labels",
+    "featureType": "administrative",
+    "elementType": "geometry",
     "stylers": [
       {
-        "visibility": "off"
+        "visibility": "simplified"
       }
     ]
   },
   {
-    "featureType": "transit",
+    "featureType": "poi",
     "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
     "stylers": [
       {
         "visibility": "simplified"
@@ -105,3 +114,6 @@ export const getNorthLondonAreas = (): AreaInfo[] => {
     }
   ];
 };
+
+// Export location type for use in other files
+export type LocationType = 'london' | 'uk' | 'world';

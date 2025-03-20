@@ -8,12 +8,13 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LocationType } from '@/utils/mapUtils';
 
 interface SearchWizardProps {
   onSearch: (query: string) => void;
   isSearching: boolean;
   onCancel: () => void;
-  locationType?: 'london' | 'uk' | 'world';
+  locationType?: LocationType;
   country?: string;
 }
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { MapPin, ArrowLeft, Sparkles, Globe } from "lucide-react";
 import { toast } from 'sonner';
@@ -12,9 +11,7 @@ import AreaResultsList from '@/components/search/AreaResultsList';
 import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
 import { Tabs, TabsContent, CountryTabsList, CountryTabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-type LocationType = 'london' | 'uk' | 'world';
-type CountryType = string;
+import { LocationType } from '@/utils/mapUtils';
 
 const DemoPage: React.FC = () => {
   const [userInput, setUserInput] = useState('');
@@ -23,7 +20,7 @@ const DemoPage: React.FC = () => {
   const [selectedArea, setSelectedArea] = useState<AreaMatch | null>(null);
   const [showWizard, setShowWizard] = useState(false);
   const [locationType, setLocationType] = useState<LocationType>('london');
-  const [selectedCountry, setSelectedCountry] = useState<CountryType>('United Kingdom');
+  const [selectedCountry, setSelectedCountry] = useState<string>('United Kingdom');
   const pageTopRef = useRef<HTMLDivElement>(null);
   
   // Use the VITE_ environment variable for the API key

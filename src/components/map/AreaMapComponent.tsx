@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMap from '@/components/GoogleMap';
 import { AreaMatch } from '@/types/area';
+import { LocationType } from '@/utils/mapUtils';
 
 export interface AreaMapComponentProps {
   results: AreaMatch[];
   selectedArea: AreaMatch | null;
   onAreaSelected: (area: AreaMatch) => void;
-  locationType?: 'london' | 'uk' | 'world';
+  locationType?: LocationType;
   country?: string;
 }
 
@@ -104,7 +105,7 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
       "elementType": "geometry",
       "stylers": [
         {
-          "visibility": "off"
+          "visibility": "simplified"
         }
       ]
     },
@@ -121,7 +122,7 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
       "elementType": "labels.icon",
       "stylers": [
         {
-          "visibility": "off"
+          "visibility": "simplified"
         }
       ]
     }

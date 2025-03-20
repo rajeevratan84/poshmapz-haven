@@ -3,6 +3,7 @@ import React from 'react';
 import { MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AreaDetailCard from '@/components/AreaDetailCard';
+import { LocationType } from '@/utils/mapUtils';
 
 interface AreaStats {
   crimeRate: string;
@@ -34,7 +35,7 @@ interface AreaResultsListProps {
   onAreaClick: (area: AreaMatch) => void;
   isSearching: boolean;
   userInput: string;
-  locationType?: 'london' | 'uk' | 'world';
+  locationType?: LocationType;
   country?: string;
 }
 
