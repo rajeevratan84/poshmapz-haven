@@ -19,7 +19,7 @@ interface AreaDetailCardProps {
   areaName: string;
   matchPercentage: number;
   description: string;
-  poshScore: number;
+  poshScore: number | string;  // Explicitly allow both number and string types
   amenities: string[];
   areaStats: AreaStats;
   isSelected: boolean;
@@ -40,7 +40,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
   const poshScoreNumber = typeof poshScore === 'number' 
     ? poshScore 
     : typeof poshScore === 'string' 
-      ? parseInt(poshScore.split('/')[0]) 
+      ? parseInt(poshScore.split('/')[0]) || 0  // Add a fallback in case parseInt returns NaN
       : 0;
 
   // Helper function to determine text color based on score value
