@@ -13,41 +13,11 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({ area, map, infoWindow, matchPer
   useEffect(() => {
     if (!map) return;
 
-    // Color the marker based on match percentage
-    let markerColor = '#4ade80'; // Default green
-    
-    if (matchPercentage) {
-      if (matchPercentage > 90) {
-        markerColor = '#22c55e'; // Dark green for high match
-      } else if (matchPercentage > 80) {
-        markerColor = '#4ade80'; // Medium green
-      } else if (matchPercentage > 70) {
-        markerColor = '#86efac'; // Light green
-      } else {
-        markerColor = '#a3e635'; // Yellow-green for lower matches
-      }
-    }
-
-    // Create custom marker with colored label background
+    // Create marker (without custom styling)
     const marker = new google.maps.Marker({
       position: area.position,
       map: map,
       animation: google.maps.Animation.DROP,
-      label: {
-        text: area.label,
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '14px',
-        className: 'marker-label'
-      },
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: markerColor,
-        fillOpacity: 0.9,
-        strokeWeight: 2,
-        strokeColor: '#ffffff',
-        scale: 12,
-      },
       title: `${area.title} - ${area.match}`
     });
 

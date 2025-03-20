@@ -34,7 +34,7 @@ const SearchLoadingAnimation: React.FC<SearchLoadingAnimationProps> = ({ isVisib
   if (!isVisible) return null;
   
   return (
-    <div className="w-full bg-black/20 rounded-xl p-4 mt-4 mb-6 border border-white/10 animate-fade-in">
+    <div className="w-full bg-black/20 rounded-xl p-4 mb-6 border border-white/10 animate-fade-in">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="relative">

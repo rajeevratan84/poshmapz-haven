@@ -1,28 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-
-interface AreaMatch {
-  name: string;
-  matchPercentage: number;
-  description: string;
-  poshScore: number;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  amenities: string[];
-  areaStats: {
-    crimeRate: string;
-    transportScore: string;
-    walkability: string;
-    propertyGrowth: {
-      flats: string;
-      houses: string;
-    };
-    areaVibe: string[];
-  };
-}
+import { AreaMatch } from '@/types/area';
 
 interface AreaMapComponentProps {
   results: AreaMatch[];
@@ -153,22 +132,6 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ results, onAreaSele
       position: area.coordinates,
       map: mapInstanceRef.current,
       animation: google.maps.Animation.DROP,
-      label: {
-        text: area.name.charAt(0),
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '14px',
-      },
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: area.matchPercentage > 90 ? '#22c55e' : 
-                  area.matchPercentage > 80 ? '#4ade80' : 
-                  area.matchPercentage > 70 ? '#86efac' : '#a3e635',
-        fillOpacity: 0.9,
-        strokeWeight: 2,
-        strokeColor: '#ffffff',
-        scale: 12,
-      },
       title: `${area.name} - ${area.matchPercentage}% match`
     });
     

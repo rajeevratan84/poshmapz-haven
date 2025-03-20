@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { analyzeAreaPreferences } from '@/services/openaiService';
 import { AreaMatch } from '@/types/area';
 import SearchBar from '@/components/search/SearchBar';
+import SearchWizard from '@/components/search/SearchWizard';
 import AreaMapComponent from '@/components/map/AreaMapComponent';
 import AreaResultsList from '@/components/search/AreaResultsList';
 import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
@@ -15,6 +16,7 @@ const DemoPage: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<AreaMatch[]>([]);
   const [selectedArea, setSelectedArea] = useState<AreaMatch | null>(null);
+  const [showWizard, setShowWizard] = useState(false);
   
   const apiKey = "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";
 
@@ -66,6 +68,10 @@ const DemoPage: React.FC = () => {
     setSelectedArea(area);
   };
 
+  const toggleWizard = (show: boolean) => {
+    setShowWizard(show);
+  };
+
   return (
     <div className="min-h-screen bg-black pb-20">
       <header className="w-full bg-black/90 shadow-md sticky top-0 z-10">
@@ -95,7 +101,16 @@ const DemoPage: React.FC = () => {
             onSearch={processSearch}
             isSearching={isSearching}
             suggestions={searchSuggestions}
+            onWizardToggle={toggleWizard}
           />
+          
+          {showWizard && (
+            <SearchWizard 
+              onSearch={processSearch}
+              isSearching={isSearching}
+              onCancel={() => setShowWizard(false)}
+            />
+          )}
           
           <div className="flex items-center justify-center gap-2 text-xs text-posh-green font-semibold bg-black/30 py-2 px-4 rounded-full mx-auto w-fit">
             <Sparkles className="h-3.5 w-3.5" />
@@ -104,13 +119,13 @@ const DemoPage: React.FC = () => {
         </div>
         
         <div className="bg-black/20 rounded-xl p-4 shadow-lg">
+          {isSearching && <SearchLoadingAnimation isVisible={isSearching} />}
+          
           <AreaMapComponent 
             results={results}
             onAreaSelected={handleAreaClick}
             selectedArea={selectedArea}
           />
-          
-          <SearchLoadingAnimation isVisible={isSearching} />
           
           <AreaResultsList 
             results={results}
