@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -8,23 +9,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { LocationType } from '@/utils/mapUtils';
 
 interface SearchWizardProps {
   onSearch: (query: string) => void;
   isSearching: boolean;
   onCancel: () => void;
-  locationType?: LocationType;
-  country?: string;
 }
 
-const SearchWizard: React.FC<SearchWizardProps> = ({ 
-  onSearch, 
-  isSearching, 
-  onCancel,
-  locationType = 'london',
-  country
-}) => {
+const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCancel }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [type, setType] = useState<'rent' | 'buy'>('rent');
   const [propertyType, setPropertyType] = useState<'flat' | 'house'>('flat');
@@ -37,140 +29,59 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
   const [tempLocation, setTempLocation] = useState('');
   const [tempTime, setTempTime] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
-  const wizardRef = useRef<HTMLDivElement>(null);
 
   const totalSteps = 6;
 
-  useEffect(() => {
-    if (wizardRef.current) {
-      wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentStep]);
+  // Popular London locations for quick selection
+  const popularLocations = [
+    { name: "Canary Wharf", defaultTime: "30" },
+    { name: "Kings Cross", defaultTime: "25" },
+    { name: "Waterloo", defaultTime: "20" },
+    { name: "Liverpool Street", defaultTime: "25" },
+    { name: "The City", defaultTime: "30" },
+    { name: "Hammersmith", defaultTime: "35" },
+    { name: "Westminster", defaultTime: "25" },
+    { name: "Victoria", defaultTime: "20" },
+    { name: "Paddington", defaultTime: "25" },
+    { name: "Shoreditch", defaultTime: "30" },
+  ];
 
-  const getPopularLocations = () => {
-    if (locationType === 'london') {
-      return [
-        { name: "Canary Wharf", defaultTime: "30" },
-        { name: "Kings Cross", defaultTime: "25" },
-        { name: "Waterloo", defaultTime: "20" },
-        { name: "Liverpool Street", defaultTime: "25" },
-        { name: "The City", defaultTime: "30" },
-        { name: "Hammersmith", defaultTime: "35" },
-        { name: "Westminster", defaultTime: "25" },
-        { name: "Victoria", defaultTime: "20" },
-        { name: "Paddington", defaultTime: "25" },
-        { name: "Shoreditch", defaultTime: "30" },
-      ];
-    } else {
-      return [
-        { name: "City Center", defaultTime: "25" },
-        { name: "Financial District", defaultTime: "30" },
-        { name: "Main Train Station", defaultTime: "20" },
-        { name: "University", defaultTime: "25" },
-        { name: "Business Park", defaultTime: "30" },
-        { name: "Shopping District", defaultTime: "25" },
-        { name: "Airport", defaultTime: "40" },
-        { name: "Harbor/Waterfront", defaultTime: "30" },
-        { name: "Cultural District", defaultTime: "20" },
-        { name: "Medical Center", defaultTime: "25" },
-      ];
-    }
-  };
+  // More granular budget options
+  const rentBudgetOptions = [
+    { value: 'very-low', label: 'Up to £1,000 per month' },
+    { value: 'low', label: '£1,000–£1,500 per month' },
+    { value: 'medium-low', label: '£1,500–£2,000 per month' },
+    { value: 'medium', label: '£2,000–£2,500 per month' },
+    { value: 'medium-high', label: '£2,500–£3,000 per month' },
+    { value: 'high', label: '£3,000–£3,500 per month' },
+    { value: 'very-high', label: '£3,500–£5,000 per month' },
+    { value: 'luxury', label: 'Over £5,000 per month' }
+  ];
 
-  const getCurrencySymbol = () => {
-    if (locationType === 'london') return '£';
-    
-    const currencyMap: Record<string, string> = {
-      'United States': '$',
-      'Canada': 'C$',
-      'Australia': 'A$',
-      'France': '€',
-      'Germany': '€',
-      'Spain': '€',
-      'Italy': '€',
-      'Japan': '¥',
-      'Brazil': 'R$',
-      'Mexico': 'Mex$',
-      'South Africa': 'R',
-      'India': '₹',
-      'China': '¥',
-      'Singapore': 'S$',
-      'United Arab Emirates': 'AED',
-      'New Zealand': 'NZ$',
-      'Thailand': '฿',
-      'Portugal': '€',
-      'Netherlands': '€'
-    };
-    
-    return country && currencyMap[country] ? currencyMap[country] : '$';
-  };
+  const buyBudgetOptions = [
+    { value: 'very-low', label: 'Up to £300,000' },
+    { value: 'low', label: '£300,000–£500,000' },
+    { value: 'medium-low', label: '£500,000–£750,000' },
+    { value: 'medium', label: '£750,000–£1,000,000' },
+    { value: 'medium-high', label: '£1,000,000–£1,500,000' },
+    { value: 'high', label: '£1,500,000–£2,000,000' },
+    { value: 'very-high', label: '£2,000,000–£3,000,000' },
+    { value: 'luxury', label: 'Over £3,000,000' }
+  ];
 
-  const getRentBudgetOptions = () => {
-    const currencySymbol = getCurrencySymbol();
-    
-    if (locationType === 'london') {
-      return [
-        { value: 'very-low', label: `Up to ${currencySymbol}1,000 per month` },
-        { value: 'low', label: `${currencySymbol}1,000–${currencySymbol}1,500 per month` },
-        { value: 'medium-low', label: `${currencySymbol}1,500–${currencySymbol}2,000 per month` },
-        { value: 'medium', label: `${currencySymbol}2,000–${currencySymbol}2,500 per month` },
-        { value: 'medium-high', label: `${currencySymbol}2,500–${currencySymbol}3,000 per month` },
-        { value: 'high', label: `${currencySymbol}3,000–${currencySymbol}3,500 per month` },
-        { value: 'very-high', label: `${currencySymbol}3,500–${currencySymbol}5,000 per month` },
-        { value: 'luxury', label: `Over ${currencySymbol}5,000 per month` }
-      ];
-    } else {
-      return [
-        { value: 'very-low', label: `Very affordable` },
-        { value: 'low', label: `Below average for ${country || 'this area'}` },
-        { value: 'medium-low', label: `Slightly below average` },
-        { value: 'medium', label: `Average for ${country || 'this area'}` },
-        { value: 'medium-high', label: `Slightly above average` },
-        { value: 'high', label: `Above average` },
-        { value: 'very-high', label: `Premium` },
-        { value: 'luxury', label: `Luxury range` }
-      ];
-    }
-  };
-
-  const getBuyBudgetOptions = () => {
-    const currencySymbol = getCurrencySymbol();
-    
-    if (locationType === 'london') {
-      return [
-        { value: 'very-low', label: `Up to ${currencySymbol}300,000` },
-        { value: 'low', label: `${currencySymbol}300,000–${currencySymbol}500,000` },
-        { value: 'medium-low', label: `${currencySymbol}500,000–${currencySymbol}750,000` },
-        { value: 'medium', label: `${currencySymbol}750,000–${currencySymbol}1,000,000` },
-        { value: 'medium-high', label: `${currencySymbol}1,000,000–${currencySymbol}1,500,000` },
-        { value: 'high', label: `${currencySymbol}1,500,000–${currencySymbol}2,000,000` },
-        { value: 'very-high', label: `${currencySymbol}2,000,000–${currencySymbol}3,000,000` },
-        { value: 'luxury', label: `Over ${currencySymbol}3,000,000` }
-      ];
-    } else {
-      return [
-        { value: 'very-low', label: `Very affordable` },
-        { value: 'low', label: `Below average for ${country || 'this area'}` },
-        { value: 'medium-low', label: `Slightly below average` },
-        { value: 'medium', label: `Average for ${country || 'this area'}` },
-        { value: 'medium-high', label: `Slightly above average` },
-        { value: 'high', label: `Above average` },
-        { value: 'very-high', label: `Premium` },
-        { value: 'luxury', label: `Luxury range` }
-      ];
-    }
-  };
-
+  // Colors for lifestyle categories
   const lifestyleColors = {
-    amenities: '#9b87f5',
-    nightlife: '#FF7F50',
-    community: '#4CAF50',
-    environment: '#2196F3',
-    activities: '#FFC107',
-    special: '#E91E63'
+    amenities: '#9b87f5',      // Purple
+    nightlife: '#FF7F50',      // Coral
+    community: '#4CAF50',      // Green
+    environment: '#2196F3',    // Blue
+    activities: '#FFC107',     // Amber
+    special: '#E91E63'         // Pink
   };
 
+  // Updated lifestyle options with more choices and categories
   const lifestyleOptions = [
+    // Amenities category (Purple)
     { value: 'good-schools', label: 'School catchment', category: 'amenities' },
     { value: 'cultural-venues', label: 'Cultural hotspots', category: 'amenities' },
     { value: 'restaurants', label: 'Fine dining', category: 'amenities' },
@@ -182,12 +93,14 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'grocery', label: 'Quality grocery stores', category: 'amenities' },
     { value: 'healthcare', label: 'Healthcare facilities', category: 'amenities' },
     
+    // Nightlife (Coral)
     { value: 'bars', label: 'Bars & pubs', category: 'nightlife' },
     { value: 'clubs', label: 'Nightclubs', category: 'nightlife' },
     { value: 'live-music', label: 'Live music venues', category: 'nightlife' },
     { value: 'theatres', label: 'Theatres', category: 'nightlife' },
     { value: 'comedy', label: 'Comedy clubs', category: 'nightlife' },
     
+    // Community (Green)
     { value: 'family-friendly', label: 'Family-friendly', category: 'community' },
     { value: 'lgbt-friendly', label: 'LGBT+ friendly', category: 'community' },
     { value: 'dog-friendly', label: 'Dog-friendly', category: 'community' },
@@ -196,6 +109,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'students', label: 'Student population', category: 'community' },
     { value: 'retirees', label: 'Retirement community', category: 'community' },
     
+    // Environment (Blue)
     { value: 'quiet', label: 'Quiet streets', category: 'environment' },
     { value: 'green-spaces', label: 'Green spaces', category: 'environment' },
     { value: 'riverside', label: 'Riverside', category: 'environment' },
@@ -204,6 +118,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'historic', label: 'Historic architecture', category: 'environment' },
     { value: 'modern', label: 'Modern developments', category: 'environment' },
     
+    // Activities (Amber)
     { value: 'cycling', label: 'Cycling-friendly', category: 'activities' },
     { value: 'running', label: 'Running paths', category: 'activities' },
     { value: 'water-sports', label: 'Water sports', category: 'activities' },
@@ -212,6 +127,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'golf', label: 'Golf courses', category: 'activities' },
     { value: 'swimming', label: 'Swimming pools', category: 'activities' },
     
+    // Special interests (Pink)
     { value: 'independent', label: 'Independent shops', category: 'special' },
     { value: 'artistic', label: 'Artistic community', category: 'special' },
     { value: 'tech-hub', label: 'Tech hub', category: 'special' },
@@ -220,6 +136,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'craft-beer', label: 'Craft beer scene', category: 'special' },
   ];
 
+  // Existing cultural communities
   const culturalCommunities = [
     { value: 'indian', label: 'Indian community', category: 'community' },
     { value: 'pakistani', label: 'Pakistani community', category: 'community' },
@@ -232,29 +149,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'greek', label: 'Greek community', category: 'community' },
   ];
 
-  const getLocationSpecificOptions = () => {
-    if (locationType === 'london') {
-      return [
-        // London-specific options already included in lifestyleOptions
-      ];
-    } else {
-      return [
-        { value: 'beach-access', label: 'Beach access', category: 'environment' },
-        { value: 'mountain-views', label: 'Mountain views', category: 'environment' },
-        { value: 'lake-access', label: 'Lake access', category: 'environment' },
-        { value: 'wine-region', label: 'Wine region', category: 'special' },
-        { value: 'skiing', label: 'Skiing facilities', category: 'activities' },
-        { value: 'hiking', label: 'Hiking trails', category: 'activities' },
-        { value: 'international-schools', label: 'International schools', category: 'amenities' },
-        { value: 'expat-friendly', label: 'Expat friendly', category: 'community' },
-        { value: 'tourism', label: 'Tourist attractions', category: 'special' },
-        { value: 'local-cuisine', label: 'Local cuisine', category: 'special' },
-      ];
-    }
-  };
+  // Combine all lifestyle options
+  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities];
 
-  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities, ...getLocationSpecificOptions()];
-
+  // Group lifestyle options by category
   const groupedLifestyleOptions = allLifestyleOptions.reduce((acc, option) => {
     if (!acc[option.category]) {
       acc[option.category] = [];
@@ -263,9 +161,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     return acc;
   }, {} as Record<string, typeof lifestyleOptions>);
 
-  const goToNextStep = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
+  const goToNextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(prev => prev + 1);
     } else {
@@ -273,9 +169,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     }
   };
 
-  const goToPrevStep = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
+  const goToPrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
     }
@@ -290,6 +184,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
   };
 
   const addPopularLocation = (location: {name: string, defaultTime: string}) => {
+    // Avoid duplicates
     if (!locations.some(loc => loc.place === location.name)) {
       setLocations([...locations, {place: location.name, time: location.defaultTime}]);
     }
@@ -300,10 +195,12 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
   };
 
   const submitWizard = () => {
+    // Construct a natural language query from the wizard inputs
     const lifestylePreferences = lifestyle.join(', ');
     const prioritiesText = priorities.join(', ');
     
-    const budgetOptions = type === 'rent' ? getRentBudgetOptions() : getBuyBudgetOptions();
+    // Map budget to text based on selected option and property type
+    const budgetOptions = type === 'rent' ? rentBudgetOptions : buyBudgetOptions;
     const selectedBudget = budgetOptions.find(option => option.value === budget);
     const budgetText = selectedBudget ? selectedBudget.label : '';
     
@@ -323,10 +220,12 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
       locationsText = `I need to be near ${locationPhrases.join(' and ')}. `;
     }
 
-    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in ${locationType === 'london' ? 'London' : country || 'this country'}. `;
+    // Add property type and bedrooms information
+    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in London. `;
 
+    // Add additional information if provided
     const additionalText = additionalInfo ? `Additional requirements: ${additionalInfo}. ` : '';
-    
+
     const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}. ${additionalText}`;
 
     onSearch(queryText);
@@ -355,6 +254,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
               </Tabs>
             </div>
             
+            {/* Property type selection - flat or house */}
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Property type:</label>
               <Tabs 
@@ -376,6 +276,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
               </Tabs>
             </div>
             
+            {/* Number of bedrooms */}
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Number of bedrooms:</label>
               <Tabs 
@@ -408,7 +309,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Budget:</label>
               <RadioGroup value={budget} onValueChange={setBudget} className="space-y-3">
-                {(type === 'rent' ? getRentBudgetOptions() : getBuyBudgetOptions()).map(option => (
+                {(type === 'rent' ? rentBudgetOptions : buyBudgetOptions).map(option => (
                   <div key={option.value} className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                     <RadioGroupItem 
                       value={option.value} 
@@ -558,10 +459,11 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
                 Add key locations you need to be close to:
               </label>
               
+              {/* Popular locations for quick selection */}
               <div className="space-y-2">
                 <p className="text-sm text-white/70 bg-black/30 p-2 rounded">Popular locations:</p>
                 <div className="flex flex-wrap gap-2">
-                  {getPopularLocations().map((location, index) => (
+                  {popularLocations.map((location, index) => (
                     <Button 
                       key={index}
                       variant="outline" 
@@ -643,42 +545,40 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
               <div className="space-y-5">
                 {Object.entries(groupedLifestyleOptions).map(([category, options]) => (
                   <div key={category} className="space-y-2">
-                    <h4 className="text-sm font-semibold text-white/90 px-2 py-1 rounded" 
-                        style={{
-                          backgroundColor: `${lifestyleColors[category as keyof typeof lifestyleColors] || '#666'}`
-                        }}>
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    <h4 className="text-sm font-medium capitalize bg-black/30 p-2 rounded" style={{ color: lifestyleColors[category as keyof typeof lifestyleColors] || '#ffffff' }}>
+                      {category}
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {options.map((option) => (
-                        <button
+                      {options.map(option => (
+                        <Button
                           key={option.value}
                           type="button"
-                          className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${
-                            lifestyle.includes(option.value)
-                              ? `bg-${option.category === 'amenities' ? 'purple' : option.category === 'nightlife' ? 'coral' : 
-                                  option.category === 'community' ? 'green' : option.category === 'environment' ? 'blue' : 
-                                  option.category === 'activities' ? 'amber' : 'pink'}-500/80 text-white`
-                              : 'bg-black/30 text-white/70 hover:bg-white/10'
-                          } border border-white/10`}
-                          style={{
+                          variant="outline"
+                          size="sm"
+                          className={`
+                            transition-colors
+                            ${lifestyle.includes(option.value) 
+                              ? 'bg-opacity-40 border-opacity-100' 
+                              : 'bg-black/40 border-white/20'}
+                          `}
+                          style={{ 
                             backgroundColor: lifestyle.includes(option.value) 
-                              ? `${lifestyleColors[option.category as keyof typeof lifestyleColors] || '#666'}` 
-                              : undefined
+                              ? `${lifestyleColors[option.category as keyof typeof lifestyleColors]}40` 
+                              : 'rgba(0,0,0,0.4)',
+                            borderColor: lifestyle.includes(option.value)
+                              ? lifestyleColors[option.category as keyof typeof lifestyleColors]
+                              : 'rgba(255,255,255,0.2)'
                           }}
                           onClick={() => {
                             if (lifestyle.includes(option.value)) {
-                              setLifestyle(lifestyle.filter(l => l !== option.value));
+                              setLifestyle(lifestyle.filter(item => item !== option.value));
                             } else {
                               setLifestyle([...lifestyle, option.value]);
                             }
                           }}
                         >
                           {option.label}
-                          {lifestyle.includes(option.value) && (
-                            <Check className="ml-1 h-3 w-3 inline" />
-                          )}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -695,55 +595,32 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
             
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
-                How do you prefer to spend your typical day?
+                Envision your typical day in your new neighbourhood. Which scenario best describes it?
               </label>
               
               <RadioGroup value={dailyRoutine} onValueChange={setDailyRoutine} className="space-y-3">
                 <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem 
-                    value="walk" 
-                    id="routine-walk" 
-                    className="border-white/30 text-purple-600"
-                  />
+                  <RadioGroupItem value="walk" id="routine-walk" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-walk" className="w-full text-white cursor-pointer">
-                    <span className="font-medium">Walking lifestyle</span>
-                    <p className="text-sm text-white/70 mt-1">I prefer to walk to local amenities and services</p>
+                    Most daily errands done on foot
                   </label>
                 </div>
-                
                 <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem 
-                    value="transit" 
-                    id="routine-transit" 
-                    className="border-white/30 text-purple-600"
-                  />
+                  <RadioGroupItem value="transit" id="routine-transit" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-transit" className="w-full text-white cursor-pointer">
-                    <span className="font-medium">Public transport user</span>
-                    <p className="text-sm text-white/70 mt-1">I rely heavily on buses, trains, and other public transit</p>
+                    Frequent use of public transport or cycling
                   </label>
                 </div>
-                
                 <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem 
-                    value="drive" 
-                    id="routine-drive" 
-                    className="border-white/30 text-purple-600"
-                  />
+                  <RadioGroupItem value="drive" id="routine-drive" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-drive" className="w-full text-white cursor-pointer">
-                    <span className="font-medium">Car-dependent</span>
-                    <p className="text-sm text-white/70 mt-1">I primarily drive to most places and need parking</p>
+                    Driving for the majority of errands
                   </label>
                 </div>
-                
                 <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem 
-                    value="home" 
-                    id="routine-home" 
-                    className="border-white/30 text-purple-600"
-                  />
+                  <RadioGroupItem value="home" id="routine-home" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-home" className="w-full text-white cursor-pointer">
-                    <span className="font-medium">Work from home</span>
-                    <p className="text-sm text-white/70 mt-1">I spend most of my time at home and need local conveniences</p>
+                    Working from home and venturing out only occasionally
                   </label>
                 </div>
               </RadioGroup>
@@ -754,22 +631,22 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
       case 6:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Additional Information</h3>
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Additional Requirements</h3>
             
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
-                Any specific requirements or preferences not covered above?
+                Is there anything else you would like to mention about your ideal area?
               </label>
               
               <Textarea
                 value={additionalInfo}
                 onChange={(e) => setAdditionalInfo(e.target.value)}
-                placeholder="E.g., specific amenities, cultural preferences, accessibility needs..."
-                className="min-h-32 bg-white/10 text-white border-white/20 placeholder:text-white/40"
+                placeholder="E.g., I need a garden, I want to be close to my children's school, I prefer a quiet area, etc."
+                className="min-h-[120px] bg-gray-800/70 border-white/20 text-white placeholder:text-white/40"
               />
               
-              <p className="text-sm text-white/70">
-                This helps us better understand your unique requirements and provide more personalized area recommendations.
+              <p className="text-xs text-white/60">
+                This is your chance to add any specific requirements that haven't been covered by the previous steps.
               </p>
             </div>
           </div>
@@ -780,65 +657,105 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     }
   };
 
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1: return !!budget;
+      case 2: return priorities.length > 0;
+      case 3: return true; // Optional fields
+      case 4: return lifestyle.length > 0;
+      case 5: return !!dailyRoutine;
+      case 6: return true; // Additional info is optional
+      default: return false;
+    }
+  };
+
   return (
-    <div 
-      ref={wizardRef}
-      className="bg-gray-900/95 border border-white/10 rounded-xl shadow-xl p-6 mt-8 backdrop-blur-sm animate-in slide-in-from-bottom duration-300 relative max-w-4xl mx-auto w-full"
-    >
-      <button
-        onClick={onCancel}
-        className="absolute top-4 right-4 text-white/60 hover:text-white"
-      >
-        ×
-      </button>
-      
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-display font-semibold text-white">Find Your Perfect Area</h2>
-        <div className="text-white/70 flex items-center text-sm">
-          Step {currentStep} of {totalSteps}
-        </div>
+    <div className="bg-gradient-to-br from-black/60 to-black/40 rounded-xl p-6 shadow-xl border border-purple-600/30 max-w-3xl mx-auto mb-8">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-display font-semibold text-white flex items-center">
+          <Lightbulb className="h-5 w-5 text-amber-400 mr-2" />
+          Area Search Wizard
+        </h2>
+        <Button variant="outline" size="sm" onClick={onCancel} className="text-white/70 border-white/20 hover:bg-white/10">
+          Cancel
+        </Button>
       </div>
       
       <div className="mb-6">
-        <div className="w-full bg-white/10 h-2 rounded-full">
+        <div className="flex justify-between items-center mb-2">
+          {[1, 2, 3, 4, 5, 6].map((step) => (
+            <div 
+              key={step}
+              className={`relative flex h-10 w-10 items-center justify-center rounded-full border ${
+                step < currentStep 
+                  ? 'bg-purple-600 border-purple-600 text-white' 
+                  : step === currentStep 
+                    ? 'bg-black/50 border-purple-600 text-white'
+                    : 'bg-black/20 border-white/20 text-white/50'
+              }`}
+            >
+              {step < currentStep ? (
+                <Check className="h-5 w-5" />
+              ) : (
+                <span>{step}</span>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="overflow-hidden h-1 flex rounded bg-black/20">
           <div
-            className="bg-gradient-to-r from-purple-500 to-coral h-2 rounded-full transition-all"
-            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-          ></div>
+            className="bg-purple-600 transition-all duration-300"
+            style={{ width: `${(currentStep - 1) * 20}%` }}
+          />
         </div>
       </div>
       
-      {renderStepContent()}
-      
-      <div className="flex justify-between mt-8">
-        <Button
-          onClick={goToPrevStep}
-          variant="outline"
-          className="border-white/20 text-white hover:bg-white/10"
-          disabled={currentStep === 1}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
+      <form onSubmit={(e) => { e.preventDefault(); }}>
+        <div className="min-h-[350px]">
+          {renderStepContent()}
+        </div>
         
-        <Button
-          onClick={currentStep === totalSteps ? submitWizard : goToNextStep}
-          disabled={isSearching}
-          className="bg-gradient-to-r from-purple-600 to-coral text-white"
-        >
-          {currentStep === totalSteps ? (
-            <>
-              <Search className="mr-2 h-4 w-4" />
-              Find Areas
-            </>
-          ) : (
-            <>
-              Next
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          )}
-        </Button>
-      </div>
+        <div className="mt-6 flex justify-between">
+          <Button
+            type="button"
+            onClick={goToPrevStep}
+            disabled={currentStep === 1}
+            variant="outline"
+            className="text-white border-white/20 hover:bg-white/10 disabled:opacity-50"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          
+          <Button
+            type="button"
+            onClick={goToNextStep}
+            disabled={!canProceed() || isSearching}
+            variant="glow"
+            size="lg"
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            {currentStep === totalSteps ? (
+              isSearching ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Finding Areas
+                </>
+              ) : (
+                <>
+                  <Search className="mr-2 h-4 w-4" />
+                  Find Areas
+                </>
+              )
+            ) : (
+              <>
+                Next
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };

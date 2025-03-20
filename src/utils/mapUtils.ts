@@ -37,59 +37,23 @@ export const loadGoogleMapsScript = (
   };
 };
 
-// Create map styles for consistent styling - using a light theme
+// Create map styles for consistent styling
 export const mapStyles = [
   {
-    "featureType": "administrative",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#444444"
-      }
-    ]
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }],
   },
   {
-    "featureType": "landscape",
-    "elementType": "all",
-    "stylers": [
-      {
-        "color": "#f2f2f2"
-      }
-    ]
+    featureType: "administrative.neighborhood",
+    elementType: "labels",
+    stylers: [{ visibility: "on" }],
   },
   {
-    "featureType": "poi",
-    "elementType": "all",
-    "stylers": [
-      {
-        "visibility": "simplified"
-      }
-    ]
+    featureType: "transit",
+    elementType: "labels",
+    stylers: [{ visibility: "on" }],
   },
-  {
-    "featureType": "road",
-    "elementType": "all",
-    "stylers": [
-      {
-        "saturation": -100
-      },
-      {
-        "lightness": 45
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "all",
-    "stylers": [
-      {
-        "color": "#c4e8ff"
-      },
-      {
-        "visibility": "on"
-      }
-    ]
-  }
 ];
 
 // Default Richmond coordinates
@@ -138,6 +102,3 @@ export const getNorthLondonAreas = (): AreaInfo[] => {
     }
   ];
 };
-
-// Export location type for use in other files
-export type LocationType = 'london' | 'uk' | 'world';

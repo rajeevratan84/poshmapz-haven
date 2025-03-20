@@ -1,191 +1,172 @@
 
-import React, { useState, useEffect } from 'react';
-import GoogleMap from '@/components/GoogleMap';
+import React, { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { AreaMatch } from '@/types/area';
-import { LocationType } from '@/utils/mapUtils';
 
-export interface AreaMapComponentProps {
+interface AreaMapComponentProps {
   results: AreaMatch[];
-  selectedArea: AreaMatch | null;
   onAreaSelected: (area: AreaMatch) => void;
-  locationType?: LocationType;
-  country?: string;
+  selectedArea: AreaMatch | null;
 }
 
-const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ 
-  results, 
-  selectedArea, 
-  onAreaSelected,
-  locationType = 'london',
-  country
-}) => {
-  // If we have a selectedArea, center on it, otherwise use default center
-  const [mapCenter, setMapCenter] = useState<google.maps.LatLngLiteral>(
-    // Default center for London
-    { lat: 51.509865, lng: -0.118092 }
-  );
-  
-  // Log results to debug
+const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ results, onAreaSelected, selectedArea }) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const markersRef = useRef<google.maps.Marker[]>([]);
+  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
+
   useEffect(() => {
-    console.log("Map results:", results);
-    console.log("Map results count:", results.length);
-  }, [results]);
-  
-  // Update the map center when a different country is selected or when results change
-  useEffect(() => {
-    if (locationType === 'london') {
-      // Default for London
-      setMapCenter({ lat: 51.509865, lng: -0.118092 });
-    } else if (locationType === 'uk') {
-      // Default for UK
-      setMapCenter({ lat: 54.7023545, lng: -3.2765753 });
-    } else if (results.length > 0) {
-      // Use the first result's coordinates
-      setMapCenter(results[0].coordinates);
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const initMap = () => {
+      if (!mapRef.current) return;
+      
+      try {
+        const londonCoordinates = { lat: 51.507, lng: -0.127 };
+        
+        mapInstanceRef.current = new google.maps.Map(mapRef.current, {
+          zoom: 11,
+          center: londonCoordinates,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true,
+          zoomControl: true,
+          styles: [
+            {
+              featureType: "poi",
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+            {
+              featureType: "administrative.neighborhood",
+              elementType: "labels",
+              stylers: [{ visibility: "on" }],
+            },
+            {
+              featureType: "transit",
+              elementType: "labels",
+              stylers: [{ visibility: "on" }],
+            },
+          ],
+        });
+        
+        infoWindowRef.current = new google.maps.InfoWindow();
+      } catch (error) {
+        console.error("Error initializing map:", error);
+        toast.error("Could not initialize Google Maps.");
+      }
+    };
+
+    if (window.google?.maps) {
+      initMap();
     } else {
-      // Default centers for common countries
-      const defaultCenters: Record<string, google.maps.LatLngLiteral> = {
-        'United Kingdom': { lat: 54.7023545, lng: -3.2765753 },
-        'United States': { lat: 37.0902, lng: -95.7129 },
-        'Canada': { lat: 56.1304, lng: -106.3468 },
-        'Australia': { lat: -25.2744, lng: 133.7751 },
-        'France': { lat: 46.2276, lng: 2.2137 },
-        'Germany': { lat: 51.1657, lng: 10.4515 },
-        'Spain': { lat: 40.4637, lng: -3.7492 },
-        'Italy': { lat: 41.8719, lng: 12.5674 },
-        'Japan': { lat: 36.2048, lng: 138.2529 },
-        'Brazil': { lat: -14.2350, lng: -51.9253 },
-        'Mexico': { lat: 23.6345, lng: -102.5528 },
-        'South Africa': { lat: -30.5595, lng: 22.9375 },
-        'India': { lat: 20.5937, lng: 78.9629 },
-        'China': { lat: 35.8617, lng: 104.1954 },
-        'Singapore': { lat: 1.3521, lng: 103.8198 },
-        'United Arab Emirates': { lat: 23.4241, lng: 53.8478 },
-        'New Zealand': { lat: -40.9006, lng: 174.8860 },
-        'Thailand': { lat: 15.8700, lng: 100.9925 },
-        'Portugal': { lat: 39.3999, lng: -8.2245 },
-        'Netherlands': { lat: 52.1326, lng: 5.2913 },
-        'Trinidad and Tobago': { lat: 10.6918, lng: -61.2225 }
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+      
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geocoding`;
+      script.async = true;
+      script.defer = true;
+      
+      script.onload = initMap;
+      script.onerror = () => {
+        console.error("Failed to load Google Maps API");
+        toast.error("Could not load Google Maps. Please try again later.");
       };
       
-      if (country && defaultCenters[country]) {
-        setMapCenter(defaultCenters[country]);
-      } else {
-        // Fallback to a world-centric view
-        setMapCenter({ lat: 20, lng: 0 });
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mapInstanceRef.current || !infoWindowRef.current) return;
+    
+    // Clear previous markers
+    markersRef.current.forEach(marker => marker.setMap(null));
+    markersRef.current = [];
+    
+    // Add new markers for each result
+    results.forEach(area => addMarkerForArea(area));
+    
+    // Adjust map bounds if needed
+    if (results.length && mapInstanceRef.current) {
+      const bounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(marker => {
+        if (marker.getPosition()) {
+          bounds.extend(marker.getPosition()!);
+        }
+      });
+      mapInstanceRef.current.fitBounds(bounds);
+      
+      if (markersRef.current.length === 1 && mapInstanceRef.current) {
+        mapInstanceRef.current.setZoom(14);
       }
     }
-  }, [locationType, country, results]);
+  }, [results]);
 
-  // Update map center when a new area is selected
   useEffect(() => {
-    if (selectedArea) {
-      setMapCenter(selectedArea.coordinates);
+    if (selectedArea && mapInstanceRef.current) {
+      const marker = markersRef.current.find(m => m.getTitle()?.startsWith(selectedArea.name));
+      if (marker) {
+        mapInstanceRef.current.panTo(marker.getPosition()!);
+        mapInstanceRef.current.setZoom(14);
+        google.maps.event.trigger(marker, 'click');
+      }
     }
   }, [selectedArea]);
-  
-  // Calculate appropriate zoom level
-  const getZoomLevel = () => {
-    if (results.length === 0) {
-      // Default zoom for different location types
-      if (locationType === 'london') return 11;
-      if (locationType === 'uk') return 6;
-      return 5;
-    }
+
+  const addMarkerForArea = (area: AreaMatch) => {
+    if (!mapInstanceRef.current || !infoWindowRef.current) return;
     
-    if (selectedArea) {
-      // Zoom in when an area is selected
-      return 14;
-    }
+    const contentString = `
+      <div class="p-3 max-w-xs">
+        <div class="flex justify-between items-center mb-1">
+          <div class="font-medium text-gray-800">${area.name}</div>
+          <div class="text-xs bg-green-600 text-white px-1.5 py-0.5 rounded">${area.matchPercentage}% match</div>
+        </div>
+        <div class="text-xs font-semibold text-green-600 mb-1">Posh Score: ${area.poshScore}/100</div>
+        <div class="text-xs text-gray-600">${area.description}</div>
+      </div>
+    `;
     
-    // Default zoom when results are available but none selected
-    if (locationType === 'london') return 11;
-    if (locationType === 'uk') return 8;
-    return 10;
+    const marker = new google.maps.Marker({
+      position: area.coordinates,
+      map: mapInstanceRef.current,
+      animation: google.maps.Animation.DROP,
+      title: `${area.name} - ${area.matchPercentage}% match`
+    });
+    
+    marker.addListener("mouseover", () => {
+      if (infoWindowRef.current && mapInstanceRef.current) {
+        infoWindowRef.current.setContent(contentString);
+        infoWindowRef.current.open(mapInstanceRef.current, marker);
+      }
+    });
+    
+    marker.addListener("mouseout", () => {
+      setTimeout(() => {
+        if (infoWindowRef.current && selectedArea?.name !== area.name) {
+          infoWindowRef.current.close();
+        }
+      }, 1000);
+    });
+    
+    marker.addListener("click", () => {
+      if (infoWindowRef.current && mapInstanceRef.current) {
+        infoWindowRef.current.setContent(contentString);
+        infoWindowRef.current.open(mapInstanceRef.current, marker);
+        onAreaSelected(area);
+        
+        const areaElement = document.getElementById(`area-${area.name.replace(/\s+/g, '-').toLowerCase()}`);
+        if (areaElement && window.innerWidth < 768) {
+          areaElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+    
+    markersRef.current.push(marker);
   };
 
-  // Map styles - using a light mode style
-  const mapStyles = [
-    {
-      "featureType": "administrative",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#444444"
-        }
-      ]
-    },
-    {
-      "featureType": "landscape",
-      "elementType": "all",
-      "stylers": [
-        {
-          "color": "#f2f2f2"
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "all",
-      "stylers": [
-        {
-          "visibility": "simplified"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "all",
-      "stylers": [
-        {
-          "saturation": -100
-        },
-        {
-          "lightness": 45
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "all",
-      "stylers": [
-        {
-          "visibility": "simplified"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "all",
-      "stylers": [
-        {
-          "color": "#c4e8ff"
-        },
-        {
-          "visibility": "on"
-        }
-      ]
-    }
-  ];
-
-  return (
-    <div className="w-full h-[400px] rounded-lg overflow-hidden">
-      <GoogleMap
-        center={mapCenter}
-        zoom={getZoomLevel()}
-        mapContainerStyle={{ width: '100%', height: '100%' }}
-        options={{
-          fullscreenControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-          styles: mapStyles
-        }}
-        areas={results}
-        onAreaSelected={onAreaSelected}
-        selectedArea={selectedArea}
-      />
-    </div>
-  );
+  return <div ref={mapRef} className="w-full h-[500px] rounded-lg mb-6"></div>;
 };
 
 export default AreaMapComponent;
