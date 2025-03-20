@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { MapPin, Menu, X } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -31,14 +32,14 @@ const Navbar: React.FC = () => {
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <a 
-          href="#" 
+        <Link 
+          to="/" 
           className="flex items-center space-x-2 text-white"
           aria-label="PoshMaps"
         >
           <MapPin className="h-6 w-6 text-coral" />
           <span className="font-display text-xl font-semibold">PoshMaps</span>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
@@ -60,12 +61,12 @@ const Navbar: React.FC = () => {
           >
             Our Solution
           </a>
-          <a 
-            href="/demo" 
+          <Link 
+            to="/demo" 
             className="text-sm bg-posh-green px-4 py-2 rounded-full text-white font-medium hover:bg-green-600 transition-colors"
           >
             Try Demo
-          </a>
+          </Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -100,13 +101,13 @@ const Navbar: React.FC = () => {
           >
             See It In Action
           </a>
-          <a 
-            href="/demo" 
+          <Link 
+            to="/demo" 
             className="text-lg text-white font-medium bg-posh-green px-4 py-2 rounded-full text-center"
             onClick={() => setMobileMenuOpen(false)}
           >
             Try Demo
-          </a>
+          </Link>
         </div>
       </div>
     </header>
