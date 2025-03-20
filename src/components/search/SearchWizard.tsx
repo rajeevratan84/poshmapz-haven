@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,121 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
   const [tempTime, setTempTime] = useState('');
 
   const totalSteps = 5;
+
+  // More granular budget options
+  const rentBudgetOptions = [
+    { value: 'very-low', label: 'Up to £1,000 per month' },
+    { value: 'low', label: '£1,000–£1,500 per month' },
+    { value: 'medium-low', label: '£1,500–£2,000 per month' },
+    { value: 'medium', label: '£2,000–£2,500 per month' },
+    { value: 'medium-high', label: '£2,500–£3,000 per month' },
+    { value: 'high', label: '£3,000–£3,500 per month' },
+    { value: 'very-high', label: '£3,500–£5,000 per month' },
+    { value: 'luxury', label: 'Over £5,000 per month' }
+  ];
+
+  const buyBudgetOptions = [
+    { value: 'very-low', label: 'Up to £300,000' },
+    { value: 'low', label: '£300,000–£500,000' },
+    { value: 'medium-low', label: '£500,000–£750,000' },
+    { value: 'medium', label: '£750,000–£1,000,000' },
+    { value: 'medium-high', label: '£1,000,000–£1,500,000' },
+    { value: 'high', label: '£1,500,000–£2,000,000' },
+    { value: 'very-high', label: '£2,000,000–£3,000,000' },
+    { value: 'luxury', label: 'Over £3,000,000' }
+  ];
+
+  // Colors for lifestyle categories
+  const lifestyleColors = {
+    amenities: '#9b87f5',      // Purple
+    nightlife: '#FF7F50',      // Coral
+    community: '#4CAF50',      // Green
+    environment: '#2196F3',    // Blue
+    activities: '#FFC107',     // Amber
+    special: '#E91E63'         // Pink
+  };
+
+  // Updated lifestyle options with more choices and categories
+  const lifestyleOptions = [
+    // Amenities category (Purple)
+    { value: 'good-schools', label: 'School catchment', category: 'amenities' },
+    { value: 'cultural-venues', label: 'Cultural hotspots', category: 'amenities' },
+    { value: 'restaurants', label: 'Fine dining', category: 'amenities' },
+    { value: 'markets', label: 'Local markets', category: 'amenities' },
+    { value: 'fitness', label: 'Fitness facilities', category: 'amenities' },
+    { value: 'coffee', label: 'Cafés & coffee', category: 'amenities' },
+    { value: 'shopping', label: 'Shopping areas', category: 'amenities' },
+    { value: 'transport', label: 'Transport links', category: 'amenities' },
+    { value: 'grocery', label: 'Quality grocery stores', category: 'amenities' },
+    { value: 'healthcare', label: 'Healthcare facilities', category: 'amenities' },
+    
+    // Nightlife (Coral)
+    { value: 'bars', label: 'Bars & pubs', category: 'nightlife' },
+    { value: 'clubs', label: 'Nightclubs', category: 'nightlife' },
+    { value: 'live-music', label: 'Live music venues', category: 'nightlife' },
+    { value: 'theatres', label: 'Theatres', category: 'nightlife' },
+    { value: 'comedy', label: 'Comedy clubs', category: 'nightlife' },
+    
+    // Community (Green)
+    { value: 'family-friendly', label: 'Family-friendly', category: 'community' },
+    { value: 'lgbt-friendly', label: 'LGBT+ friendly', category: 'community' },
+    { value: 'dog-friendly', label: 'Dog-friendly', category: 'community' },
+    { value: 'international', label: 'International community', category: 'community' },
+    { value: 'young-professionals', label: 'Young professionals', category: 'community' },
+    { value: 'students', label: 'Student population', category: 'community' },
+    { value: 'retirees', label: 'Retirement community', category: 'community' },
+    
+    // Environment (Blue)
+    { value: 'quiet', label: 'Quiet streets', category: 'environment' },
+    { value: 'green-spaces', label: 'Green spaces', category: 'environment' },
+    { value: 'riverside', label: 'Riverside', category: 'environment' },
+    { value: 'suburban', label: 'Suburban feel', category: 'environment' },
+    { value: 'urban', label: 'Urban lifestyle', category: 'environment' },
+    { value: 'historic', label: 'Historic architecture', category: 'environment' },
+    { value: 'modern', label: 'Modern developments', category: 'environment' },
+    
+    // Activities (Amber)
+    { value: 'cycling', label: 'Cycling-friendly', category: 'activities' },
+    { value: 'running', label: 'Running paths', category: 'activities' },
+    { value: 'water-sports', label: 'Water sports', category: 'activities' },
+    { value: 'tennis', label: 'Tennis courts', category: 'activities' },
+    { value: 'football', label: 'Football pitches', category: 'activities' },
+    { value: 'golf', label: 'Golf courses', category: 'activities' },
+    { value: 'swimming', label: 'Swimming pools', category: 'activities' },
+    
+    // Special interests (Pink)
+    { value: 'independent', label: 'Independent shops', category: 'special' },
+    { value: 'artistic', label: 'Artistic community', category: 'special' },
+    { value: 'tech-hub', label: 'Tech hub', category: 'special' },
+    { value: 'foodie-scene', label: 'Foodie scene', category: 'special' },
+    { value: 'vegan-friendly', label: 'Vegan-friendly', category: 'special' },
+    { value: 'craft-beer', label: 'Craft beer scene', category: 'special' },
+  ];
+
+  // Existing cultural communities
+  const culturalCommunities = [
+    { value: 'indian', label: 'Indian community', category: 'community' },
+    { value: 'pakistani', label: 'Pakistani community', category: 'community' },
+    { value: 'polish', label: 'Polish community', category: 'community' },
+    { value: 'caribbean', label: 'Caribbean community', category: 'community' },
+    { value: 'chinese', label: 'Chinese community', category: 'community' },
+    { value: 'jewish', label: 'Jewish community', category: 'community' },
+    { value: 'turkish', label: 'Turkish community', category: 'community' },
+    { value: 'italian', label: 'Italian community', category: 'community' },
+    { value: 'greek', label: 'Greek community', category: 'community' },
+  ];
+
+  // Combine all lifestyle options
+  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities];
+
+  // Group lifestyle options by category
+  const groupedLifestyleOptions = allLifestyleOptions.reduce((acc, option) => {
+    if (!acc[option.category]) {
+      acc[option.category] = [];
+    }
+    acc[option.category].push(option);
+    return acc;
+  }, {} as Record<string, typeof lifestyleOptions>);
 
   const goToNextStep = () => {
     if (currentStep < totalSteps) {
@@ -59,13 +173,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     const lifestylePreferences = lifestyle.join(', ');
     const prioritiesText = priorities.join(', ');
     
-    let budgetText = '';
-    switch (budget) {
-      case 'low': budgetText = type === 'rent' ? 'up to £1,500 per month' : 'up to £500,000'; break;
-      case 'medium': budgetText = type === 'rent' ? '£1,500-£2,500 per month' : '£500,000-£750,000'; break;
-      case 'high': budgetText = type === 'rent' ? '£2,500-£3,500 per month' : '£750,000-£1,000,000'; break;
-      case 'luxury': budgetText = type === 'rent' ? 'over £3,500 per month' : 'over £1,000,000'; break;
-    }
+    // Map budget to text based on selected option and property type
+    const budgetOptions = type === 'rent' ? rentBudgetOptions : buyBudgetOptions;
+    const selectedBudget = budgetOptions.find(option => option.value === budget);
+    const budgetText = selectedBudget ? selectedBudget.label : '';
     
     let routineText = '';
     switch (dailyRoutine) {
@@ -114,30 +225,18 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80">Budget:</label>
               <RadioGroup value={budget} onValueChange={setBudget} className="space-y-3">
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="low" id="budget-low" className="border-white/30 text-posh-green" />
-                  <label htmlFor="budget-low" className="w-full text-white cursor-pointer">
-                    {type === 'rent' ? 'Up to £1,500 per month' : 'Up to £500,000'}
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="medium" id="budget-medium" className="border-white/30 text-posh-green" />
-                  <label htmlFor="budget-medium" className="w-full text-white cursor-pointer">
-                    {type === 'rent' ? '£1,500–£2,500 per month' : '£500,000–£750,000'}
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="high" id="budget-high" className="border-white/30 text-posh-green" />
-                  <label htmlFor="budget-high" className="w-full text-white cursor-pointer">
-                    {type === 'rent' ? '£2,500–£3,500 per month' : '£750,000–£1,000,000'}
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="luxury" id="budget-luxury" className="border-white/30 text-posh-green" />
-                  <label htmlFor="budget-luxury" className="w-full text-white cursor-pointer">
-                    {type === 'rent' ? 'Over £3,500 per month' : 'Over £1,000,000'}
-                  </label>
-                </div>
+                {(type === 'rent' ? rentBudgetOptions : buyBudgetOptions).map(option => (
+                  <div key={option.value} className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                    <RadioGroupItem 
+                      value={option.value} 
+                      id={`budget-${option.value}`} 
+                      className="border-white/30 text-posh-green"
+                    />
+                    <label htmlFor={`budget-${option.value}`} className="w-full text-white cursor-pointer">
+                      {option.label}
+                    </label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
           </div>
@@ -340,82 +439,42 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 What lifestyle features and community aspects are important to you? (Select all that apply)
               </label>
               
-              <ToggleGroup 
-                type="multiple" 
-                className="flex flex-wrap gap-2"
-                value={lifestyle}
-                onValueChange={setLifestyle}
-              >
-                <ToggleGroupItem value="good-schools" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  School catchment
-                </ToggleGroupItem>
-                <ToggleGroupItem value="cultural-venues" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Cultural hotspots
-                </ToggleGroupItem>
-                <ToggleGroupItem value="restaurants" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Fine dining
-                </ToggleGroupItem>
-                <ToggleGroupItem value="markets" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Local markets
-                </ToggleGroupItem>
-                <ToggleGroupItem value="quiet" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Quiet streets
-                </ToggleGroupItem>
-                <ToggleGroupItem value="fitness" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Fitness facilities
-                </ToggleGroupItem>
-                <ToggleGroupItem value="coffee" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Cafés & coffee
-                </ToggleGroupItem>
-                <ToggleGroupItem value="bars" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Bars & pubs
-                </ToggleGroupItem>
-                <ToggleGroupItem value="shopping" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Shopping areas
-                </ToggleGroupItem>
-                <ToggleGroupItem value="transport" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Transport links
-                </ToggleGroupItem>
-                <ToggleGroupItem value="suburban" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Suburban feel
-                </ToggleGroupItem>
-                <ToggleGroupItem value="urban" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Urban lifestyle
-                </ToggleGroupItem>
-                <ToggleGroupItem value="gritty" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Gritty character
-                </ToggleGroupItem>
-                <ToggleGroupItem value="upscale" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Upscale living
-                </ToggleGroupItem>
-                <ToggleGroupItem value="independent" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Independent shops
-                </ToggleGroupItem>
-                <ToggleGroupItem value="artistic" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Artistic community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="indian" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Indian community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="pakistani" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Pakistani community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="polish" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Polish community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="caribbean" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Caribbean community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="chinese" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Chinese community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="jewish" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Jewish community
-                </ToggleGroupItem>
-                <ToggleGroupItem value="turkish" className="bg-black/20 border border-white/10 text-white data-[state=on]:bg-posh-green">
-                  Turkish community
-                </ToggleGroupItem>
-              </ToggleGroup>
+              <div className="space-y-5">
+                {Object.entries(groupedLifestyleOptions).map(([category, options]) => (
+                  <div key={category} className="space-y-2">
+                    <h4 className="text-sm font-medium capitalize" style={{ color: lifestyleColors[category as keyof typeof lifestyleColors] || '#ffffff' }}>
+                      {category}
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {options.map(option => (
+                        <ToggleGroupItem 
+                          key={option.value}
+                          value={option.value} 
+                          className="bg-black/20 border border-white/10 text-white hover:bg-black/30"
+                          style={{ 
+                            backgroundColor: lifestyle.includes(option.value) 
+                              ? `${lifestyleColors[option.category as keyof typeof lifestyleColors]}40` 
+                              : 'rgba(0,0,0,0.2)',
+                            borderColor: lifestyle.includes(option.value)
+                              ? lifestyleColors[option.category as keyof typeof lifestyleColors]
+                              : 'rgba(255,255,255,0.1)'
+                          }}
+                          data-state={lifestyle.includes(option.value) ? 'on' : 'off'}
+                          onClick={() => {
+                            if (lifestyle.includes(option.value)) {
+                              setLifestyle(lifestyle.filter(item => item !== option.value));
+                            } else {
+                              setLifestyle([...lifestyle, option.value]);
+                            }
+                          }}
+                        >
+                          {option.label}
+                        </ToggleGroupItem>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         );

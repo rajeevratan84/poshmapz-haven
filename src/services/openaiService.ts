@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 import { AreaMatch } from '@/types/area';
 
@@ -29,13 +30,14 @@ For each area, provide:
    - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
    - Property growth (use "+" or "-" followed by percentage for clear growth indicators, e.g., "+3.5%" or "-1.2%")
    - Area vibe (2-4 tags like: Family-friendly, Upscale, Riverside, Trendy, Historic, etc.)
+8. At the end of each description, add ONE sentence explaining why this area specifically does or does not match the user's requirements.
 
 Format the response as a valid JSON array with objects having these exact keys:
 [
   {
     "name": "Area Name",
     "matchPercentage": 95,
-    "description": "Brief description of the area.",
+    "description": "Brief description of the area. Also includes why it matches requirements.",
     "poshScore": 85,
     "coordinates": {
       "lat": 51.5074,
@@ -80,7 +82,7 @@ PROVIDE OUTPUT IN JSON FORMAT ONLY.
             content: prompt
           }
         ],
-        temperature: 0.7,
+        temperature: 0.3, // Lowered from 0.7 to 0.3 for more consistent results
       }),
     });
 
