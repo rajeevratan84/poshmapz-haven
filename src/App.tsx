@@ -1,39 +1,23 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Index from './pages/Index';
+import Demo from './pages/Demo';
+import NotFound from './pages/NotFound';
+import './App.css';
+import { Toaster } from 'sonner';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
-
-// Lazy load pages
-const Index = lazy(() => import("./pages/Index"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-
-// Create QueryClient only once
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false, // Disable refetching on window focus for better performance
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    },
-  },
-});
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+function App() {
+  return (
+    <>
+      <Toaster richColors position="top-center" />
+      <Router>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/demo" element={<Demo />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Suspense>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </Router>
+    </>
+  );
+}
 
 export default App;

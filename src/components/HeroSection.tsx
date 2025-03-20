@@ -5,6 +5,7 @@ import { MapPin, Search, Building, Star, RefreshCw } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
 import GoogleMap from './GoogleMap';
 import AnimatedSearchExample from './AnimatedSearchExample';
+import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   const searchDemoRef = useRef<HTMLDivElement>(null);
@@ -68,6 +69,11 @@ const HeroSection: React.FC = () => {
               <Button onClick={handleEarlyAccessClick} className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
                 Get Early Access
               </Button>
+              <Link to="/demo" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full bg-black/60 text-white border border-white/20 rounded-full px-8 py-6 text-base hover:bg-black/80">
+                  Try the Demo
+                </Button>
+              </Link>
             </div>
           </ScrollAnimation>
         </div>

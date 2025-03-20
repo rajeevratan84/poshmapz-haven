@@ -60,6 +60,12 @@ const Navbar: React.FC = () => {
           >
             Our Solution
           </a>
+          <a 
+            href="/demo" 
+            className="text-sm bg-posh-green px-4 py-2 rounded-full text-white font-medium hover:bg-green-600 transition-colors"
+          >
+            Try Demo
+          </a>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -93,6 +99,13 @@ const Navbar: React.FC = () => {
             onClick={() => setMobileMenuOpen(false)}
           >
             See It In Action
+          </a>
+          <a 
+            href="/demo" 
+            className="text-lg text-white font-medium bg-posh-green px-4 py-2 rounded-full text-center"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Try Demo
           </a>
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 declare namespace google {
   namespace maps {
     class Map {
@@ -5,6 +6,8 @@ declare namespace google {
       setCenter(latLng: LatLng | LatLngLiteral): void;
       setZoom(zoom: number): void;
       addListener(eventName: string, handler: Function): MapsEventListener;
+      panTo(latLng: LatLng | LatLngLiteral): void;
+      fitBounds(bounds: LatLngBounds | LatLngBoundsLiteral, padding?: number | Padding): void;
     }
 
     class Marker {
@@ -13,6 +16,8 @@ declare namespace google {
       setPosition(latLng: LatLng | LatLngLiteral): void;
       setTitle(title: string): void;
       addListener(eventName: string, handler: Function): MapsEventListener;
+      getPosition(): LatLng | null;
+      getTitle(): string | undefined;
     }
 
     class Geocoder {
@@ -25,6 +30,13 @@ declare namespace google {
       open(map: Map, anchor?: Marker): void;
       setContent(content: string | Node): void;
       close(): void;
+    }
+
+    class LatLngBounds {
+      constructor(sw?: LatLng | LatLngLiteral, ne?: LatLng | LatLngLiteral);
+      extend(latLng: LatLng | LatLngLiteral): LatLngBounds;
+      getCenter(): LatLng;
+      isEmpty(): boolean;
     }
 
     interface MapOptions {
@@ -98,6 +110,13 @@ declare namespace google {
       viewport: LatLngBounds;
     }
 
+    interface Padding {
+      top: number;
+      right: number;
+      bottom: number;
+      left: number;
+    }
+
     type GeocoderLocationType = "APPROXIMATE" | "GEOMETRIC_CENTER" | "RANGE_INTERPOLATED" | "ROOFTOP";
     type GeocoderStatus = "ERROR" | "INVALID_REQUEST" | "OK" | "OVER_QUERY_LIMIT" | "REQUEST_DENIED" | "UNKNOWN_ERROR" | "ZERO_RESULTS";
 
@@ -142,6 +161,14 @@ declare namespace google {
       BOUNCE: number;
       DROP: number;
       Pc: number;
+    };
+    
+    const event: {
+      trigger(instance: any, eventName: string, ...args: any[]): void;
+      addListener(instance: any, eventName: string, handler: Function): MapsEventListener;
+      removeListener(listener: MapsEventListener): void;
+      clearInstanceListeners(instance: any): void;
+      clearListeners(instance: any, eventName: string): void;
     };
   }
 }
