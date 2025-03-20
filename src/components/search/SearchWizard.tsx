@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -237,11 +236,11 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
               <label className="text-sm font-medium text-white/80">I'm looking to:</label>
               <Tabs defaultValue="rent" value={type} onValueChange={(v) => setType(v as 'rent' | 'buy')} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-black/30">
-                  <TabsTrigger value="rent" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
+                  <TabsTrigger value="rent" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
                     <Home className="mr-2 h-4 w-4" />
                     Rent
                   </TabsTrigger>
-                  <TabsTrigger value="buy" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
+                  <TabsTrigger value="buy" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
                     <PoundSterling className="mr-2 h-4 w-4" />
                     Buy
                   </TabsTrigger>
@@ -309,7 +308,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                     <RadioGroupItem 
                       value={option.value} 
                       id={`budget-${option.value}`} 
-                      className="border-white/30 text-posh-green"
+                      className="border-white/30 text-purple-600"
                     />
                     <label htmlFor={`budget-${option.value}`} className="w-full text-white cursor-pointer">
                       {option.label}
@@ -634,7 +633,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
   };
 
   return (
-    <div className="bg-gradient-to-br from-black/60 to-black/40 rounded-xl p-6 shadow-xl border border-posh-green/30 max-w-3xl mx-auto mb-8">
+    <div className="bg-gradient-to-br from-black/60 to-black/40 rounded-xl p-6 shadow-xl border border-purple-600/30 max-w-3xl mx-auto mb-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-display font-semibold text-white flex items-center">
           <Lightbulb className="h-5 w-5 text-amber-400 mr-2" />
@@ -652,9 +651,9 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
               key={step}
               className={`relative flex h-10 w-10 items-center justify-center rounded-full border ${
                 step < currentStep 
-                  ? 'bg-posh-green border-posh-green text-white' 
+                  ? 'bg-purple-600 border-purple-600 text-white' 
                   : step === currentStep 
-                    ? 'bg-black/50 border-posh-green text-white'
+                    ? 'bg-black/50 border-purple-600 text-white'
                     : 'bg-black/20 border-white/20 text-white/50'
               }`}
             >
@@ -668,7 +667,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
         </div>
         <div className="overflow-hidden h-1 flex rounded bg-black/20">
           <div
-            className="bg-posh-green transition-all duration-300"
+            className="bg-purple-600 transition-all duration-300"
             style={{ width: `${(currentStep - 1) * 25}%` }}
           />
         </div>
@@ -697,6 +696,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
             disabled={!canProceed() || isSearching}
             variant="glow"
             size="lg"
+            className="bg-purple-600 hover:bg-purple-700"
           >
             {currentStep === totalSteps ? (
               isSearching ? (

@@ -116,7 +116,7 @@ const DemoPage: React.FC = () => {
             />
           )}
           
-          <div className="flex items-center justify-center gap-2 text-xs text-posh-green font-semibold bg-black/30 py-2 px-4 rounded-full mx-auto w-fit">
+          <div className="flex items-center justify-center gap-2 text-xs text-purple-400 font-semibold bg-black/30 py-2 px-4 rounded-full mx-auto w-fit">
             <Sparkles className="h-3.5 w-3.5" />
             <span>Early Access Beta - London areas only</span>
           </div>

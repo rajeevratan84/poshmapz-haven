@@ -40,15 +40,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
           onClick={toggleWizard}
           variant={showWizard ? "default" : "outline"} 
           size="lg"
-          className={`relative ${!showWizard ? "bg-black/20 hover:bg-black/30 border border-white/10 text-white" : "bg-posh-green text-white shadow-lg shadow-posh-green/30"}`}
+          className={`relative ${!showWizard ? "bg-black/20 hover:bg-black/30 border border-white/10 text-white" : "bg-purple-600 text-white shadow-lg shadow-purple-600/30"}`}
         >
           {showWizard ? (
             <>Switch to Free Text Search</>
           ) : (
             <>
-              <Wand2 className="h-5 w-5 mr-2 text-coral" />
-              <span className="font-semibold text-coral">Use Guided Wizard</span>
-              <span className="absolute -top-2 -right-2 bg-posh-green text-white text-xs px-1.5 py-0.5 rounded-full animate-pulse">Recommended</span>
+              <Wand2 className="h-5 w-5 mr-2 text-amber-300" />
+              <span className="font-semibold text-amber-300">Use Guided Wizard</span>
+              <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded-full animate-pulse">Recommended</span>
             </>
           )}
         </Button>
