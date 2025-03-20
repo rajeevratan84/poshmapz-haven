@@ -4,16 +4,26 @@ import { AreaMatch } from '@/types/area';
 
 export async function analyzeAreaPreferences(
   userInput: string,
-  apiKey: string
+  apiKey: string,
+  country: 'london' | 'trinidad' = 'london'
 ): Promise<AreaMatch[] | null> {
   try {
-    const prompt = `
-You are an AI assistant for PoshMaps, a service that helps people find neighborhoods in London that match their preferences.
-
-Based on the following user input, identify up to 10 areas in London that best match their preferences.
+    const countrySpecificInstructions = country === 'london' 
+      ? `
 Ensure good geographical distribution across ALL of London (North, South, East, West, Central).
 Do not bias towards South London. Make sure to include areas from North, East, and West London.
-Only include areas within London, UK.
+Only include areas within London, UK.`
+      : `
+Ensure good geographical distribution across Trinidad and Tobago.
+Include areas from both Trinidad and Tobago islands.
+Consider options in urban areas like Port of Spain and San Fernando, as well as coastal and rural areas.
+Make sure to include popular areas for expats and tourists as well as authentic local neighborhoods.`;
+
+    const prompt = `
+You are an AI assistant for PoshMaps, a service that helps people find neighborhoods that match their preferences.
+
+Based on the following user input, identify up to 10 areas in ${country === 'london' ? 'London' : 'Trinidad and Tobago'} that best match their preferences.
+${countrySpecificInstructions}
 
 User input: "${userInput}"
 
@@ -22,11 +32,11 @@ For each area, provide:
 2. Match percentage (between 70-98%)
 3. A brief description of the area (2-3 sentences)
 4. A "Posh Score" between 60-95
-5. Coordinates (latitude and longitude) within London
+5. Coordinates (latitude and longitude) within ${country === 'london' ? 'London' : 'Trinidad and Tobago'}
 6. A list of 3-7 amenities or features that match the user's request
 7. Detailed area statistics including:
-   - Crime rate (Low/Medium/High with specific percentage compared to London average, e.g., "Low - 15% below London average" or "Medium - 5% above London average")
-   - Transport score (Poor/Good/Excellent with specific tube/train lines and time to central London, e.g., "Excellent - 20 min to central via Northern Line")
+   - Crime rate (Low/Medium/High with specific percentage compared to ${country === 'london' ? 'London' : 'Trinidad and Tobago'} average, e.g., "Low - 15% below average" or "Medium - 5% above average")
+   - Transport score (Poor/Good/Excellent with specific ${country === 'london' ? 'tube/train lines and time to central London' : 'bus routes and access to major roads'}, e.g., "${country === 'london' ? 'Excellent - 20 min to central via Northern Line' : 'Good - 15 min to Port of Spain via Priority Bus Route'}")
    - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
    - Property growth (use "+" or "-" followed by percentage for clear growth indicators, e.g., "+3.5%" or "-1.2%")
    - Area vibe (2-4 tags like: Family-friendly, Upscale, Riverside, Trendy, Historic, etc.)
@@ -40,13 +50,13 @@ Format the response as a valid JSON array with objects having these exact keys:
     "description": "Brief description of the area. Also includes why it matches requirements.",
     "poshScore": 85,
     "coordinates": {
-      "lat": 51.5074,
-      "lng": -0.1278
+      "lat": ${country === 'london' ? '51.5074' : '10.6918'},
+      "lng": ${country === 'london' ? '-0.1278' : '-61.2225'}
     },
     "amenities": ["amenity1", "amenity2", "amenity3"],
     "areaStats": {
-      "crimeRate": "Low - 20% below London average",
-      "transportScore": "Excellent - 15 min to central via Northern Line",
+      "crimeRate": "Low - 20% below ${country === 'london' ? 'London' : 'national'} average",
+      "transportScore": "${country === 'london' ? 'Excellent - 15 min to central via Northern Line' : 'Good - 15 min to Port of Spain via Priority Bus Route'}",
       "walkability": "Very Walkable - 85/100",
       "propertyGrowth": {
         "flats": "+2.5%",
@@ -57,8 +67,8 @@ Format the response as a valid JSON array with objects having these exact keys:
   }
 ]
 
-IMPORTANT: Limit your response to a maximum of 10 areas. Ensure all areas are real London neighborhoods with accurate information and actual London coordinates. 
-Sort by match percentage in descending order. Make sure to include areas from all regions of London (North, South, East, West, Central).
+IMPORTANT: Limit your response to a maximum of 10 areas. Ensure all areas are real ${country === 'london' ? 'London neighborhoods' : 'Trinidad and Tobago locations'} with accurate information and actual coordinates. 
+Sort by match percentage in descending order. ${country === 'london' ? 'Make sure to include areas from all regions of London (North, South, East, West, Central).' : 'Include areas from both Trinidad and Tobago islands.'}
 PROVIDE OUTPUT IN JSON FORMAT ONLY.
     `;
 
@@ -75,7 +85,7 @@ PROVIDE OUTPUT IN JSON FORMAT ONLY.
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that provides information about London neighborhoods in JSON format only.'
+            content: `You are a helpful assistant that provides information about ${country === 'london' ? 'London' : 'Trinidad and Tobago'} neighborhoods in JSON format only.`
           },
           {
             role: 'user',

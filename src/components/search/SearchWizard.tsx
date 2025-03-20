@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,9 +13,15 @@ interface SearchWizardProps {
   onSearch: (query: string) => void;
   isSearching: boolean;
   onCancel: () => void;
+  country?: 'london' | 'trinidad';
 }
 
-const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCancel }) => {
+const SearchWizard: React.FC<SearchWizardProps> = ({ 
+  onSearch, 
+  isSearching, 
+  onCancel,
+  country = 'london'
+}) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [type, setType] = useState<'rent' | 'buy'>('rent');
   const [propertyType, setPropertyType] = useState<'flat' | 'house'>('flat');
@@ -32,8 +37,8 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
 
   const totalSteps = 6;
 
-  // Popular London locations for quick selection
-  const popularLocations = [
+  // Popular locations based on country
+  const popularLocations = country === 'london' ? [
     { name: "Canary Wharf", defaultTime: "30" },
     { name: "Kings Cross", defaultTime: "25" },
     { name: "Waterloo", defaultTime: "20" },
@@ -44,10 +49,21 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { name: "Victoria", defaultTime: "20" },
     { name: "Paddington", defaultTime: "25" },
     { name: "Shoreditch", defaultTime: "30" },
+  ] : [
+    { name: "Port of Spain", defaultTime: "25" },
+    { name: "San Fernando", defaultTime: "30" },
+    { name: "Scarborough", defaultTime: "20" },
+    { name: "Arima", defaultTime: "35" },
+    { name: "Chaguanas", defaultTime: "30" },
+    { name: "Piarco Airport", defaultTime: "25" },
+    { name: "UWI St. Augustine", defaultTime: "20" },
+    { name: "Maracas Beach", defaultTime: "40" },
+    { name: "Pigeon Point", defaultTime: "30" },
+    { name: "Movie Towne", defaultTime: "20" },
   ];
 
   // More granular budget options
-  const rentBudgetOptions = [
+  const rentBudgetOptions = country === 'london' ? [
     { value: 'very-low', label: 'Up to £1,000 per month' },
     { value: 'low', label: '£1,000–£1,500 per month' },
     { value: 'medium-low', label: '£1,500–£2,000 per month' },
@@ -56,9 +72,18 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'high', label: '£3,000–£3,500 per month' },
     { value: 'very-high', label: '£3,500–£5,000 per month' },
     { value: 'luxury', label: 'Over £5,000 per month' }
+  ] : [
+    { value: 'very-low', label: 'Up to TT$3,000 per month' },
+    { value: 'low', label: 'TT$3,000–TT$5,000 per month' },
+    { value: 'medium-low', label: 'TT$5,000–TT$7,000 per month' },
+    { value: 'medium', label: 'TT$7,000–TT$9,000 per month' },
+    { value: 'medium-high', label: 'TT$9,000–TT$12,000 per month' },
+    { value: 'high', label: 'TT$12,000–TT$15,000 per month' },
+    { value: 'very-high', label: 'TT$15,000–TT$20,000 per month' },
+    { value: 'luxury', label: 'Over TT$20,000 per month' }
   ];
 
-  const buyBudgetOptions = [
+  const buyBudgetOptions = country === 'london' ? [
     { value: 'very-low', label: 'Up to £300,000' },
     { value: 'low', label: '£300,000–£500,000' },
     { value: 'medium-low', label: '£500,000–£750,000' },
@@ -67,6 +92,15 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'high', label: '£1,500,000–£2,000,000' },
     { value: 'very-high', label: '£2,000,000–£3,000,000' },
     { value: 'luxury', label: 'Over £3,000,000' }
+  ] : [
+    { value: 'very-low', label: 'Up to TT$1,000,000' },
+    { value: 'low', label: 'TT$1,000,000–TT$2,000,000' },
+    { value: 'medium-low', label: 'TT$2,000,000–TT$3,000,000' },
+    { value: 'medium', label: 'TT$3,000,000–TT$4,000,000' },
+    { value: 'medium-high', label: 'TT$4,000,000–TT$5,000,000' },
+    { value: 'high', label: 'TT$5,000,000–TT$7,000,000' },
+    { value: 'very-high', label: 'TT$7,000,000–TT$10,000,000' },
+    { value: 'luxury', label: 'Over TT$10,000,000' }
   ];
 
   // Colors for lifestyle categories
@@ -149,8 +183,25 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'greek', label: 'Greek community', category: 'community' },
   ];
 
+  // Add country-specific lifestyle options
+  const countrySpecificOptions = country === 'london' ? [
+    // London-specific options already included in lifestyleOptions
+  ] : [
+    // Trinidad & Tobago specific options
+    { value: 'beach-access', label: 'Beach access', category: 'environment' },
+    { value: 'carnival', label: 'Carnival culture', category: 'special' },
+    { value: 'steel-pan', label: 'Steel pan music', category: 'special' },
+    { value: 'cricket', label: 'Cricket facilities', category: 'activities' },
+    { value: 'hiking', label: 'Hiking trails', category: 'activities' },
+    { value: 'diving', label: 'Diving spots', category: 'activities' },
+    { value: 'international-schools', label: 'International schools', category: 'amenities' },
+    { value: 'expat-friendly', label: 'Expat friendly', category: 'community' },
+    { value: 'tourism', label: 'Tourist attractions', category: 'special' },
+    { value: 'street-food', label: 'Street food scene', category: 'special' },
+  ];
+
   // Combine all lifestyle options
-  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities];
+  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities, ...countrySpecificOptions];
 
   // Group lifestyle options by category
   const groupedLifestyleOptions = allLifestyleOptions.reduce((acc, option) => {
@@ -221,11 +272,14 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     }
 
     // Add property type and bedrooms information
-    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in London. `;
+    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in ${country === 'london' ? 'London' : 'Trinidad & Tobago'}. `;
 
     // Add additional information if provided
     const additionalText = additionalInfo ? `Additional requirements: ${additionalInfo}. ` : '';
 
+    // Use the correct currency symbol based on country
+    const currencySymbol = country === 'london' ? '£' : 'TT$';
+    
     const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}. ${additionalText}`;
 
     onSearch(queryText);
@@ -674,7 +728,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-display font-semibold text-white flex items-center">
           <Lightbulb className="h-5 w-5 text-amber-400 mr-2" />
-          Area Search Wizard
+          {country === 'london' ? 'London' : 'Trinidad & Tobago'} Area Search Wizard
         </h2>
         <Button variant="outline" size="sm" onClick={onCancel} className="text-white/70 border-white/20 hover:bg-white/10">
           Cancel
