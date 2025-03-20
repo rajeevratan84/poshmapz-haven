@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface SearchWizardProps {
   onSearch: (query: string) => void;
@@ -26,8 +28,9 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
   const [dailyRoutine, setDailyRoutine] = useState('');
   const [tempLocation, setTempLocation] = useState('');
   const [tempTime, setTempTime] = useState('');
+  const [additionalInfo, setAdditionalInfo] = useState('');
 
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   // Popular London locations for quick selection
   const popularLocations = [
@@ -220,7 +223,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     // Add property type and bedrooms information
     const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in London. `;
 
-    const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}.`;
+    // Add additional information if provided
+    const additionalText = additionalInfo ? `Additional requirements: ${additionalInfo}. ` : '';
+
+    const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}. ${additionalText}`;
 
     onSearch(queryText);
   };
@@ -230,10 +236,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       case 1:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white">Property Type</h3>
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Property Type</h3>
             
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">I'm looking to:</label>
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">I'm looking to:</label>
               <Tabs defaultValue="rent" value={type} onValueChange={(v) => setType(v as 'rent' | 'buy')} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-black/30">
                   <TabsTrigger value="rent" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
@@ -250,7 +256,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
             
             {/* Property type selection - flat or house */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">Property type:</label>
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Property type:</label>
               <Tabs 
                 defaultValue="flat" 
                 value={propertyType} 
@@ -272,7 +278,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
             
             {/* Number of bedrooms */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">Number of bedrooms:</label>
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Number of bedrooms:</label>
               <Tabs 
                 defaultValue="2" 
                 value={bedrooms} 
@@ -301,10 +307,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
             </div>
             
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">Budget:</label>
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Budget:</label>
               <RadioGroup value={budget} onValueChange={setBudget} className="space-y-3">
                 {(type === 'rent' ? rentBudgetOptions : buyBudgetOptions).map(option => (
-                  <div key={option.value} className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                  <div key={option.value} className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                     <RadioGroupItem 
                       value={option.value} 
                       id={`budget-${option.value}`} 
@@ -323,18 +329,18 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       case 2:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white">Important Neighborhood Aspects</h3>
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Important Neighborhood Aspects</h3>
             
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
                 Which aspects of a neighbourhood are important to you? (Select all that apply)
               </label>
               
               <div className="space-y-3">
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                   <Checkbox 
                     id="priority-green" 
-                    className="text-posh-green border-white/30"
+                    className="text-purple-600 border-white/30"
                     checked={priorities.includes('green spaces and parks')}
                     onCheckedChange={(checked) => {
                       if (checked) {
@@ -349,10 +355,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   </Label>
                 </div>
                 
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                   <Checkbox 
                     id="priority-nightlife" 
-                    className="text-posh-green border-white/30"
+                    className="text-purple-600 border-white/30"
                     checked={priorities.includes('lively nightlife and entertainment')}
                     onCheckedChange={(checked) => {
                       if (checked) {
@@ -367,10 +373,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   </Label>
                 </div>
                 
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                   <Checkbox 
                     id="priority-culture" 
-                    className="text-posh-green border-white/30"
+                    className="text-purple-600 border-white/30"
                     checked={priorities.includes('cultural venues')}
                     onCheckedChange={(checked) => {
                       if (checked) {
@@ -385,10 +391,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   </Label>
                 </div>
                 
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                   <Checkbox 
                     id="priority-family" 
-                    className="text-posh-green border-white/30"
+                    className="text-purple-600 border-white/30"
                     checked={priorities.includes('family-friendly atmosphere')}
                     onCheckedChange={(checked) => {
                       if (checked) {
@@ -403,10 +409,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   </Label>
                 </div>
                 
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                   <Checkbox 
                     id="priority-transport" 
-                    className="text-posh-green border-white/30"
+                    className="text-purple-600 border-white/30"
                     checked={priorities.includes('excellent public transport')}
                     onCheckedChange={(checked) => {
                       if (checked) {
@@ -421,10 +427,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   </Label>
                 </div>
                 
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                   <Checkbox 
                     id="priority-shopping" 
-                    className="text-posh-green border-white/30"
+                    className="text-purple-600 border-white/30"
                     checked={priorities.includes('shopping and retail')}
                     onCheckedChange={(checked) => {
                       if (checked) {
@@ -446,23 +452,23 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       case 3:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white">Location & Commute</h3>
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Location & Commute</h3>
             
             <div className="space-y-3">
-              <label className="text-sm font-medium text-white/80">
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
                 Add key locations you need to be close to:
               </label>
               
               {/* Popular locations for quick selection */}
               <div className="space-y-2">
-                <p className="text-sm text-white/70">Popular locations:</p>
+                <p className="text-sm text-white/70 bg-black/30 p-2 rounded">Popular locations:</p>
                 <div className="flex flex-wrap gap-2">
                   {popularLocations.map((location, index) => (
                     <Button 
                       key={index}
                       variant="outline" 
                       size="sm"
-                      className="bg-black/20 border border-white/10 text-white hover:bg-white/10"
+                      className="bg-black/40 border border-white/20 text-white hover:bg-white/10"
                       onClick={() => addPopularLocation(location)}
                     >
                       <MapPin className="h-3 w-3 mr-1 text-coral" />
@@ -474,10 +480,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
               
               {locations.length > 0 && (
                 <div className="space-y-2 mb-4 mt-4">
-                  <p className="text-sm text-white/70">Your locations:</p>
+                  <p className="text-sm text-white/70 bg-black/30 p-2 rounded">Your locations:</p>
                   <div className="space-y-2">
                     {locations.map((loc, index) => (
-                      <div key={index} className="flex items-center justify-between bg-white/10 p-2 px-3 rounded-lg">
+                      <div key={index} className="flex items-center justify-between bg-gray-800/70 p-2 px-3 rounded-lg border border-white/10">
                         <span className="text-white text-sm">{loc.place} (max {loc.time} min)</span>
                         <Button 
                           variant="ghost" 
@@ -529,34 +535,40 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       case 4:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white">Lifestyle & Community</h3>
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Lifestyle & Community</h3>
             
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
                 What lifestyle features and community aspects are important to you? (Select all that apply)
               </label>
               
               <div className="space-y-5">
                 {Object.entries(groupedLifestyleOptions).map(([category, options]) => (
                   <div key={category} className="space-y-2">
-                    <h4 className="text-sm font-medium capitalize" style={{ color: lifestyleColors[category as keyof typeof lifestyleColors] || '#ffffff' }}>
+                    <h4 className="text-sm font-medium capitalize bg-black/30 p-2 rounded" style={{ color: lifestyleColors[category as keyof typeof lifestyleColors] || '#ffffff' }}>
                       {category}
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {options.map(option => (
-                        <ToggleGroupItem 
+                        <Button
                           key={option.value}
-                          value={option.value} 
-                          className="bg-black/20 border border-white/10 text-white hover:bg-black/30"
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className={`
+                            transition-colors
+                            ${lifestyle.includes(option.value) 
+                              ? 'bg-opacity-40 border-opacity-100' 
+                              : 'bg-black/40 border-white/20'}
+                          `}
                           style={{ 
                             backgroundColor: lifestyle.includes(option.value) 
                               ? `${lifestyleColors[option.category as keyof typeof lifestyleColors]}40` 
-                              : 'rgba(0,0,0,0.2)',
+                              : 'rgba(0,0,0,0.4)',
                             borderColor: lifestyle.includes(option.value)
                               ? lifestyleColors[option.category as keyof typeof lifestyleColors]
-                              : 'rgba(255,255,255,0.1)'
+                              : 'rgba(255,255,255,0.2)'
                           }}
-                          data-state={lifestyle.includes(option.value) ? 'on' : 'off'}
                           onClick={() => {
                             if (lifestyle.includes(option.value)) {
                               setLifestyle(lifestyle.filter(item => item !== option.value));
@@ -566,7 +578,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                           }}
                         >
                           {option.label}
-                        </ToggleGroupItem>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -579,39 +591,63 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       case 5:
         return (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white">Daily Routine</h3>
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Daily Routine</h3>
             
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80">
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
                 Envision your typical day in your new neighbourhood. Which scenario best describes it?
               </label>
               
               <RadioGroup value={dailyRoutine} onValueChange={setDailyRoutine} className="space-y-3">
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="walk" id="routine-walk" className="border-white/30 text-posh-green" />
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
+                  <RadioGroupItem value="walk" id="routine-walk" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-walk" className="w-full text-white cursor-pointer">
                     Most daily errands done on foot
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="transit" id="routine-transit" className="border-white/30 text-posh-green" />
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
+                  <RadioGroupItem value="transit" id="routine-transit" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-transit" className="w-full text-white cursor-pointer">
                     Frequent use of public transport or cycling
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="drive" id="routine-drive" className="border-white/30 text-posh-green" />
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
+                  <RadioGroupItem value="drive" id="routine-drive" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-drive" className="w-full text-white cursor-pointer">
                     Driving for the majority of errands
                   </label>
                 </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 hover:bg-white/5 transition-colors">
-                  <RadioGroupItem value="home" id="routine-home" className="border-white/30 text-posh-green" />
+                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
+                  <RadioGroupItem value="home" id="routine-home" className="border-white/30 text-purple-600" />
                   <label htmlFor="routine-home" className="w-full text-white cursor-pointer">
                     Working from home and venturing out only occasionally
                   </label>
                 </div>
               </RadioGroup>
+            </div>
+          </div>
+        );
+      
+      case 6:
+        return (
+          <div className="space-y-6 animate-fade-in">
+            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Additional Requirements</h3>
+            
+            <div className="space-y-4">
+              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
+                Is there anything else you would like to mention about your ideal area?
+              </label>
+              
+              <Textarea
+                value={additionalInfo}
+                onChange={(e) => setAdditionalInfo(e.target.value)}
+                placeholder="E.g., I need a garden, I want to be close to my children's school, I prefer a quiet area, etc."
+                className="min-h-[120px] bg-gray-800/70 border-white/20 text-white placeholder:text-white/40"
+              />
+              
+              <p className="text-xs text-white/60">
+                This is your chance to add any specific requirements that haven't been covered by the previous steps.
+              </p>
             </div>
           </div>
         );
@@ -628,6 +664,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       case 3: return true; // Optional fields
       case 4: return lifestyle.length > 0;
       case 5: return !!dailyRoutine;
+      case 6: return true; // Additional info is optional
       default: return false;
     }
   };
@@ -646,7 +683,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">
-          {[1, 2, 3, 4, 5].map((step) => (
+          {[1, 2, 3, 4, 5, 6].map((step) => (
             <div 
               key={step}
               className={`relative flex h-10 w-10 items-center justify-center rounded-full border ${
@@ -668,7 +705,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
         <div className="overflow-hidden h-1 flex rounded bg-black/20">
           <div
             className="bg-purple-600 transition-all duration-300"
-            style={{ width: `${(currentStep - 1) * 25}%` }}
+            style={{ width: `${(currentStep - 1) * 20}%` }}
           />
         </div>
       </div>
