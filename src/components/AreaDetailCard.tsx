@@ -44,8 +44,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
       ? parseInt(poshScore.toString().split('/')[0]) || 0
       : 0;
 
-  // Generate a more varied amenities score based on amenities length and area name to create variation
-  // Using a hash function on the area name to get consistent but varied results
+  // Generate a more varied amenities score based on amenities length and area name
   const getHashValue = (str: string) => {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -64,14 +63,13 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
   const baseScore = Math.min(Math.round((amenities.length / 5) * 70), 90);
   const amenitiesScore = Math.min(Math.max(baseScore + variationFactor, 35), 95);
 
-  // Helper function to determine text color based on score value
+  // Helper functions for styling and colors
   const getScoreColor = (score: number) => {
     if (score >= 85) return 'text-green-500';
     if (score >= 70) return 'text-yellow-500';
     return 'text-gray-500';
   };
 
-  // Get the crime rate color based on text content
   const getCrimeRateColor = (crimeRate: string) => {
     const lowerCrime = crimeRate.toLowerCase();
     if (lowerCrime.includes('above') || lowerCrime.includes('high')) return 'text-red-500 bg-red-500/10';
@@ -79,7 +77,6 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return 'text-amber-500 bg-amber-500/10';
   };
 
-  // Get the transport score color
   const getTransportColor = (transport: string) => {
     const lowerTransport = transport.toLowerCase();
     if (lowerTransport.includes('excellent')) return 'text-green-500 bg-green-500/10';
@@ -88,7 +85,6 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return 'text-amber-500 bg-amber-500/10';
   };
 
-  // Get the walkability color
   const getWalkabilityColor = (walkability: string) => {
     const lowerWalk = walkability.toLowerCase();
     if (lowerWalk.includes('very walkable')) return 'text-green-500 bg-green-500/10';
@@ -97,7 +93,6 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return 'text-gray-500';
   };
 
-  // Get property growth color
   const getPropertyGrowthColor = (growth: string) => {
     if (growth.includes('+')) {
       const percentage = parseFloat(growth.match(/\+(\d+\.?\d*)%/)?.[1] || "0");
@@ -189,13 +184,13 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
       className={cn(
         "transition-all duration-200 cursor-pointer h-full",
         isSelected 
-          ? "bg-black border border-posh-green shadow-[0_0_10px_rgba(34,197,94,0.3)]" 
-          : "bg-black/80 border border-gray-800 hover:border-gray-700"
+          ? "bg-gray-800 border border-posh-green shadow-[0_0_10px_rgba(34,197,94,0.3)]" 
+          : "bg-gray-800 border border-gray-700 hover:border-gray-600"
       )}
       onClick={onClick}
     >
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center mb-1">
+      <CardHeader className="pb-2 space-y-1.5">
+        <div className="flex justify-between items-center">
           <div className="flex items-center gap-1.5">
             <MapPin className="h-4 w-4 text-coral" />
             <h3 className="font-semibold text-white text-lg">{areaName}</h3>
@@ -209,24 +204,24 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             {matchPercentage}% Match
           </div>
         </div>
-        <div className="flex items-center gap-1.5 mb-2">
+        <div className="flex items-center gap-1.5">
           <div className={cn("text-sm font-medium", getScoreColor(poshScoreNumber))}>
             PoshMap Index: {poshScoreNumber}%
           </div>
           <span className="text-sm text-white/60">- {poshScoreNumber >= 85 ? 'Excellent' : poshScoreNumber >= 70 ? 'Good' : 'Average'} area rating</span>
         </div>
-        <p className="text-sm text-white/70 mb-3 text-left border border-white/10 p-3 rounded-md bg-white/5">{description}</p>
+        <p className="text-sm text-white/70 text-left border border-white/10 p-2 rounded-md bg-black/20">{description}</p>
         
         {/* Pros and Cons Section */}
-        <div className="border border-white/10 p-3 rounded-md bg-white/5 mb-2">
+        <div className="border border-white/10 p-2 rounded-md bg-black/20">
           <div className="mb-2">
-            <div className="flex gap-1.5 items-center mb-1.5">
+            <div className="flex gap-1.5 items-center mb-1">
               <ThumbsUp className="h-3.5 w-3.5 text-green-500" />
               <span className="text-xs text-white/90 font-medium">Pros:</span>
             </div>
             <div className="flex flex-col gap-1 ml-6">
               {pros.map((pro, idx) => (
-                <span key={`pro-${idx}`} className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full inline-block">
+                <span key={`pro-${idx}`} className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full w-fit">
                   {pro}
                 </span>
               ))}
@@ -234,13 +229,13 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           <div>
-            <div className="flex gap-1.5 items-center mb-1.5">
+            <div className="flex gap-1.5 items-center mb-1">
               <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
               <span className="text-xs text-white/90 font-medium">Cons:</span>
             </div>
             <div className="flex flex-col gap-1 ml-6">
               {cons.map((con, idx) => (
-                <span key={`con-${idx}`} className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full inline-block">
+                <span key={`con-${idx}`} className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full w-fit">
                   {con}
                 </span>
               ))}
@@ -249,16 +244,16 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pb-4">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <CardContent className="space-y-3 pb-4 pt-0">
+        {/* Stats Grid - Condensed */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {/* Crime Rate */}
-          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
-            <Shield className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+          <div className="flex gap-2 border border-white/10 p-2 rounded-md bg-black/20">
+            <Shield className="h-4 w-4 text-coral shrink-0 mt-0.5" />
             <div>
-              <div className="text-white font-medium mb-0.5">Crime Rate</div>
+              <div className="text-white font-medium text-sm mb-0.5">Crime Rate</div>
               <div className={cn(
-                "text-sm px-2 py-1 rounded-md font-medium",
+                "text-xs px-2 py-1 rounded-md font-medium",
                 getCrimeRateColor(areaStats.crimeRate)
               )}>
                 {areaStats.crimeRate}
@@ -267,12 +262,12 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Transport Score */}
-          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
-            <Train className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+          <div className="flex gap-2 border border-white/10 p-2 rounded-md bg-black/20">
+            <Train className="h-4 w-4 text-coral shrink-0 mt-0.5" />
             <div>
-              <div className="text-white font-medium mb-0.5">Transport Score</div>
+              <div className="text-white font-medium text-sm mb-0.5">Transport Score</div>
               <div className={cn(
-                "text-sm px-2 py-1 rounded-md font-medium",
+                "text-xs px-2 py-1 rounded-md font-medium",
                 getTransportColor(areaStats.transportScore)
               )}>
                 {areaStats.transportScore}
@@ -281,12 +276,12 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Walkability */}
-          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
-            <Footprints className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+          <div className="flex gap-2 border border-white/10 p-2 rounded-md bg-black/20">
+            <Footprints className="h-4 w-4 text-coral shrink-0 mt-0.5" />
             <div>
-              <div className="text-white font-medium mb-0.5">Walkability</div>
+              <div className="text-white font-medium text-sm mb-0.5">Walkability</div>
               <div className={cn(
-                "text-sm px-2 py-1 rounded-md font-medium",
+                "text-xs px-2 py-1 rounded-md font-medium",
                 getWalkabilityColor(areaStats.walkability)
               )}>
                 {areaStats.walkability}
@@ -295,12 +290,12 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Amenities Score */}
-          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
-            <ShoppingBag className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+          <div className="flex gap-2 border border-white/10 p-2 rounded-md bg-black/20">
+            <ShoppingBag className="h-4 w-4 text-coral shrink-0 mt-0.5" />
             <div className="w-full">
-              <div className="text-white font-medium mb-0.5">Amenities Score</div>
+              <div className="text-white font-medium text-sm mb-0.5">Amenities Score</div>
               <div className={cn(
-                "text-sm rounded-md font-medium",
+                "text-xs rounded-md font-medium",
                 getAmenitiesScoreColor(amenitiesScore)
               )}>
                 <div className="flex justify-between items-center mb-1">
@@ -309,7 +304,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
                 </div>
                 <Progress 
                   value={amenitiesScore} 
-                  className="h-2 bg-white/10" 
+                  className="h-1.5 bg-white/10" 
                   indicatorClassName={cn(
                     amenitiesScore >= 80 ? "bg-green-500" : 
                     amenitiesScore >= 60 ? "bg-blue-500" : 
@@ -321,20 +316,20 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Future Property Growth */}
-          <div className="flex gap-3 col-span-1 sm:col-span-2 border border-white/10 p-3 rounded-md bg-white/5">
-            <TrendingUp className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+          <div className="flex gap-2 col-span-1 sm:col-span-2 border border-white/10 p-2 rounded-md bg-black/20">
+            <TrendingUp className="h-4 w-4 text-coral shrink-0 mt-0.5" />
             <div className="w-full">
-              <div className="text-white font-medium mb-0.5">Future Property Growth</div>
+              <div className="text-white font-medium text-sm mb-0.5">Future Property Growth</div>
               <div className="flex justify-between gap-4">
                 <div className={cn(
-                  "text-sm px-2 py-1 rounded-md font-medium flex-1 flex justify-between",
+                  "text-xs px-2 py-1 rounded-md font-medium flex-1 flex justify-between",
                   getPropertyGrowthColor(areaStats.propertyGrowth.flats)
                 )}>
                   <span>Flats:</span> 
                   <span>{formatPropertyGrowth(areaStats.propertyGrowth.flats)}</span>
                 </div>
                 <div className={cn(
-                  "text-sm px-2 py-1 rounded-md font-medium flex-1 flex justify-between",
+                  "text-xs px-2 py-1 rounded-md font-medium flex-1 flex justify-between",
                   getPropertyGrowthColor(areaStats.propertyGrowth.houses)
                 )}>
                   <span>Houses:</span> 
@@ -346,17 +341,17 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         </div>
         
         {/* Area Vibe */}
-        <div className="flex flex-col gap-2 border border-white/10 p-3 rounded-md bg-white/5">
-          <div className="flex gap-3">
-            <Smile className="h-5 w-5 text-coral shrink-0 mt-0.5" />
-            <div className="text-white font-medium">Area Vibe</div>
+        <div className="flex flex-col gap-1 border border-white/10 p-2 rounded-md bg-black/20">
+          <div className="flex gap-2">
+            <Smile className="h-4 w-4 text-coral shrink-0 mt-0.5" />
+            <div className="text-white font-medium text-sm">Area Vibe</div>
           </div>
-          <div className="flex flex-wrap gap-2 ml-8">
+          <div className="flex flex-wrap gap-1 ml-6">
             {areaStats.areaVibe.map((vibe, index) => (
               <span 
                 key={index} 
                 className={cn(
-                  "text-xs text-white px-3 py-1 rounded-full",
+                  "text-xs text-white px-2 py-0.5 rounded-full",
                   getVibeTagColor(vibe)
                 )}
               >
@@ -367,11 +362,11 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         </div>
         
         {/* Amenities */}
-        <div className="pt-2 border border-white/10 p-3 rounded-md bg-white/5">
-          <div className="text-sm text-white/90 font-medium mb-2">Matching Amenities</div>
-          <div className="flex flex-wrap gap-1.5">
+        <div className="pt-1 border border-white/10 p-2 rounded-md bg-black/20">
+          <div className="text-xs text-white/90 font-medium mb-1.5">Matching Amenities</div>
+          <div className="flex flex-wrap gap-1">
             {amenities.map((amenity, idx) => (
-              <span key={idx} className="text-xs bg-black/30 border border-gray-700 px-2 py-1 rounded-full">
+              <span key={idx} className="text-xs bg-black/30 border border-gray-700 px-1.5 py-0.5 rounded-full">
                 {amenity}
               </span>
             ))}

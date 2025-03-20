@@ -46,8 +46,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
             <>Switch to Free Text Search</>
           ) : (
             <>
-              <Wand2 className="h-5 w-5 mr-2" />
-              <span className="font-semibold">Use Guided Wizard</span>
+              <Wand2 className="h-5 w-5 mr-2 text-coral" />
+              <span className="font-semibold text-coral">Use Guided Wizard</span>
               <span className="absolute -top-2 -right-2 bg-posh-green text-white text-xs px-1.5 py-0.5 rounded-full animate-pulse">Recommended</span>
             </>
           )}

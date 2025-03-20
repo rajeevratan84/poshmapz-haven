@@ -18,7 +18,8 @@ const DemoPage: React.FC = () => {
   const [selectedArea, setSelectedArea] = useState<AreaMatch | null>(null);
   const [showWizard, setShowWizard] = useState(false);
   
-  const apiKey = "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";
+  // Use the VITE_ environment variable for the API key
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
   const searchSuggestions = [
     "Family-friendly area with good schools and parks",
@@ -47,9 +48,9 @@ const DemoPage: React.FC = () => {
       const areas = await analyzeAreaPreferences(searchInput, apiKey);
       const elapsedTime = Date.now() - startTime;
       
-      // Ensure we show the loading animation for at least 15 seconds
-      if (elapsedTime < 15000) {
-        await new Promise(resolve => setTimeout(resolve, 15000 - elapsedTime));
+      // Ensure we show the loading animation for at least 25 seconds
+      if (elapsedTime < 25000) {
+        await new Promise(resolve => setTimeout(resolve, 25000 - elapsedTime));
       }
       
       if (areas && areas.length > 0) {
