@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -13,7 +13,7 @@ interface SearchWizardProps {
   onSearch: (query: string) => void;
   isSearching: boolean;
   onCancel: () => void;
-  locationType?: 'london' | 'world';
+  locationType?: 'london' | 'uk' | 'world';
   country?: string;
 }
 
@@ -36,8 +36,15 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
   const [tempLocation, setTempLocation] = useState('');
   const [tempTime, setTempTime] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
+  const wizardRef = useRef<HTMLDivElement>(null);
 
   const totalSteps = 6;
+
+  useEffect(() => {
+    if (wizardRef.current) {
+      wizardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentStep]);
 
   const getPopularLocations = () => {
     if (locationType === 'london') {
@@ -255,7 +262,9 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     return acc;
   }, {} as Record<string, typeof lifestyleOptions>);
 
-  const goToNextStep = () => {
+  const goToNextStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
     if (currentStep < totalSteps) {
       setCurrentStep(prev => prev + 1);
     } else {
@@ -263,7 +272,9 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     }
   };
 
-  const goToPrevStep = () => {
+  const goToPrevStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
     }
@@ -769,7 +780,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
   };
 
   return (
-    <div className="bg-gray-900/95 border border-white/10 rounded-xl shadow-xl p-6 mt-8 backdrop-blur-sm animate-in slide-in-from-bottom duration-300 relative max-w-4xl mx-auto w-full">
+    <div 
+      ref={wizardRef}
+      className="bg-gray-900/95 border border-white/10 rounded-xl shadow-xl p-6 mt-8 backdrop-blur-sm animate-in slide-in-from-bottom duration-300 relative max-w-4xl mx-auto w-full"
+    >
       <button
         onClick={onCancel}
         className="absolute top-4 right-4 text-white/60 hover:text-white"
@@ -829,4 +843,3 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
 };
 
 export default SearchWizard;
-

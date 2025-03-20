@@ -58,7 +58,7 @@ const CountryTabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-12 items-center justify-center rounded-lg bg-black/60 p-1 border border-white/10 shadow-md",
+      "inline-flex h-12 items-center justify-center rounded-lg bg-gray-700/80 p-1 border border-white/10 shadow-md",
       className
     )}
     {...props}

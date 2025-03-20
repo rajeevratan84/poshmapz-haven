@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MapPin, ArrowLeft, Sparkles, Globe } from "lucide-react";
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -13,7 +13,7 @@ import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
 import { Tabs, TabsContent, CountryTabsList, CountryTabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-type LocationType = 'london' | 'world';
+type LocationType = 'london' | 'uk' | 'world';
 type CountryType = string;
 
 const DemoPage: React.FC = () => {
@@ -24,6 +24,7 @@ const DemoPage: React.FC = () => {
   const [showWizard, setShowWizard] = useState(false);
   const [locationType, setLocationType] = useState<LocationType>('london');
   const [selectedCountry, setSelectedCountry] = useState<CountryType>('United Kingdom');
+  const pageTopRef = useRef<HTMLDivElement>(null);
   
   // Use the VITE_ environment variable for the API key
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -31,7 +32,8 @@ const DemoPage: React.FC = () => {
   const worldCountries = [
     "United States", "Canada", "Australia", "France", "Germany", "Spain", "Italy",
     "Japan", "Brazil", "Mexico", "South Africa", "India", "China", "Singapore",
-    "United Arab Emirates", "New Zealand", "Thailand", "Portugal", "Netherlands"
+    "United Arab Emirates", "New Zealand", "Thailand", "Portugal", "Netherlands",
+    "Trinidad and Tobago"
   ];
 
   const searchSuggestions = {
@@ -40,6 +42,12 @@ const DemoPage: React.FC = () => {
       "Young professional area with great nightlife and transport",
       "Quiet residential area with good amenities",
       "Trendy area with cafes and cultural activities"
+    ],
+    uk: [
+      "Vibrant city with good connections to London",
+      "Peaceful countryside area with good local amenities",
+      "University town with cultural activities",
+      "Coastal area with good quality of life"
     ],
     world: [
       "Area with good work-life balance",
@@ -98,10 +106,14 @@ const DemoPage: React.FC = () => {
 
   function toggleWizard(show: boolean) {
     setShowWizard(show);
+    // Reset scroll position to top when opening wizard
+    if (show && pageTopRef.current) {
+      pageTopRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   return (
-    <div className="min-h-screen bg-black pb-20">
+    <div className="min-h-screen bg-black pb-20" ref={pageTopRef}>
       <header className="w-full bg-black/90 shadow-md sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-1 text-white">
@@ -132,7 +144,11 @@ const DemoPage: React.FC = () => {
               <CountryTabsList>
                 <CountryTabsTrigger value="london" className="flex items-center gap-2">
                   <Globe className="h-4 w-4" />
-                  <span>London, UK</span>
+                  <span>London</span>
+                </CountryTabsTrigger>
+                <CountryTabsTrigger value="uk" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  <span>UK</span>
                 </CountryTabsTrigger>
                 <CountryTabsTrigger value="world" className="flex items-center gap-2">
                   <Globe className="h-4 w-4" />
@@ -147,6 +163,15 @@ const DemoPage: React.FC = () => {
               </h1>
               <p className="text-lg text-white/80 mb-8">
                 Tell us what you're looking for in a neighborhood, and our AI will find the best matches in London
+              </p>
+            </TabsContent>
+            
+            <TabsContent value="uk">
+              <h1 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
+                Discover Your Ideal UK Location
+              </h1>
+              <p className="text-lg text-white/80 mb-8">
+                Share your preferences, and our AI will match you with the perfect areas across the United Kingdom
               </p>
             </TabsContent>
             
@@ -181,7 +206,9 @@ const DemoPage: React.FC = () => {
           <SearchBar 
             onSearch={processSearch}
             isSearching={isSearching}
-            suggestions={locationType === 'london' ? searchSuggestions.london : searchSuggestions.world}
+            suggestions={locationType === 'london' ? searchSuggestions.london : 
+                         locationType === 'uk' ? searchSuggestions.uk : 
+                         searchSuggestions.world}
             onWizardToggle={toggleWizard}
           />
           
@@ -200,6 +227,8 @@ const DemoPage: React.FC = () => {
             <span>
               {locationType === 'london' 
                 ? 'Early Access Beta - London areas only' 
+                : locationType === 'uk'
+                ? 'Coming soon - UK cities and towns'
                 : `Now exploring: ${selectedCountry}`}
             </span>
           </div>
