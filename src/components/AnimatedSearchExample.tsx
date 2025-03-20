@@ -12,6 +12,7 @@ const AnimatedSearchExample: React.FC = () => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [animationRunning, setAnimationRunning] = useState(true);
   
+  // Updated search query to emphasize London specifically
   const searchQuery = "I want to live somewhere in North London that's within 10 mins of a park, tube station, and good restaurants with a family-friendly atmosphere";
   
   const resetAnimation = () => {
@@ -61,7 +62,7 @@ const AnimatedSearchExample: React.FC = () => {
     <div id="search-demo" className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-4xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
-        <div className="flex-1 font-medium text-sm text-gray-800">PoshMaps AI Search</div>
+        <div className="flex-1 font-medium text-sm text-gray-800">PoshMaps AI Search <span className="text-xs text-posh-green">(London Only)</span></div>
         
         {animationComplete && (
           <Button 
