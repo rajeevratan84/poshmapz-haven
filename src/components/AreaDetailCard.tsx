@@ -300,7 +300,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
               )}>
                 <div className="flex justify-between items-center mb-1">
                   <span>{amenitiesScore}/100</span>
-                  <span className="text-xs text-white/70">{amenities.length} essentials within 15 min walk</span>
+                  {/* Removed text about number of amenities within 15 min walk */}
                 </div>
                 <Progress 
                   value={amenitiesScore} 
