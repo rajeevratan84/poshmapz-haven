@@ -37,9 +37,11 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
   onClick,
 }) => {
   // Get the percentage number from the posh score
-  const poshScoreNumber = typeof poshScore === 'string' 
-    ? parseInt(poshScore.split('/')[0]) 
-    : poshScore;
+  const poshScoreNumber = typeof poshScore === 'number' 
+    ? poshScore 
+    : typeof poshScore === 'string' 
+      ? parseInt(poshScore.split('/')[0]) 
+      : 0;
 
   // Helper function to determine text color based on score value
   const getScoreColor = (score: number) => {
