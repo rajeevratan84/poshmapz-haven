@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
 import { MapPin, ArrowLeft, Search, Sparkles } from "lucide-react";
@@ -8,6 +7,7 @@ import { toast } from 'sonner';
 import { analyzeAreaPreferences } from '@/services/openaiService';
 import { Link } from 'react-router-dom';
 import AreaDetailCard from '@/components/AreaDetailCard';
+import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
 
 interface AreaStats {
   crimeRate: string;
@@ -121,10 +121,15 @@ const DemoPage: React.FC = () => {
     markersRef.current = [];
     
     try {
-      toast.info("Analyzing your preferences with AI...");
       console.log("Sending request to analyze:", userInput);
       
+      const startTime = Date.now();
       const areas = await analyzeAreaPreferences(userInput, apiKey);
+      const elapsedTime = Date.now() - startTime;
+      
+      if (elapsedTime < 3000) {
+        await new Promise(resolve => setTimeout(resolve, 3000 - elapsedTime));
+      }
       
       if (areas && areas.length > 0) {
         console.log("Received area matches:", areas);
@@ -202,7 +207,6 @@ const DemoPage: React.FC = () => {
         infoWindowRef.current.open(mapInstanceRef.current, marker);
         setSelectedArea(area);
         
-        // Scroll to the selected area's card if on mobile
         const areaElement = document.getElementById(`area-${area.name.replace(/\s+/g, '-').toLowerCase()}`);
         if (areaElement && window.innerWidth < 768) {
           areaElement.scrollIntoView({ behavior: 'smooth' });
@@ -229,7 +233,6 @@ const DemoPage: React.FC = () => {
     }
   };
 
-  // Example suggestions for the search
   const searchSuggestions = [
     "Family-friendly area with good schools and parks",
     "Young professional area with great nightlife and transport",
@@ -316,6 +319,8 @@ const DemoPage: React.FC = () => {
         <div className="bg-black/20 rounded-xl p-4 shadow-lg">
           <div ref={mapRef} className="w-full h-[500px] rounded-lg mb-6"></div>
           
+          <SearchLoadingAnimation isVisible={isSearching} />
+          
           <div className="mt-6">
             <h2 className="text-xl font-display font-semibold mb-4 text-white flex items-center gap-2">
               {results.length > 0 ? (
@@ -327,7 +332,7 @@ const DemoPage: React.FC = () => {
                   </span>
                 </>
               ) : (
-                'Enter your preferences to see London matches'
+                !isSearching && 'Enter your preferences to see London matches'
               )}
             </h2>
             
