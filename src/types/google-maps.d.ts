@@ -39,6 +39,22 @@ declare namespace google {
       isEmpty(): boolean;
     }
 
+    // Add Size interface
+    interface Size {
+      width: number;
+      height: number;
+      equals(other: Size): boolean;
+      toString(): string;
+    }
+
+    // Add Point interface
+    interface Point {
+      x: number;
+      y: number;
+      equals(other: Point): boolean;
+      toString(): string;
+    }
+
     interface MapOptions {
       center?: LatLng | LatLngLiteral;
       zoom?: number;
@@ -55,7 +71,14 @@ declare namespace google {
       animation?: any;
       title?: string;
       label?: string | MarkerLabel;
-      icon?: any; // Add icon property
+      icon?: {
+        url?: string;
+        scaledSize?: Size;
+        size?: Size;
+        origin?: Point;
+        anchor?: Point;
+        labelOrigin?: Point;
+      } | string;
     }
 
     interface MarkerLabel {
@@ -64,7 +87,7 @@ declare namespace google {
       fontFamily?: string;
       fontSize?: string;
       fontWeight?: string;
-      className?: string; // Add className property
+      className?: string;
     }
 
     interface InfoWindowOptions {
