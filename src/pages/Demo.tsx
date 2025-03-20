@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
 import { MapPin, ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from 'sonner';
+import { analyzeAreaPreferences } from '@/services/openaiService';
+import { Link } from 'react-router-dom';
 
 interface AreaMatch {
   name: string;
@@ -26,50 +29,10 @@ const DemoPage: React.FC = () => {
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
-
-  // Sample areas data (hardcoded for MVP)
-  const areasData: AreaMatch[] = [
-    {
-      name: 'Highbury',
-      matchPercentage: 94,
-      description: 'Leafy, affluent, and home to professionals. Less flashy than neighbouring Islington but still well-regarded.',
-      poshScore: 80,
-      coordinates: { lat: 51.5485, lng: -0.1019 },
-      amenities: ['tube station', 'park', 'pub', 'cafe', 'school', 'sports ground']
-    },
-    {
-      name: 'Islington',
-      matchPercentage: 91,
-      description: 'Trendy, wealthy, and full of period townhouses, upscale restaurants, and boutique shops. A strong mix of old wealth and gentrification.',
-      poshScore: 85,
-      coordinates: { lat: 51.5362, lng: -0.1033 },
-      amenities: ['tube station', 'restaurant', 'pub', 'shopping', 'park', 'cafe']
-    },
-    {
-      name: 'Stoke Newington',
-      matchPercentage: 87,
-      description: 'Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives.',
-      poshScore: 75,
-      coordinates: { lat: 51.5629, lng: -0.0798 },
-      amenities: ['park', 'pub', 'cafe', 'independent shops', 'organic food store']
-    },
-    {
-      name: 'Camden',
-      matchPercentage: 83,
-      description: 'Vibrant cultural hub with a world-famous market, live music venues, and diverse dining options. Popular with tourists and young creatives.',
-      poshScore: 70,
-      coordinates: { lat: 51.5390, lng: -0.1426 },
-      amenities: ['tube station', 'market', 'live music', 'canal', 'pub', 'restaurant']
-    },
-    {
-      name: 'Hampstead',
-      matchPercentage: 89,
-      description: 'Upscale residential area with beautiful Hampstead Heath, village-like atmosphere, and period properties. Popular with celebrities and the wealthy.',
-      poshScore: 95,
-      coordinates: { lat: 51.5567, lng: -0.1780 },
-      amenities: ['tube station', 'heath', 'village', 'pond', 'cafe', 'pub', 'upscale shopping']
-    }
-  ];
+  
+  // OpenAI API key (in a real production app, this would be stored securely on the server)
+  // This is just for demo purposes
+  const apiKey = "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";
 
   // Initialize Google Maps
   useEffect(() => {
@@ -79,13 +42,13 @@ const DemoPage: React.FC = () => {
       if (!mapRef.current) return;
       
       try {
-        // Default coordinates for North London
-        const defaultPosition = { lat: 51.55, lng: -0.12 };
+        // Default coordinates for London
+        const londonCoordinates = { lat: 51.507, lng: -0.127 };
         
         // Create the map instance
         mapInstanceRef.current = new google.maps.Map(mapRef.current, {
-          zoom: 12,
-          center: defaultPosition,
+          zoom: 11,
+          center: londonCoordinates,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: true,
@@ -138,8 +101,8 @@ const DemoPage: React.FC = () => {
     }
   }, []);
 
-  // Simulate OpenAI processing with our hardcoded data
-  const processSearch = () => {
+  // Process search with OpenAI
+  const processSearch = async () => {
     if (!userInput.trim()) {
       toast.error("Please enter your preferences");
       return;
@@ -152,60 +115,42 @@ const DemoPage: React.FC = () => {
     markersRef.current.forEach(marker => marker.setMap(null));
     markersRef.current = [];
     
-    // Simulate AI processing delay
-    setTimeout(() => {
-      const lowerCaseInput = userInput.toLowerCase();
+    try {
+      // Call OpenAI to analyze user preferences
+      const areas = await analyzeAreaPreferences(userInput, apiKey);
       
-      // Filter results based on rough keyword matching (simulating AI)
-      const filteredResults = areasData
-        .map(area => {
-          // Calculate a match based on the input text containing amenities
-          const matchedAmenities = area.amenities.filter(amenity => 
-            lowerCaseInput.includes(amenity.toLowerCase())
-          );
-          
-          // If the user didn't specify any recognizable amenities, just show all areas
-          if (matchedAmenities.length === 0 && !area.amenities.some(amenity => lowerCaseInput.includes(amenity.toLowerCase()))) {
-            return area;
-          }
-          
-          // Otherwise, calculate a match percentage
-          const adjustedMatch = matchedAmenities.length > 0 
-            ? Math.floor(area.matchPercentage * (matchedAmenities.length / Math.min(3, area.amenities.length)))
-            : 0;
-            
-          return {
-            ...area,
-            matchPercentage: adjustedMatch
-          };
-        })
-        .filter(area => area.matchPercentage > 50) // Only show areas with >50% match
-        .sort((a, b) => b.matchPercentage - a.matchPercentage);
-      
-      setResults(filteredResults.length ? filteredResults : areasData.slice(0, 3));
-      setIsSearching(false);
-      
-      // Add markers for each result
-      if (mapInstanceRef.current) {
-        filteredResults.forEach(area => addMarkerForArea(area));
+      if (areas && areas.length > 0) {
+        setResults(areas);
         
-        // Center map to fit all markers
-        if (filteredResults.length && mapInstanceRef.current) {
-          const bounds = new google.maps.LatLngBounds();
-          markersRef.current.forEach(marker => {
-            if (marker.getPosition()) {
-              bounds.extend(marker.getPosition()!);
-            }
-          });
-          mapInstanceRef.current.fitBounds(bounds);
+        // Add markers for each result
+        if (mapInstanceRef.current) {
+          areas.forEach(area => addMarkerForArea(area));
           
-          // If only one marker, zoom in closer
-          if (markersRef.current.length === 1 && mapInstanceRef.current) {
-            mapInstanceRef.current.setZoom(14);
+          // Center map to fit all markers
+          if (areas.length && mapInstanceRef.current) {
+            const bounds = new google.maps.LatLngBounds();
+            markersRef.current.forEach(marker => {
+              if (marker.getPosition()) {
+                bounds.extend(marker.getPosition()!);
+              }
+            });
+            mapInstanceRef.current.fitBounds(bounds);
+            
+            // If only one marker, zoom in closer
+            if (markersRef.current.length === 1 && mapInstanceRef.current) {
+              mapInstanceRef.current.setZoom(14);
+            }
           }
         }
+      } else {
+        toast.error("No matching areas found. Try adjusting your search criteria.");
       }
-    }, 1500); // Simulate processing time
+    } catch (error) {
+      console.error("Error processing search:", error);
+      toast.error("Failed to process your request. Please try again.");
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const addMarkerForArea = (area: AreaMatch) => {
@@ -269,10 +214,10 @@ const DemoPage: React.FC = () => {
       {/* Header */}
       <header className="w-full bg-black/90 shadow-md sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center space-x-1 text-white">
+          <Link to="/" className="flex items-center space-x-1 text-white">
             <ArrowLeft className="h-5 w-5" />
             <span className="text-sm">Back to Home</span>
-          </a>
+          </Link>
           <div className="flex items-center space-x-2">
             <MapPin className="h-6 w-6 text-coral" />
             <span className="font-display text-xl font-semibold text-white">PoshMaps Demo</span>
@@ -287,7 +232,7 @@ const DemoPage: React.FC = () => {
             Find Your Perfect London Neighbourhood
           </h1>
           <p className="text-lg text-white/80 mb-8">
-            Tell us what you're looking for in a neighborhood, and our AI will find the best matches in North London
+            Tell us what you're looking for in a neighborhood, and our AI will find the best matches in London
           </p>
           
           {/* Search Input */}
@@ -307,7 +252,7 @@ const DemoPage: React.FC = () => {
               {isSearching ? 
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Searching...</span>
+                  <span>Analyzing...</span>
                 </div> : 
                 <div className="flex items-center space-x-2">
                   <Search className="h-4 w-4" />
@@ -318,8 +263,8 @@ const DemoPage: React.FC = () => {
           </div>
           
           <div className="text-xs text-white/60 mb-8">
-            <p>Try sample queries like "near a tube station and park" or "family-friendly with good schools"</p>
-            <p className="mt-1">This is a demo with simulated AI using predefined North London locations</p>
+            <p>Try queries like "near a tube station and park" or "family-friendly with good schools"</p>
+            <p className="mt-1">This demo is currently limited to London areas only</p>
           </div>
         </div>
         

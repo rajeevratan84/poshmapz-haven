@@ -12,7 +12,7 @@ const AnimatedSearchExample: React.FC = () => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [animationRunning, setAnimationRunning] = useState(true);
   
-  const searchQuery = "I want to live somewhere in north London that's within 10 mins of a pet groomer, a pub, chicken shop, tube stop, Turkish restaurant, a post office and a Pure Gym";
+  const searchQuery = "I want to live somewhere in North London that's within 10 mins of a park, tube station, and good restaurants with a family-friendly atmosphere";
   
   const resetAnimation = () => {
     setSearchPhase(0);
@@ -85,7 +85,7 @@ const AnimatedSearchExample: React.FC = () => {
         
         {searchPhase === 0 && searchText.length === 0 && (
           <div className="absolute top-3 left-3 text-sm text-gray-400">
-            Describe your ideal area...
+            Describe your ideal area in London...
           </div>
         )}
         
