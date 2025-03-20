@@ -1,145 +1,107 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sparkles, Wand2 } from "lucide-react";
+import React, { useState } from 'react';
+import { Search, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Toggle } from "@/components/ui/toggle";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   isSearching: boolean;
-  suggestions?: string[];
-  onWizardToggle: (show: boolean) => void;
+  suggestions: string[];
+  onWizardToggle: (showWizard: boolean) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
   onSearch, 
   isSearching, 
-  suggestions = [],
-  onWizardToggle
+  suggestions,
+  onWizardToggle 
 }) => {
-  const [searchText, setSearchText] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [userInput, setUserInput] = useState('');
+  const [showWizard, setShowWizard] = useState(false);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        suggestionsRef.current && 
-        !suggestionsRef.current.contains(event.target as Node) &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleInputFocus = () => {
-    if (suggestions.length > 0) {
-      setShowSuggestions(true);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSearch(userInput);
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchText(suggestion);
-    setShowSuggestions(false);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchText.trim()) return;
-    onSearch(searchText);
+  const toggleWizard = () => {
+    const newState = !showWizard;
+    setShowWizard(newState);
+    onWizardToggle(newState);
   };
 
   return (
-    <div className="relative w-full">
-      <form onSubmit={handleSubmit} className="w-full">
-        <div className="relative flex flex-col md:flex-row gap-3">
-          <div className="relative flex-grow">
-            <Input
-              ref={inputRef}
-              type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              onFocus={handleInputFocus}
-              placeholder="Describe your ideal area in London..."
-              className="w-full bg-white text-black h-12 pl-10 pr-4 rounded-xl shadow-md focus:ring-2 focus:ring-purple-600 transition-all placeholder:text-gray-500"
-              disabled={isSearching}
-            />
-            <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-500" />
-            
-            {showSuggestions && suggestions.length > 0 && (
-              <div 
-                ref={suggestionsRef}
-                className="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
-              >
-                {suggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    className="px-4 py-3 hover:bg-gray-100 cursor-pointer text-gray-700 text-sm border-b border-gray-100 last:border-none"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              onClick={() => onWizardToggle(true)}
-              variant="outline"
-              className="hidden md:flex items-center gap-1 text-sm text-purple-600 border-purple-300 hover:bg-purple-50 h-12"
-            >
-              <Wand2 className="h-4 w-4" />
-              <span>Use Wizard</span>
-            </Button>
-            
-            <Button
-              type="submit"
-              disabled={isSearching || !searchText.trim()}
-              variant="highlight"
-              className="w-full md:w-auto h-12 px-6"
-            >
-              {isSearching ? (
-                <>
-                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Searching...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-5 w-5" />
-                  <span>Find Areas</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </form>
-      
-      <div className="mt-3 flex gap-2 justify-center md:justify-start flex-wrap">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="text-xs bg-white/10 text-white hover:bg-white/20 border-white/20"
-          onClick={() => onWizardToggle(true)}
+    <div className="max-w-3xl mx-auto text-center">
+      <div className="flex justify-center mb-5">
+        <Button 
+          onClick={toggleWizard}
+          variant={showWizard ? "default" : "outline"} 
+          size="lg"
+          className={`relative ${!showWizard ? "bg-purple-600/90 hover:bg-purple-700 border border-purple-400/30 text-white" : "bg-purple-700 text-white shadow-lg shadow-purple-600/30"}`}
         >
-          <Wand2 className="h-3 w-3 mr-1" />
-          Switch to Text Mode
+          {showWizard ? (
+            <>Switch to Free Text Search</>
+          ) : (
+            <>
+              <Wand2 className="h-5 w-5 mr-2 text-amber-300" />
+              <span className="font-semibold text-white">Use Guided Wizard</span>
+              <span className="absolute -top-2 -right-2 bg-amber-400 text-black text-xs px-1.5 py-0.5 rounded-full animate-pulse font-bold">Recommended</span>
+            </>
+          )}
         </Button>
       </div>
+
+      {!showWizard && (
+        <>
+          <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-2 mb-6">
+            <Input
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="e.g., I want to live near a tube station, park, and good pubs"
+              className="flex-grow bg-white/10 text-white border-white/20 placeholder:text-white/40 h-12"
+            />
+            <Button 
+              onClick={() => onSearch(userInput)}
+              disabled={isSearching}
+              variant="glow"
+              size="lg"
+              className="min-w-[120px] h-12"
+            >
+              {isSearching ? 
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Analyzing...</span>
+                </div> : 
+                <div className="flex items-center space-x-2">
+                  <Search className="h-4 w-4" />
+                  <span>Find Areas</span>
+                </div>
+              }
+            </Button>
+          </div>
+          
+          <div className="text-white/70 mb-4 text-sm">
+            <p className="mb-2">Try queries like:</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {suggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  className="bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-full text-xs transition-colors"
+                  onClick={() => {
+                    setUserInput(suggestion);
+                  }}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

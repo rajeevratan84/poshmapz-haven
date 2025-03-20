@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -27,32 +27,22 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
   const [lifestyle, setLifestyle] = useState<string[]>([]);
   const [dailyRoutine, setDailyRoutine] = useState('');
   const [tempLocation, setTempLocation] = useState('');
-  const [tempTime, setTempTime] = useState('30');
+  const [tempTime, setTempTime] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
-  
-  // Create a ref for the container to maintain scroll position
-  const wizardContainerRef = useRef<HTMLDivElement>(null);
-
-  // Maintain scroll position when moving between steps
-  useEffect(() => {
-    if (wizardContainerRef.current) {
-      wizardContainerRef.current.scrollTop = 0;
-    }
-  }, [currentStep]);
 
   const totalSteps = 6;
 
   // Popular London locations for quick selection
   const popularLocations = [
     { name: "Canary Wharf", defaultTime: "30" },
-    { name: "Kings Cross", defaultTime: "30" },
-    { name: "Waterloo", defaultTime: "30" },
-    { name: "Liverpool Street", defaultTime: "30" },
+    { name: "Kings Cross", defaultTime: "25" },
+    { name: "Waterloo", defaultTime: "20" },
+    { name: "Liverpool Street", defaultTime: "25" },
     { name: "The City", defaultTime: "30" },
-    { name: "Hammersmith", defaultTime: "30" },
-    { name: "Westminster", defaultTime: "30" },
-    { name: "Victoria", defaultTime: "30" },
-    { name: "Paddington", defaultTime: "30" },
+    { name: "Hammersmith", defaultTime: "35" },
+    { name: "Westminster", defaultTime: "25" },
+    { name: "Victoria", defaultTime: "20" },
+    { name: "Paddington", defaultTime: "25" },
     { name: "Shoreditch", defaultTime: "30" },
   ];
 
@@ -171,13 +161,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     return acc;
   }, {} as Record<string, typeof lifestyleOptions>);
 
-  // Additional info suggestions
-  const additionalInfoSuggestions = [
-    "I need a property with outdoor space or a garden",
-    "I would prefer a location with low crime rates and good safety",
-    "I'm looking for properties with period features or character"
-  ];
-
   const goToNextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(prev => prev + 1);
@@ -196,7 +179,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     if (tempLocation.trim()) {
       setLocations([...locations, {place: tempLocation.trim(), time: tempTime || '30'}]);
       setTempLocation('');
-      setTempTime('30');
+      setTempTime('');
     }
   };
 
@@ -209,16 +192,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
 
   const removeLocation = (index: number) => {
     setLocations(locations.filter((_, i) => i !== index));
-  };
-
-  const updateLocationTime = (index: number, newTime: string) => {
-    const updatedLocations = [...locations];
-    updatedLocations[index] = {...updatedLocations[index], time: newTime};
-    setLocations(updatedLocations);
-  };
-
-  const setAdditionalInfoSuggestion = (suggestion: string) => {
-    setAdditionalInfo(suggestion);
   };
 
   const submitWizard = () => {
@@ -291,11 +264,11 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-2 bg-black/30">
-                  <TabsTrigger value="flat" className="data-[state=active]:bg-coral data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="flat" className="data-[state=active]:bg-coral data-[state=active]:text-white">
                     <Building className="mr-2 h-4 w-4" />
                     Flat/Apartment
                   </TabsTrigger>
-                  <TabsTrigger value="house" className="data-[state=active]:bg-coral data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="house" className="data-[state=active]:bg-coral data-[state=active]:text-white">
                     <Home className="mr-2 h-4 w-4" />
                     House
                   </TabsTrigger>
@@ -313,19 +286,19 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-4 bg-black/30">
-                  <TabsTrigger value="1" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="1" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                     <Bed className="mr-1 h-3 w-3" />
                     1
                   </TabsTrigger>
-                  <TabsTrigger value="2" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="2" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                     <Bed className="mr-1 h-3 w-3" />
                     2
                   </TabsTrigger>
-                  <TabsTrigger value="3" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="3" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                     <Bed className="mr-1 h-3 w-3" />
                     3
                   </TabsTrigger>
-                  <TabsTrigger value="4+" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="4+" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
                     <Bed className="mr-1 h-3 w-3" />
                     4+
                   </TabsTrigger>
@@ -511,26 +484,15 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   <div className="space-y-2">
                     {locations.map((loc, index) => (
                       <div key={index} className="flex items-center justify-between bg-gray-800/70 p-2 px-3 rounded-lg border border-white/10">
-                        <span className="text-white text-sm">{loc.place}</span>
-                        <div className="flex items-center">
-                          <Input
-                            value={loc.time}
-                            onChange={(e) => updateLocationTime(index, e.target.value)}
-                            type="number"
-                            min="0"
-                            max="120"
-                            className="w-16 h-7 mr-2 bg-black/30 text-white border-white/20 text-center"
-                          />
-                          <span className="text-white text-xs mr-2">min</span>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-7 w-7 p-0 text-white/70 hover:text-white"
-                            onClick={() => removeLocation(index)}
-                          >
-                            ×
-                          </Button>
-                        </div>
+                        <span className="text-white text-sm">{loc.place} (max {loc.time} min)</span>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 w-7 p-0 text-white/70 hover:text-white"
+                          onClick={() => removeLocation(index)}
+                        >
+                          ×
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -597,7 +559,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                             transition-colors
                             ${lifestyle.includes(option.value) 
                               ? 'bg-opacity-40 border-opacity-100' 
-                              : 'bg-black/40 border-white/20 text-gray-300'}
+                              : 'bg-black/40 border-white/20'}
                           `}
                           style={{ 
                             backgroundColor: lifestyle.includes(option.value) 
@@ -683,24 +645,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 className="min-h-[120px] bg-gray-800/70 border-white/20 text-white placeholder:text-white/40"
               />
               
-              <div className="space-y-2">
-                <p className="text-sm text-white/70">Suggestions:</p>
-                <div className="flex flex-wrap gap-2">
-                  {additionalInfoSuggestions.map((suggestion, index) => (
-                    <Button
-                      key={index}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="bg-black/40 border-white/20 text-white hover:bg-white/10"
-                      onClick={() => setAdditionalInfoSuggestion(suggestion)}
-                    >
-                      {suggestion}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              
               <p className="text-xs text-white/60">
                 This is your chance to add any specific requirements that haven't been covered by the previous steps.
               </p>
@@ -766,54 +710,52 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
         </div>
       </div>
       
-      <div ref={wizardContainerRef} className="max-h-[60vh] overflow-y-auto pr-2 pb-2 -mr-2 scroll-smooth">
-        <form onSubmit={(e) => { e.preventDefault(); }}>
-          <div className="min-h-[350px]">
-            {renderStepContent()}
-          </div>
-        </form>
-      </div>
-      
-      <div className="mt-6 flex justify-between">
-        <Button
-          type="button"
-          onClick={goToPrevStep}
-          disabled={currentStep === 1}
-          variant="outline"
-          className="text-white border-white/20 hover:bg-white/10 disabled:opacity-50"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
+      <form onSubmit={(e) => { e.preventDefault(); }}>
+        <div className="min-h-[350px]">
+          {renderStepContent()}
+        </div>
         
-        <Button
-          type="button"
-          onClick={goToNextStep}
-          disabled={!canProceed() || isSearching}
-          variant="glow"
-          size="lg"
-          className="bg-purple-600 hover:bg-purple-700"
-        >
-          {currentStep === totalSteps ? (
-            isSearching ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Finding Areas
-              </>
+        <div className="mt-6 flex justify-between">
+          <Button
+            type="button"
+            onClick={goToPrevStep}
+            disabled={currentStep === 1}
+            variant="outline"
+            className="text-white border-white/20 hover:bg-white/10 disabled:opacity-50"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          
+          <Button
+            type="button"
+            onClick={goToNextStep}
+            disabled={!canProceed() || isSearching}
+            variant="glow"
+            size="lg"
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            {currentStep === totalSteps ? (
+              isSearching ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Finding Areas
+                </>
+              ) : (
+                <>
+                  <Search className="mr-2 h-4 w-4" />
+                  Find Areas
+                </>
+              )
             ) : (
               <>
-                <Search className="mr-2 h-4 w-4" />
-                Find Areas
+                Next
+                <ArrowRight className="ml-2 h-4 w-4" />
               </>
-            )
-          ) : (
-            <>
-              Next
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          )}
-        </Button>
-      </div>
+            )}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
