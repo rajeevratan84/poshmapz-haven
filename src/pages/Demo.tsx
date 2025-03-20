@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MapPin, ArrowLeft, Sparkles } from "lucide-react";
 import { toast } from 'sonner';
@@ -36,6 +37,8 @@ const DemoPage: React.FC = () => {
     setIsSearching(true);
     setResults([]);
     setSelectedArea(null);
+    // Hide the wizard when search starts
+    setShowWizard(false);
     
     try {
       console.log("Sending request to analyze:", searchInput);
@@ -44,6 +47,7 @@ const DemoPage: React.FC = () => {
       const areas = await analyzeAreaPreferences(searchInput, apiKey);
       const elapsedTime = Date.now() - startTime;
       
+      // Ensure we show the loading animation for at least 15 seconds
       if (elapsedTime < 15000) {
         await new Promise(resolve => setTimeout(resolve, 15000 - elapsedTime));
       }

@@ -133,6 +133,16 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     if (vibeLower.includes('trendy') || vibeLower.includes('hip')) return 'bg-pink-600';
     if (vibeLower.includes('historic') || vibeLower.includes('heritage')) return 'bg-amber-600';
     if (vibeLower.includes('creative') || vibeLower.includes('artsy')) return 'bg-indigo-600';
+    
+    // Colors for immigrant communities
+    if (vibeLower.includes('indian')) return 'bg-orange-600';
+    if (vibeLower.includes('pakistani')) return 'bg-emerald-600';
+    if (vibeLower.includes('polish')) return 'bg-red-600';
+    if (vibeLower.includes('caribbean')) return 'bg-yellow-600';
+    if (vibeLower.includes('turkish')) return 'bg-red-700';
+    if (vibeLower.includes('chinese')) return 'bg-red-500';
+    if (vibeLower.includes('jewish')) return 'bg-blue-800';
+    
     return 'bg-gray-600';
   };
 
@@ -208,26 +218,34 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         <p className="text-sm text-white/70 mb-3 text-left border border-white/10 p-3 rounded-md bg-white/5">{description}</p>
         
         {/* Pros and Cons Section */}
-        <div className="flex flex-wrap gap-2 mb-2">
-          <div className="flex gap-1.5 items-center">
-            <ThumbsUp className="h-3.5 w-3.5 text-green-500" />
-            <span className="text-xs text-white/90 font-medium">Pros:</span>
+        <div className="border border-white/10 p-3 rounded-md bg-white/5 mb-2">
+          <div className="mb-2">
+            <div className="flex gap-1.5 items-center mb-1.5">
+              <ThumbsUp className="h-3.5 w-3.5 text-green-500" />
+              <span className="text-xs text-white/90 font-medium">Pros:</span>
+            </div>
+            <div className="flex flex-col gap-1 ml-6">
+              {pros.map((pro, idx) => (
+                <span key={`pro-${idx}`} className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full inline-block">
+                  {pro}
+                </span>
+              ))}
+            </div>
           </div>
-          {pros.map((pro, idx) => (
-            <span key={`pro-${idx}`} className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
-              {pro}
-            </span>
-          ))}
           
-          <div className="flex gap-1.5 items-center ml-2">
-            <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
-            <span className="text-xs text-white/90 font-medium">Cons:</span>
+          <div>
+            <div className="flex gap-1.5 items-center mb-1.5">
+              <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
+              <span className="text-xs text-white/90 font-medium">Cons:</span>
+            </div>
+            <div className="flex flex-col gap-1 ml-6">
+              {cons.map((con, idx) => (
+                <span key={`con-${idx}`} className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full inline-block">
+                  {con}
+                </span>
+              ))}
+            </div>
           </div>
-          {cons.map((con, idx) => (
-            <span key={`con-${idx}`} className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">
-              {con}
-            </span>
-          ))}
         </div>
       </CardHeader>
 
@@ -235,7 +253,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Crime Rate */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
             <Shield className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Crime Rate</div>
@@ -249,7 +267,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Transport Score */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
             <Train className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Transport Score</div>
@@ -263,7 +281,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Walkability */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
             <Footprints className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Walkability</div>
@@ -276,8 +294,8 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          {/* Amenities Score - UPDATED */}
-          <div className="flex gap-3">
+          {/* Amenities Score */}
+          <div className="flex gap-3 border border-white/10 p-3 rounded-md bg-white/5">
             <ShoppingBag className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div className="w-full">
               <div className="text-white font-medium mb-0.5">Amenities Score</div>
@@ -303,7 +321,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           
           {/* Future Property Growth */}
-          <div className="flex gap-3 col-span-1 sm:col-span-2">
+          <div className="flex gap-3 col-span-1 sm:col-span-2 border border-white/10 p-3 rounded-md bg-white/5">
             <TrendingUp className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div className="w-full">
               <div className="text-white font-medium mb-0.5">Future Property Growth</div>
@@ -328,7 +346,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         </div>
         
         {/* Area Vibe */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 border border-white/10 p-3 rounded-md bg-white/5">
           <div className="flex gap-3">
             <Smile className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div className="text-white font-medium">Area Vibe</div>
@@ -349,7 +367,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
         </div>
         
         {/* Amenities */}
-        <div className="pt-2">
+        <div className="pt-2 border border-white/10 p-3 rounded-md bg-white/5">
           <div className="text-sm text-white/90 font-medium mb-2">Matching Amenities</div>
           <div className="flex flex-wrap gap-1.5">
             {amenities.map((amenity, idx) => (

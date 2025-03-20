@@ -34,8 +34,8 @@ const SearchLoadingAnimation: React.FC<SearchLoadingAnimationProps> = ({ isVisib
       setTipIndex(prev => (prev + 1) % tips.length);
     }, 3000);
     
-    // Progress bar animation (approximately 20 seconds)
-    const totalDuration = 20000; // 20 seconds
+    // Progress bar animation (approximately 25 seconds)
+    const totalDuration = 25000; // 25 seconds
     const updateInterval = 200; // Update every 200ms
     const progressStep = (updateInterval / totalDuration) * 100;
     
