@@ -119,6 +119,7 @@ const DemoPage: React.FC = () => {
         </div>
         
         <div className="bg-black/20 rounded-xl p-4 shadow-lg">
+          {/* Load animation is now positioned above the map */}
           {isSearching && <SearchLoadingAnimation isVisible={isSearching} />}
           
           <AreaMapComponent 

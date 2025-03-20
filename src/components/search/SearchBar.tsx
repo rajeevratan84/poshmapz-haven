@@ -35,22 +35,23 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="max-w-3xl mx-auto text-center">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-sm font-medium text-white/70">Search by:</h2>
-        <Toggle 
-          pressed={showWizard}
-          onPressedChange={toggleWizard}
-          className="bg-black/20 hover:bg-black/30 border border-white/10 text-white"
+      <div className="flex justify-center mb-5">
+        <Button 
+          onClick={toggleWizard}
+          variant={showWizard ? "default" : "outline"} 
+          size="lg"
+          className={`relative ${!showWizard ? "bg-black/20 hover:bg-black/30 border border-white/10 text-white" : "bg-posh-green text-white shadow-lg shadow-posh-green/30"}`}
         >
           {showWizard ? (
-            <>Free Text</>
+            <>Switch to Free Text Search</>
           ) : (
             <>
-              <Wand2 className="h-4 w-4 mr-1" />
-              Guided Wizard
+              <Wand2 className="h-5 w-5 mr-2" />
+              <span className="font-semibold">Use Guided Wizard</span>
+              <span className="absolute -top-2 -right-2 bg-posh-green text-white text-xs px-1.5 py-0.5 rounded-full animate-pulse">Recommended</span>
             </>
           )}
-        </Toggle>
+        </Button>
       </div>
 
       {!showWizard && (
