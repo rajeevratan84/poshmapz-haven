@@ -13,14 +13,16 @@ interface SearchWizardProps {
   onSearch: (query: string) => void;
   isSearching: boolean;
   onCancel: () => void;
-  country?: 'london' | 'trinidad';
+  locationType?: 'london' | 'world';
+  country?: string;
 }
 
 const SearchWizard: React.FC<SearchWizardProps> = ({ 
   onSearch, 
   isSearching, 
   onCancel,
-  country = 'london'
+  locationType = 'london',
+  country
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [type, setType] = useState<'rent' | 'buy'>('rent');
@@ -37,71 +39,126 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
 
   const totalSteps = 6;
 
-  // Popular locations based on country
-  const popularLocations = country === 'london' ? [
-    { name: "Canary Wharf", defaultTime: "30" },
-    { name: "Kings Cross", defaultTime: "25" },
-    { name: "Waterloo", defaultTime: "20" },
-    { name: "Liverpool Street", defaultTime: "25" },
-    { name: "The City", defaultTime: "30" },
-    { name: "Hammersmith", defaultTime: "35" },
-    { name: "Westminster", defaultTime: "25" },
-    { name: "Victoria", defaultTime: "20" },
-    { name: "Paddington", defaultTime: "25" },
-    { name: "Shoreditch", defaultTime: "30" },
-  ] : [
-    { name: "Port of Spain", defaultTime: "25" },
-    { name: "San Fernando", defaultTime: "30" },
-    { name: "Scarborough", defaultTime: "20" },
-    { name: "Arima", defaultTime: "35" },
-    { name: "Chaguanas", defaultTime: "30" },
-    { name: "Piarco Airport", defaultTime: "25" },
-    { name: "UWI St. Augustine", defaultTime: "20" },
-    { name: "Maracas Beach", defaultTime: "40" },
-    { name: "Pigeon Point", defaultTime: "30" },
-    { name: "Movie Towne", defaultTime: "20" },
-  ];
+  // Popular locations based on location type
+  const getPopularLocations = () => {
+    if (locationType === 'london') {
+      return [
+        { name: "Canary Wharf", defaultTime: "30" },
+        { name: "Kings Cross", defaultTime: "25" },
+        { name: "Waterloo", defaultTime: "20" },
+        { name: "Liverpool Street", defaultTime: "25" },
+        { name: "The City", defaultTime: "30" },
+        { name: "Hammersmith", defaultTime: "35" },
+        { name: "Westminster", defaultTime: "25" },
+        { name: "Victoria", defaultTime: "20" },
+        { name: "Paddington", defaultTime: "25" },
+        { name: "Shoreditch", defaultTime: "30" },
+      ];
+    } else {
+      // Generic popular locations that could apply to most countries
+      return [
+        { name: "City Center", defaultTime: "25" },
+        { name: "Financial District", defaultTime: "30" },
+        { name: "Main Train Station", defaultTime: "20" },
+        { name: "University", defaultTime: "25" },
+        { name: "Business Park", defaultTime: "30" },
+        { name: "Shopping District", defaultTime: "25" },
+        { name: "Airport", defaultTime: "40" },
+        { name: "Harbor/Waterfront", defaultTime: "30" },
+        { name: "Cultural District", defaultTime: "20" },
+        { name: "Medical Center", defaultTime: "25" },
+      ];
+    }
+  };
 
-  // More granular budget options
-  const rentBudgetOptions = country === 'london' ? [
-    { value: 'very-low', label: 'Up to £1,000 per month' },
-    { value: 'low', label: '£1,000–£1,500 per month' },
-    { value: 'medium-low', label: '£1,500–£2,000 per month' },
-    { value: 'medium', label: '£2,000–£2,500 per month' },
-    { value: 'medium-high', label: '£2,500–£3,000 per month' },
-    { value: 'high', label: '£3,000–£3,500 per month' },
-    { value: 'very-high', label: '£3,500–£5,000 per month' },
-    { value: 'luxury', label: 'Over £5,000 per month' }
-  ] : [
-    { value: 'very-low', label: 'Up to TT$3,000 per month' },
-    { value: 'low', label: 'TT$3,000–TT$5,000 per month' },
-    { value: 'medium-low', label: 'TT$5,000–TT$7,000 per month' },
-    { value: 'medium', label: 'TT$7,000–TT$9,000 per month' },
-    { value: 'medium-high', label: 'TT$9,000–TT$12,000 per month' },
-    { value: 'high', label: 'TT$12,000–TT$15,000 per month' },
-    { value: 'very-high', label: 'TT$15,000–TT$20,000 per month' },
-    { value: 'luxury', label: 'Over TT$20,000 per month' }
-  ];
+  // Currency symbols based on location
+  const getCurrencySymbol = () => {
+    if (locationType === 'london') return '£';
+    
+    // Common currency symbols for some countries
+    const currencyMap: Record<string, string> = {
+      'United States': '$',
+      'Canada': 'C$',
+      'Australia': 'A$',
+      'France': '€',
+      'Germany': '€',
+      'Spain': '€',
+      'Italy': '€',
+      'Japan': '¥',
+      'Brazil': 'R$',
+      'Mexico': 'Mex$',
+      'South Africa': 'R',
+      'India': '₹',
+      'China': '¥',
+      'Singapore': 'S$',
+      'United Arab Emirates': 'AED',
+      'New Zealand': 'NZ$',
+      'Thailand': '฿',
+      'Portugal': '€',
+      'Netherlands': '€'
+    };
+    
+    return country && currencyMap[country] ? currencyMap[country] : '$';
+  };
 
-  const buyBudgetOptions = country === 'london' ? [
-    { value: 'very-low', label: 'Up to £300,000' },
-    { value: 'low', label: '£300,000–£500,000' },
-    { value: 'medium-low', label: '£500,000–£750,000' },
-    { value: 'medium', label: '£750,000–£1,000,000' },
-    { value: 'medium-high', label: '£1,000,000–£1,500,000' },
-    { value: 'high', label: '£1,500,000–£2,000,000' },
-    { value: 'very-high', label: '£2,000,000–£3,000,000' },
-    { value: 'luxury', label: 'Over £3,000,000' }
-  ] : [
-    { value: 'very-low', label: 'Up to TT$1,000,000' },
-    { value: 'low', label: 'TT$1,000,000–TT$2,000,000' },
-    { value: 'medium-low', label: 'TT$2,000,000–TT$3,000,000' },
-    { value: 'medium', label: 'TT$3,000,000–TT$4,000,000' },
-    { value: 'medium-high', label: 'TT$4,000,000–TT$5,000,000' },
-    { value: 'high', label: 'TT$5,000,000–TT$7,000,000' },
-    { value: 'very-high', label: 'TT$7,000,000–TT$10,000,000' },
-    { value: 'luxury', label: 'Over TT$10,000,000' }
-  ];
+  // More granular budget options based on location
+  const getRentBudgetOptions = () => {
+    const currencySymbol = getCurrencySymbol();
+    
+    if (locationType === 'london') {
+      return [
+        { value: 'very-low', label: `Up to ${currencySymbol}1,000 per month` },
+        { value: 'low', label: `${currencySymbol}1,000–${currencySymbol}1,500 per month` },
+        { value: 'medium-low', label: `${currencySymbol}1,500–${currencySymbol}2,000 per month` },
+        { value: 'medium', label: `${currencySymbol}2,000–${currencySymbol}2,500 per month` },
+        { value: 'medium-high', label: `${currencySymbol}2,500–${currencySymbol}3,000 per month` },
+        { value: 'high', label: `${currencySymbol}3,000–${currencySymbol}3,500 per month` },
+        { value: 'very-high', label: `${currencySymbol}3,500–${currencySymbol}5,000 per month` },
+        { value: 'luxury', label: `Over ${currencySymbol}5,000 per month` }
+      ];
+    } else {
+      // Generic ranges that would work for most countries with USD as fallback
+      return [
+        { value: 'very-low', label: `Very affordable` },
+        { value: 'low', label: `Below average for ${country || 'this area'}` },
+        { value: 'medium-low', label: `Slightly below average` },
+        { value: 'medium', label: `Average for ${country || 'this area'}` },
+        { value: 'medium-high', label: `Slightly above average` },
+        { value: 'high', label: `Above average` },
+        { value: 'very-high', label: `Premium` },
+        { value: 'luxury', label: `Luxury range` }
+      ];
+    }
+  };
+
+  const getBuyBudgetOptions = () => {
+    const currencySymbol = getCurrencySymbol();
+    
+    if (locationType === 'london') {
+      return [
+        { value: 'very-low', label: `Up to ${currencySymbol}300,000` },
+        { value: 'low', label: `${currencySymbol}300,000–${currencySymbol}500,000` },
+        { value: 'medium-low', label: `${currencySymbol}500,000–${currencySymbol}750,000` },
+        { value: 'medium', label: `${currencySymbol}750,000–${currencySymbol}1,000,000` },
+        { value: 'medium-high', label: `${currencySymbol}1,000,000–${currencySymbol}1,500,000` },
+        { value: 'high', label: `${currencySymbol}1,500,000–${currencySymbol}2,000,000` },
+        { value: 'very-high', label: `${currencySymbol}2,000,000–${currencySymbol}3,000,000` },
+        { value: 'luxury', label: `Over ${currencySymbol}3,000,000` }
+      ];
+    } else {
+      // Generic ranges that would work for most countries
+      return [
+        { value: 'very-low', label: `Very affordable` },
+        { value: 'low', label: `Below average for ${country || 'this area'}` },
+        { value: 'medium-low', label: `Slightly below average` },
+        { value: 'medium', label: `Average for ${country || 'this area'}` },
+        { value: 'medium-high', label: `Slightly above average` },
+        { value: 'high', label: `Above average` },
+        { value: 'very-high', label: `Premium` },
+        { value: 'luxury', label: `Luxury range` }
+      ];
+    }
+  };
 
   // Colors for lifestyle categories
   const lifestyleColors = {
@@ -183,25 +240,31 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     { value: 'greek', label: 'Greek community', category: 'community' },
   ];
 
-  // Add country-specific lifestyle options
-  const countrySpecificOptions = country === 'london' ? [
-    // London-specific options already included in lifestyleOptions
-  ] : [
-    // Trinidad & Tobago specific options
-    { value: 'beach-access', label: 'Beach access', category: 'environment' },
-    { value: 'carnival', label: 'Carnival culture', category: 'special' },
-    { value: 'steel-pan', label: 'Steel pan music', category: 'special' },
-    { value: 'cricket', label: 'Cricket facilities', category: 'activities' },
-    { value: 'hiking', label: 'Hiking trails', category: 'activities' },
-    { value: 'diving', label: 'Diving spots', category: 'activities' },
-    { value: 'international-schools', label: 'International schools', category: 'amenities' },
-    { value: 'expat-friendly', label: 'Expat friendly', category: 'community' },
-    { value: 'tourism', label: 'Tourist attractions', category: 'special' },
-    { value: 'street-food', label: 'Street food scene', category: 'special' },
-  ];
+  // Add location-specific lifestyle options
+  const getLocationSpecificOptions = () => {
+    if (locationType === 'london') {
+      return [
+        // London-specific options already included in lifestyleOptions
+      ];
+    } else {
+      // Generic options that could apply to most countries
+      return [
+        { value: 'beach-access', label: 'Beach access', category: 'environment' },
+        { value: 'mountain-views', label: 'Mountain views', category: 'environment' },
+        { value: 'lake-access', label: 'Lake access', category: 'environment' },
+        { value: 'wine-region', label: 'Wine region', category: 'special' },
+        { value: 'skiing', label: 'Skiing facilities', category: 'activities' },
+        { value: 'hiking', label: 'Hiking trails', category: 'activities' },
+        { value: 'international-schools', label: 'International schools', category: 'amenities' },
+        { value: 'expat-friendly', label: 'Expat friendly', category: 'community' },
+        { value: 'tourism', label: 'Tourist attractions', category: 'special' },
+        { value: 'local-cuisine', label: 'Local cuisine', category: 'special' },
+      ];
+    }
+  };
 
   // Combine all lifestyle options
-  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities, ...countrySpecificOptions];
+  const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities, ...getLocationSpecificOptions()];
 
   // Group lifestyle options by category
   const groupedLifestyleOptions = allLifestyleOptions.reduce((acc, option) => {
@@ -251,7 +314,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     const prioritiesText = priorities.join(', ');
     
     // Map budget to text based on selected option and property type
-    const budgetOptions = type === 'rent' ? rentBudgetOptions : buyBudgetOptions;
+    const budgetOptions = type === 'rent' ? getRentBudgetOptions() : getBuyBudgetOptions();
     const selectedBudget = budgetOptions.find(option => option.value === budget);
     const budgetText = selectedBudget ? selectedBudget.label : '';
     
@@ -272,13 +335,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
     }
 
     // Add property type and bedrooms information
-    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in ${country === 'london' ? 'London' : 'Trinidad & Tobago'}. `;
+    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in ${locationType === 'london' ? 'London' : country || 'this country'}. `;
 
     // Add additional information if provided
     const additionalText = additionalInfo ? `Additional requirements: ${additionalInfo}. ` : '';
-
-    // Use the correct currency symbol based on country
-    const currencySymbol = country === 'london' ? '£' : 'TT$';
     
     const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}. ${additionalText}`;
 
@@ -363,7 +423,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Budget:</label>
               <RadioGroup value={budget} onValueChange={setBudget} className="space-y-3">
-                {(type === 'rent' ? rentBudgetOptions : buyBudgetOptions).map(option => (
+                {(type === 'rent' ? getRentBudgetOptions() : getBuyBudgetOptions()).map(option => (
                   <div key={option.value} className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
                     <RadioGroupItem 
                       value={option.value} 
@@ -517,7 +577,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
               <div className="space-y-2">
                 <p className="text-sm text-white/70 bg-black/30 p-2 rounded">Popular locations:</p>
                 <div className="flex flex-wrap gap-2">
-                  {popularLocations.map((location, index) => (
+                  {getPopularLocations().map((location, index) => (
                     <Button 
                       key={index}
                       variant="outline" 
@@ -598,220 +658,3 @@ const SearchWizard: React.FC<SearchWizardProps> = ({
               
               <div className="space-y-5">
                 {Object.entries(groupedLifestyleOptions).map(([category, options]) => (
-                  <div key={category} className="space-y-2">
-                    <h4 className="text-sm font-medium capitalize bg-black/30 p-2 rounded" style={{ color: lifestyleColors[category as keyof typeof lifestyleColors] || '#ffffff' }}>
-                      {category}
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {options.map(option => (
-                        <Button
-                          key={option.value}
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className={`
-                            transition-colors
-                            ${lifestyle.includes(option.value) 
-                              ? 'bg-opacity-40 border-opacity-100' 
-                              : 'bg-black/40 border-white/20'}
-                          `}
-                          style={{ 
-                            backgroundColor: lifestyle.includes(option.value) 
-                              ? `${lifestyleColors[option.category as keyof typeof lifestyleColors]}40` 
-                              : 'rgba(0,0,0,0.4)',
-                            borderColor: lifestyle.includes(option.value)
-                              ? lifestyleColors[option.category as keyof typeof lifestyleColors]
-                              : 'rgba(255,255,255,0.2)'
-                          }}
-                          onClick={() => {
-                            if (lifestyle.includes(option.value)) {
-                              setLifestyle(lifestyle.filter(item => item !== option.value));
-                            } else {
-                              setLifestyle([...lifestyle, option.value]);
-                            }
-                          }}
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-      
-      case 5:
-        return (
-          <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Daily Routine</h3>
-            
-            <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
-                Envision your typical day in your new neighbourhood. Which scenario best describes it?
-              </label>
-              
-              <RadioGroup value={dailyRoutine} onValueChange={setDailyRoutine} className="space-y-3">
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem value="walk" id="routine-walk" className="border-white/30 text-purple-600" />
-                  <label htmlFor="routine-walk" className="w-full text-white cursor-pointer">
-                    Most daily errands done on foot
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem value="transit" id="routine-transit" className="border-white/30 text-purple-600" />
-                  <label htmlFor="routine-transit" className="w-full text-white cursor-pointer">
-                    Frequent use of public transport or cycling
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem value="drive" id="routine-drive" className="border-white/30 text-purple-600" />
-                  <label htmlFor="routine-drive" className="w-full text-white cursor-pointer">
-                    Driving for the majority of errands
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2 rounded-lg border border-white/10 p-3 bg-gray-800/70 hover:bg-white/10 transition-colors">
-                  <RadioGroupItem value="home" id="routine-home" className="border-white/30 text-purple-600" />
-                  <label htmlFor="routine-home" className="w-full text-white cursor-pointer">
-                    Working from home and venturing out only occasionally
-                  </label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        );
-      
-      case 6:
-        return (
-          <div className="space-y-6 animate-fade-in">
-            <h3 className="text-xl font-medium text-white bg-black/40 p-3 rounded-lg">Additional Requirements</h3>
-            
-            <div className="space-y-4">
-              <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">
-                Is there anything else you would like to mention about your ideal area?
-              </label>
-              
-              <Textarea
-                value={additionalInfo}
-                onChange={(e) => setAdditionalInfo(e.target.value)}
-                placeholder="E.g., I need a garden, I want to be close to my children's school, I prefer a quiet area, etc."
-                className="min-h-[120px] bg-gray-800/70 border-white/20 text-white placeholder:text-white/40"
-              />
-              
-              <p className="text-xs text-white/60">
-                This is your chance to add any specific requirements that haven't been covered by the previous steps.
-              </p>
-            </div>
-          </div>
-        );
-      
-      default:
-        return null;
-    }
-  };
-
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1: return !!budget;
-      case 2: return priorities.length > 0;
-      case 3: return true; // Optional fields
-      case 4: return lifestyle.length > 0;
-      case 5: return !!dailyRoutine;
-      case 6: return true; // Additional info is optional
-      default: return false;
-    }
-  };
-
-  return (
-    <div className="bg-gradient-to-br from-black/60 to-black/40 rounded-xl p-6 shadow-xl border border-purple-600/30 max-w-3xl mx-auto mb-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-display font-semibold text-white flex items-center">
-          <Lightbulb className="h-5 w-5 text-amber-400 mr-2" />
-          {country === 'london' ? 'London' : 'Trinidad & Tobago'} Area Search Wizard
-        </h2>
-        <Button variant="outline" size="sm" onClick={onCancel} className="text-white/70 border-white/20 hover:bg-white/10">
-          Cancel
-        </Button>
-      </div>
-      
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          {[1, 2, 3, 4, 5, 6].map((step) => (
-            <div 
-              key={step}
-              className={`relative flex h-10 w-10 items-center justify-center rounded-full border ${
-                step < currentStep 
-                  ? 'bg-purple-600 border-purple-600 text-white' 
-                  : step === currentStep 
-                    ? 'bg-black/50 border-purple-600 text-white'
-                    : 'bg-black/20 border-white/20 text-white/50'
-              }`}
-            >
-              {step < currentStep ? (
-                <Check className="h-5 w-5" />
-              ) : (
-                <span>{step}</span>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="overflow-hidden h-1 flex rounded bg-black/20">
-          <div
-            className="bg-purple-600 transition-all duration-300"
-            style={{ width: `${(currentStep - 1) * 20}%` }}
-          />
-        </div>
-      </div>
-      
-      <form onSubmit={(e) => { e.preventDefault(); }}>
-        <div className="min-h-[350px]">
-          {renderStepContent()}
-        </div>
-        
-        <div className="mt-6 flex justify-between">
-          <Button
-            type="button"
-            onClick={goToPrevStep}
-            disabled={currentStep === 1}
-            variant="outline"
-            className="text-white border-white/20 hover:bg-white/10 disabled:opacity-50"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          
-          <Button
-            type="button"
-            onClick={goToNextStep}
-            disabled={!canProceed() || isSearching}
-            variant="glow"
-            size="lg"
-            className="bg-purple-600 hover:bg-purple-700"
-          >
-            {currentStep === totalSteps ? (
-              isSearching ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Finding Areas
-                </>
-              ) : (
-                <>
-                  <Search className="mr-2 h-4 w-4" />
-                  Find Areas
-                </>
-              )
-            ) : (
-              <>
-                Next
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </div>
-      </form>
-    </div>
-  );
-};
-
-export default SearchWizard;

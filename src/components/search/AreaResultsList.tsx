@@ -34,7 +34,8 @@ interface AreaResultsListProps {
   onAreaClick: (area: AreaMatch) => void;
   isSearching: boolean;
   userInput: string;
-  country?: 'london' | 'trinidad';
+  locationType?: 'london' | 'world';
+  country?: string;
 }
 
 const AreaResultsList: React.FC<AreaResultsListProps> = ({ 
@@ -43,9 +44,10 @@ const AreaResultsList: React.FC<AreaResultsListProps> = ({
   onAreaClick, 
   isSearching,
   userInput,
-  country = 'london'
+  locationType = 'london',
+  country
 }) => {
-  const locationName = country === 'london' ? 'London' : 'Trinidad & Tobago';
+  const locationName = locationType === 'london' ? 'London' : country || 'Global';
   
   return (
     <div className="mt-6">
@@ -96,7 +98,7 @@ const AreaResultsList: React.FC<AreaResultsListProps> = ({
             Discover Your Perfect {locationName} Area
           </h3>
           <p className="text-white/70 mb-6 max-w-xl mx-auto">
-            Get detailed area insights including {country === 'london' ? 'transport links' : 'local amenities'}, 
+            Get detailed area insights including {locationType === 'london' ? 'transport links' : 'local amenities'}, 
             walkability scores, property growth forecasts, and more - tailored to your unique lifestyle preferences.
           </p>
           <Button
