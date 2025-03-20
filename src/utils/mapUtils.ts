@@ -37,23 +37,26 @@ export const loadGoogleMapsScript = (
   };
 };
 
-// Create map styles for consistent styling
+// Create map styles for consistent styling - using a light theme
 export const mapStyles = [
   {
-    featureType: "poi",
-    elementType: "labels",
-    stylers: [{ visibility: "off" }],
+    "featureType": "poi",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
   },
   {
-    featureType: "administrative.neighborhood",
-    elementType: "labels",
-    stylers: [{ visibility: "on" }],
-  },
-  {
-    featureType: "transit",
-    elementType: "labels",
-    stylers: [{ visibility: "on" }],
-  },
+    "featureType": "transit",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  }
 ];
 
 // Default Richmond coordinates

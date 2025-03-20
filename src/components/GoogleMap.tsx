@@ -86,13 +86,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     }
   }, [zoom, center, options]);
 
-  // Effect to handle area markers
-  useEffect(() => {
-    if (!mapInstanceRef.current || !infoWindowRef.current || areas.length === 0) return;
-    
-    // No cleanup needed here as AreaMarker components handle their own cleanup
-  }, [areas, selectedArea]);
-
   const containerStyle = mapContainerStyle || { width: '100%', height: '100%' };
 
   return (

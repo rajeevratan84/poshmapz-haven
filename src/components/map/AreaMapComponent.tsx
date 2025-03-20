@@ -7,7 +7,7 @@ export interface AreaMapComponentProps {
   results: AreaMatch[];
   selectedArea: AreaMatch | null;
   onAreaSelected: (area: AreaMatch) => void;
-  locationType?: 'london' | 'world';
+  locationType?: 'london' | 'uk' | 'world';
   country?: string;
 }
 
@@ -29,12 +29,16 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
     if (locationType === 'london') {
       // Default for London
       setMapCenter({ lat: 51.509865, lng: -0.118092 });
+    } else if (locationType === 'uk') {
+      // Default for UK
+      setMapCenter({ lat: 54.7023545, lng: -3.2765753 });
     } else if (results.length > 0) {
       // Use the first result's coordinates
       setMapCenter(results[0].coordinates);
     } else {
       // Default centers for common countries
       const defaultCenters: Record<string, google.maps.LatLngLiteral> = {
+        'United Kingdom': { lat: 54.7023545, lng: -3.2765753 },
         'United States': { lat: 37.0902, lng: -95.7129 },
         'Canada': { lat: 56.1304, lng: -106.3468 },
         'Australia': { lat: -25.2744, lng: 133.7751 },
@@ -53,7 +57,8 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
         'New Zealand': { lat: -40.9006, lng: 174.8860 },
         'Thailand': { lat: 15.8700, lng: 100.9925 },
         'Portugal': { lat: 39.3999, lng: -8.2245 },
-        'Netherlands': { lat: 52.1326, lng: 5.2913 }
+        'Netherlands': { lat: 52.1326, lng: 5.2913 },
+        'Trinidad and Tobago': { lat: 10.6918, lng: -61.2225 }
       };
       
       if (country && defaultCenters[country]) {
@@ -76,7 +81,9 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
   const getZoomLevel = () => {
     if (results.length === 0) {
       // Default zoom for different location types
-      return locationType === 'london' ? 11 : 5;
+      if (locationType === 'london') return 11;
+      if (locationType === 'uk') return 6;
+      return 5;
     }
     
     if (selectedArea) {
@@ -85,75 +92,38 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
     }
     
     // Default zoom when results are available but none selected
-    return locationType === 'london' ? 11 : 10;
+    if (locationType === 'london') return 11;
+    if (locationType === 'uk') return 8;
+    return 10;
   };
 
-  // Map styles for dark theme
+  // Map styles - using a light mode style that's more neutral
   const mapStyles = [
     {
-      featureType: "all",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#ffffff" }]
+      "featureType": "administrative",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
     },
     {
-      featureType: "all",
-      elementType: "labels.text.stroke",
-      stylers: [{ color: "#000000" }, { lightness: 13 }]
+      "featureType": "poi",
+      "stylers": [
+        {
+          "visibility": "simplified"
+        }
+      ]
     },
     {
-      featureType: "administrative",
-      elementType: "geometry.fill",
-      stylers: [{ color: "#000000" }]
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry.stroke",
-      stylers: [{ color: "#144b53" }, { lightness: 14 }, { weight: 1.4 }]
-    },
-    {
-      featureType: "landscape",
-      elementType: "all",
-      stylers: [{ color: "#08304b" }]
-    },
-    {
-      featureType: "poi",
-      elementType: "geometry",
-      stylers: [{ color: "#0c4152" }, { lightness: 5 }]
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.fill",
-      stylers: [{ color: "#000000" }]
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.stroke",
-      stylers: [{ color: "#0b434f" }, { lightness: 25 }]
-    },
-    {
-      featureType: "road.arterial",
-      elementType: "geometry.fill",
-      stylers: [{ color: "#000000" }]
-    },
-    {
-      featureType: "road.arterial",
-      elementType: "geometry.stroke",
-      stylers: [{ color: "#0b3d51" }, { lightness: 16 }]
-    },
-    {
-      featureType: "road.local",
-      elementType: "geometry",
-      stylers: [{ color: "#000000" }]
-    },
-    {
-      featureType: "transit",
-      elementType: "all",
-      stylers: [{ color: "#146474" }]
-    },
-    {
-      featureType: "water",
-      elementType: "all",
-      stylers: [{ color: "#021019" }]
+      "featureType": "road",
+      "elementType": "labels.icon",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
     }
   ];
 

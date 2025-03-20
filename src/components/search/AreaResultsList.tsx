@@ -34,7 +34,7 @@ interface AreaResultsListProps {
   onAreaClick: (area: AreaMatch) => void;
   isSearching: boolean;
   userInput: string;
-  locationType?: 'london' | 'world';
+  locationType?: 'london' | 'uk' | 'world';
   country?: string;
 }
 
@@ -47,7 +47,11 @@ const AreaResultsList: React.FC<AreaResultsListProps> = ({
   locationType = 'london',
   country
 }) => {
-  const locationName = locationType === 'london' ? 'London' : country || 'Global';
+  const locationName = locationType === 'london' 
+    ? 'London' 
+    : locationType === 'uk'
+    ? 'the UK'
+    : country || 'Global';
   
   return (
     <div className="mt-6">
