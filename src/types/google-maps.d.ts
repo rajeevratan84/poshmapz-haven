@@ -55,6 +55,7 @@ declare namespace google {
       animation?: any;
       title?: string;
       label?: string | MarkerLabel;
+      icon?: any; // Add icon property
     }
 
     interface MarkerLabel {
@@ -63,6 +64,7 @@ declare namespace google {
       fontFamily?: string;
       fontSize?: string;
       fontWeight?: string;
+      className?: string; // Add className property
     }
 
     interface InfoWindowOptions {
@@ -169,6 +171,15 @@ declare namespace google {
       removeListener(listener: MapsEventListener): void;
       clearInstanceListeners(instance: any): void;
       clearListeners(instance: any, eventName: string): void;
+    };
+
+    // Add SymbolPath enum
+    const SymbolPath: {
+      CIRCLE: number;
+      BACKWARD_CLOSED_ARROW: number;
+      FORWARD_CLOSED_ARROW: number;
+      BACKWARD_OPEN_ARROW: number;
+      FORWARD_OPEN_ARROW: number;
     };
   }
 }
