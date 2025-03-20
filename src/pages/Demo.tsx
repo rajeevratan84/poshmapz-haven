@@ -167,11 +167,37 @@ const DemoPage: React.FC = () => {
   const addMarkerForArea = (area: AreaMatch) => {
     if (!mapInstanceRef.current) return;
     
+    const areaInfo = {
+      position: area.coordinates,
+      label: area.name.charAt(0),
+      title: area.name,
+      match: `${area.matchPercentage}% match`,
+      description: area.description,
+      poshScore: area.poshScore,
+      amenities: area.amenities,
+      areaStats: area.areaStats
+    };
+    
     const marker = new google.maps.Marker({
       position: area.coordinates,
       map: mapInstanceRef.current,
       animation: google.maps.Animation.DROP,
-      label: area.name.charAt(0),
+      label: {
+        text: area.name.charAt(0),
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '14px',
+      },
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: area.matchPercentage > 90 ? '#22c55e' : 
+                  area.matchPercentage > 80 ? '#4ade80' : 
+                  area.matchPercentage > 70 ? '#86efac' : '#a3e635',
+        fillOpacity: 0.9,
+        strokeWeight: 2,
+        strokeColor: '#ffffff',
+        scale: 12,
+      },
       title: `${area.name} - ${area.matchPercentage}% match`
     });
     

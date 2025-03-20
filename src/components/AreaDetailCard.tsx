@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Shield, Train, Footprints, TrendingUp, Smile } from 'lucide-react';
+import { MapPin, Shield, Train, Footprints, TrendingUp, Smile, ShoppingBag } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +19,7 @@ interface AreaDetailCardProps {
   areaName: string;
   matchPercentage: number;
   description: string;
-  poshScore: number | string;  // Explicitly allow both number and string types
+  poshScore: number | string;
   amenities: string[];
   areaStats: AreaStats;
   isSelected: boolean;
@@ -40,8 +40,11 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
   const poshScoreNumber = typeof poshScore === 'number' 
     ? poshScore 
     : typeof poshScore === 'string' 
-      ? parseInt(poshScore.split('/')[0]) || 0  // Add a fallback in case parseInt returns NaN
+      ? parseInt(poshScore.toString().split('/')[0]) || 0
       : 0;
+
+  // Calculate amenities score based on number of amenities
+  const amenitiesScore = Math.min(Math.round((amenities.length / 7) * 100), 100);
 
   // Helper function to determine text color based on score value
   const getScoreColor = (score: number) => {
@@ -95,6 +98,14 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return match ? match[0] : growth;
   };
 
+  // Get amenities score color
+  const getAmenitiesScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-500 bg-green-500/10';
+    if (score >= 60) return 'text-blue-500 bg-blue-500/10';
+    if (score >= 40) return 'text-amber-500 bg-amber-500/10';
+    return 'text-red-500 bg-red-500/10';
+  };
+
   // Get the vibe tag color
   const getVibeTagColor = (vibe: string) => {
     const vibeLower = vibe.toLowerCase();
@@ -138,13 +149,13 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
           </div>
           <span className="text-sm text-white/60">- {poshScoreNumber >= 85 ? 'Excellent' : poshScoreNumber >= 70 ? 'Good' : 'Average'} area rating</span>
         </div>
-        <p className="text-sm text-white/70 mb-3">{description}</p>
+        <p className="text-sm text-white/70 mb-5">{description}</p>
       </CardHeader>
 
       <CardContent className="space-y-4 pb-4">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Crime Rate - Now with color coding */}
+          {/* Crime Rate */}
           <div className="flex gap-3">
             <Shield className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
@@ -158,7 +169,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          {/* Transport Score - Now with color coding */}
+          {/* Transport Score */}
           <div className="flex gap-3">
             <Train className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
@@ -172,7 +183,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          {/* Walkability - Now with color coding */}
+          {/* Walkability */}
           <div className="flex gap-3">
             <Footprints className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
@@ -186,21 +197,35 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          {/* Future Property Growth - Now less wordy and color coded */}
+          {/* Amenities Score - NEW */}
           <div className="flex gap-3">
-            <TrendingUp className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+            <ShoppingBag className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
+              <div className="text-white font-medium mb-0.5">Amenities Score</div>
+              <div className={cn(
+                "text-sm px-2 py-1 rounded-md font-medium",
+                getAmenitiesScoreColor(amenitiesScore)
+              )}>
+                {amenitiesScore}/100 - {amenities.length} essentials nearby
+              </div>
+            </div>
+          </div>
+          
+          {/* Future Property Growth */}
+          <div className="flex gap-3 col-span-1 sm:col-span-2">
+            <TrendingUp className="h-5 w-5 text-coral shrink-0 mt-0.5" />
+            <div className="w-full">
               <div className="text-white font-medium mb-0.5">Future Property Growth</div>
-              <div className="flex flex-col gap-1">
+              <div className="flex justify-between gap-4">
                 <div className={cn(
-                  "text-sm px-2 py-1 rounded-md font-medium flex justify-between",
+                  "text-sm px-2 py-1 rounded-md font-medium flex-1 flex justify-between",
                   getPropertyGrowthColor(areaStats.propertyGrowth.flats)
                 )}>
                   <span>Flats:</span> 
                   <span>{formatPropertyGrowth(areaStats.propertyGrowth.flats)}</span>
                 </div>
                 <div className={cn(
-                  "text-sm px-2 py-1 rounded-md font-medium flex justify-between",
+                  "text-sm px-2 py-1 rounded-md font-medium flex-1 flex justify-between",
                   getPropertyGrowthColor(areaStats.propertyGrowth.houses)
                 )}>
                   <span>Houses:</span> 

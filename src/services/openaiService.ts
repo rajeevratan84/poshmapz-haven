@@ -47,8 +47,8 @@ For each area, provide:
 5. Coordinates (latitude and longitude) within London
 6. A list of 3-7 amenities or features that match the user's request
 7. Detailed area statistics including:
-   - Crime rate (Low/Medium/High with percentage compared to London average)
-   - Transport score (Poor/Good/Excellent with specific tube lines and time to central London, e.g., "Excellent - 15 min to central via Northern Line")
+   - Crime rate (Low/Medium/High with specific percentage compared to London average, e.g., "Low - 15% below London average" or "Medium - 5% above London average")
+   - Transport score (Poor/Good/Excellent with specific tube/train lines and time to central London, e.g., "Excellent - 20 min to central via Northern Line")
    - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
    - Property growth (use "+" or "-" followed by percentage for clear growth indicators, e.g., "+3.5%" or "-1.2%")
    - Area vibe (2-4 tags like: Family-friendly, Upscale, Riverside, Trendy, Historic, etc.)
