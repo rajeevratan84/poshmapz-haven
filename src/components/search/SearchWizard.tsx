@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -27,26 +26,31 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
   const [lifestyle, setLifestyle] = useState<string[]>([]);
   const [dailyRoutine, setDailyRoutine] = useState('');
   const [tempLocation, setTempLocation] = useState('');
-  const [tempTime, setTempTime] = useState('');
+  const [tempTime, setTempTime] = useState('30');
   const [additionalInfo, setAdditionalInfo] = useState('');
+  const wizardRef = useRef<HTMLDivElement>(null);
 
   const totalSteps = 6;
 
-  // Popular London locations for quick selection
   const popularLocations = [
     { name: "Canary Wharf", defaultTime: "30" },
-    { name: "Kings Cross", defaultTime: "25" },
-    { name: "Waterloo", defaultTime: "20" },
-    { name: "Liverpool Street", defaultTime: "25" },
+    { name: "Kings Cross", defaultTime: "30" },
+    { name: "Waterloo", defaultTime: "30" },
+    { name: "Liverpool Street", defaultTime: "30" },
     { name: "The City", defaultTime: "30" },
-    { name: "Hammersmith", defaultTime: "35" },
-    { name: "Westminster", defaultTime: "25" },
-    { name: "Victoria", defaultTime: "20" },
-    { name: "Paddington", defaultTime: "25" },
+    { name: "Hammersmith", defaultTime: "30" },
+    { name: "Westminster", defaultTime: "30" },
+    { name: "Victoria", defaultTime: "30" },
+    { name: "Paddington", defaultTime: "30" },
     { name: "Shoreditch", defaultTime: "30" },
   ];
 
-  // More granular budget options
+  const additionalInfoSuggestions = [
+    "I need a quiet area with low crime rates and good access to healthcare facilities.",
+    "I'm looking for a property with outdoor space and within walking distance to local shops.",
+    "I would prefer an area with a strong sense of community and regular local events."
+  ];
+
   const rentBudgetOptions = [
     { value: 'very-low', label: 'Up to £1,000 per month' },
     { value: 'low', label: '£1,000–£1,500 per month' },
@@ -69,19 +73,16 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'luxury', label: 'Over £3,000,000' }
   ];
 
-  // Colors for lifestyle categories
   const lifestyleColors = {
-    amenities: '#9b87f5',      // Purple
-    nightlife: '#FF7F50',      // Coral
-    community: '#4CAF50',      // Green
-    environment: '#2196F3',    // Blue
-    activities: '#FFC107',     // Amber
-    special: '#E91E63'         // Pink
+    amenities: '#9b87f5',
+    nightlife: '#FF7F50',
+    community: '#4CAF50',
+    environment: '#2196F3',
+    activities: '#FFC107',
+    special: '#E91E63'
   };
 
-  // Updated lifestyle options with more choices and categories
   const lifestyleOptions = [
-    // Amenities category (Purple)
     { value: 'good-schools', label: 'School catchment', category: 'amenities' },
     { value: 'cultural-venues', label: 'Cultural hotspots', category: 'amenities' },
     { value: 'restaurants', label: 'Fine dining', category: 'amenities' },
@@ -93,14 +94,12 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'grocery', label: 'Quality grocery stores', category: 'amenities' },
     { value: 'healthcare', label: 'Healthcare facilities', category: 'amenities' },
     
-    // Nightlife (Coral)
     { value: 'bars', label: 'Bars & pubs', category: 'nightlife' },
     { value: 'clubs', label: 'Nightclubs', category: 'nightlife' },
     { value: 'live-music', label: 'Live music venues', category: 'nightlife' },
     { value: 'theatres', label: 'Theatres', category: 'nightlife' },
     { value: 'comedy', label: 'Comedy clubs', category: 'nightlife' },
     
-    // Community (Green)
     { value: 'family-friendly', label: 'Family-friendly', category: 'community' },
     { value: 'lgbt-friendly', label: 'LGBT+ friendly', category: 'community' },
     { value: 'dog-friendly', label: 'Dog-friendly', category: 'community' },
@@ -109,7 +108,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'students', label: 'Student population', category: 'community' },
     { value: 'retirees', label: 'Retirement community', category: 'community' },
     
-    // Environment (Blue)
     { value: 'quiet', label: 'Quiet streets', category: 'environment' },
     { value: 'green-spaces', label: 'Green spaces', category: 'environment' },
     { value: 'riverside', label: 'Riverside', category: 'environment' },
@@ -118,7 +116,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'historic', label: 'Historic architecture', category: 'environment' },
     { value: 'modern', label: 'Modern developments', category: 'environment' },
     
-    // Activities (Amber)
     { value: 'cycling', label: 'Cycling-friendly', category: 'activities' },
     { value: 'running', label: 'Running paths', category: 'activities' },
     { value: 'water-sports', label: 'Water sports', category: 'activities' },
@@ -127,16 +124,14 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'golf', label: 'Golf courses', category: 'activities' },
     { value: 'swimming', label: 'Swimming pools', category: 'activities' },
     
-    // Special interests (Pink)
     { value: 'independent', label: 'Independent shops', category: 'special' },
     { value: 'artistic', label: 'Artistic community', category: 'special' },
     { value: 'tech-hub', label: 'Tech hub', category: 'special' },
     { value: 'foodie-scene', label: 'Foodie scene', category: 'special' },
     { value: 'vegan-friendly', label: 'Vegan-friendly', category: 'special' },
-    { value: 'craft-beer', label: 'Craft beer scene', category: 'special' },
+    { value: 'craft-beer', label: 'Craft beer scene', category: 'special' }
   ];
 
-  // Existing cultural communities
   const culturalCommunities = [
     { value: 'indian', label: 'Indian community', category: 'community' },
     { value: 'pakistani', label: 'Pakistani community', category: 'community' },
@@ -149,10 +144,8 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     { value: 'greek', label: 'Greek community', category: 'community' },
   ];
 
-  // Combine all lifestyle options
   const allLifestyleOptions = [...lifestyleOptions, ...culturalCommunities];
 
-  // Group lifestyle options by category
   const groupedLifestyleOptions = allLifestyleOptions.reduce((acc, option) => {
     if (!acc[option.category]) {
       acc[option.category] = [];
@@ -163,7 +156,20 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
 
   const goToNextStep = () => {
     if (currentStep < totalSteps) {
+      const scrollPosition = window.scrollY;
+      
       setCurrentStep(prev => prev + 1);
+      
+      setTimeout(() => {
+        window.scrollTo(0, scrollPosition);
+        
+        if (wizardRef.current) {
+          const wizardRect = wizardRef.current.getBoundingClientRect();
+          if (wizardRect.top < 0) {
+            window.scrollBy(0, wizardRect.top - 20);
+          }
+        }
+      }, 0);
     } else {
       submitWizard();
     }
@@ -171,7 +177,13 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
 
   const goToPrevStep = () => {
     if (currentStep > 1) {
+      const scrollPosition = window.scrollY;
+      
       setCurrentStep(prev => prev - 1);
+      
+      setTimeout(() => {
+        window.scrollTo(0, scrollPosition);
+      }, 0);
     }
   };
 
@@ -179,12 +191,11 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     if (tempLocation.trim()) {
       setLocations([...locations, {place: tempLocation.trim(), time: tempTime || '30'}]);
       setTempLocation('');
-      setTempTime('');
+      setTempTime('30');
     }
   };
 
   const addPopularLocation = (location: {name: string, defaultTime: string}) => {
-    // Avoid duplicates
     if (!locations.some(loc => loc.place === location.name)) {
       setLocations([...locations, {place: location.name, time: location.defaultTime}]);
     }
@@ -194,12 +205,20 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     setLocations(locations.filter((_, i) => i !== index));
   };
 
+  const updateLocationTime = (index: number, newTime: string) => {
+    const updatedLocations = [...locations];
+    updatedLocations[index] = { ...updatedLocations[index], time: newTime };
+    setLocations(updatedLocations);
+  };
+
+  const applyAdditionalInfoSuggestion = (suggestion: string) => {
+    setAdditionalInfo(suggestion);
+  };
+
   const submitWizard = () => {
-    // Construct a natural language query from the wizard inputs
     const lifestylePreferences = lifestyle.join(', ');
     const prioritiesText = priorities.join(', ');
     
-    // Map budget to text based on selected option and property type
     const budgetOptions = type === 'rent' ? rentBudgetOptions : buyBudgetOptions;
     const selectedBudget = budgetOptions.find(option => option.value === budget);
     const budgetText = selectedBudget ? selectedBudget.label : '';
@@ -220,10 +239,8 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       locationsText = `I need to be near ${locationPhrases.join(' and ')}. `;
     }
 
-    // Add property type and bedrooms information
     const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in London. `;
 
-    // Add additional information if provided
     const additionalText = additionalInfo ? `Additional requirements: ${additionalInfo}. ` : '';
 
     const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}. ${additionalText}`;
@@ -254,7 +271,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
               </Tabs>
             </div>
             
-            {/* Property type selection - flat or house */}
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Property type:</label>
               <Tabs 
@@ -264,11 +280,11 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-2 bg-black/30">
-                  <TabsTrigger value="flat" className="data-[state=active]:bg-coral data-[state=active]:text-white">
+                  <TabsTrigger value="flat" className="data-[state=active]:bg-coral data-[state=active]:text-white text-gray-400 data-[state=inactive]:text-gray-400">
                     <Building className="mr-2 h-4 w-4" />
                     Flat/Apartment
                   </TabsTrigger>
-                  <TabsTrigger value="house" className="data-[state=active]:bg-coral data-[state=active]:text-white">
+                  <TabsTrigger value="house" className="data-[state=active]:bg-coral data-[state=active]:text-white text-gray-400 data-[state=inactive]:text-gray-400">
                     <Home className="mr-2 h-4 w-4" />
                     House
                   </TabsTrigger>
@@ -276,7 +292,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
               </Tabs>
             </div>
             
-            {/* Number of bedrooms */}
             <div className="space-y-4">
               <label className="text-sm font-medium text-white/80 bg-black/30 p-2 rounded">Number of bedrooms:</label>
               <Tabs 
@@ -286,19 +301,19 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-4 bg-black/30">
-                  <TabsTrigger value="1" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                  <TabsTrigger value="1" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-400 data-[state=inactive]:text-gray-400">
                     <Bed className="mr-1 h-3 w-3" />
                     1
                   </TabsTrigger>
-                  <TabsTrigger value="2" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                  <TabsTrigger value="2" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-400 data-[state=inactive]:text-gray-400">
                     <Bed className="mr-1 h-3 w-3" />
                     2
                   </TabsTrigger>
-                  <TabsTrigger value="3" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                  <TabsTrigger value="3" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-400 data-[state=inactive]:text-gray-400">
                     <Bed className="mr-1 h-3 w-3" />
                     3
                   </TabsTrigger>
-                  <TabsTrigger value="4+" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                  <TabsTrigger value="4+" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white text-gray-400 data-[state=inactive]:text-gray-400">
                     <Bed className="mr-1 h-3 w-3" />
                     4+
                   </TabsTrigger>
@@ -459,7 +474,6 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 Add key locations you need to be close to:
               </label>
               
-              {/* Popular locations for quick selection */}
               <div className="space-y-2">
                 <p className="text-sm text-white/70 bg-black/30 p-2 rounded">Popular locations:</p>
                 <div className="flex flex-wrap gap-2">
@@ -484,15 +498,28 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   <div className="space-y-2">
                     {locations.map((loc, index) => (
                       <div key={index} className="flex items-center justify-between bg-gray-800/70 p-2 px-3 rounded-lg border border-white/10">
-                        <span className="text-white text-sm">{loc.place} (max {loc.time} min)</span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-7 w-7 p-0 text-white/70 hover:text-white"
-                          onClick={() => removeLocation(index)}
-                        >
-                          ×
-                        </Button>
+                        <span className="text-white text-sm">{loc.place}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center">
+                            <Input
+                              value={loc.time}
+                              onChange={(e) => updateLocationTime(index, e.target.value)}
+                              className="w-16 h-7 text-sm text-white bg-gray-700 border-gray-600"
+                              type="number"
+                              min="1"
+                              max="120"
+                            />
+                            <span className="text-white text-sm ml-1">min</span>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 w-7 p-0 text-white/70 hover:text-white"
+                            onClick={() => removeLocation(index)}
+                          >
+                            ×
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -508,16 +535,17 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                     className="bg-white/10 text-white border-white/20 placeholder:text-white/40"
                   />
                 </div>
-                <div className="w-24">
+                <div className="w-24 flex items-center">
                   <Input
                     value={tempTime}
                     onChange={(e) => setTempTime(e.target.value)}
                     placeholder="Minutes"
                     type="number"
-                    min="0"
+                    min="1"
                     max="120"
                     className="bg-white/10 text-white border-white/20 placeholder:text-white/40"
                   />
+                  <span className="text-white ml-1">min</span>
                 </div>
                 <Button 
                   onClick={addLocation} 
@@ -559,7 +587,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                             transition-colors
                             ${lifestyle.includes(option.value) 
                               ? 'bg-opacity-40 border-opacity-100' 
-                              : 'bg-black/40 border-white/20'}
+                              : 'bg-black/40 border-white/20 text-gray-400'}
                           `}
                           style={{ 
                             backgroundColor: lifestyle.includes(option.value) 
@@ -567,7 +595,8 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                               : 'rgba(0,0,0,0.4)',
                             borderColor: lifestyle.includes(option.value)
                               ? lifestyleColors[option.category as keyof typeof lifestyleColors]
-                              : 'rgba(255,255,255,0.2)'
+                              : 'rgba(255,255,255,0.2)',
+                            color: lifestyle.includes(option.value) ? 'white' : '#888888'
                           }}
                           onClick={() => {
                             if (lifestyle.includes(option.value)) {
@@ -645,6 +674,24 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 className="min-h-[120px] bg-gray-800/70 border-white/20 text-white placeholder:text-white/40"
               />
               
+              <div className="space-y-2">
+                <p className="text-sm text-white/70">Quick suggestions:</p>
+                <div className="flex flex-wrap gap-2">
+                  {additionalInfoSuggestions.map((suggestion, index) => (
+                    <Button
+                      key={index}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      onClick={() => applyAdditionalInfoSuggestion(suggestion)}
+                    >
+                      {suggestion.length > 60 ? suggestion.substring(0, 60) + '...' : suggestion}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
               <p className="text-xs text-white/60">
                 This is your chance to add any specific requirements that haven't been covered by the previous steps.
               </p>
@@ -661,16 +708,16 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     switch (currentStep) {
       case 1: return !!budget;
       case 2: return priorities.length > 0;
-      case 3: return true; // Optional fields
+      case 3: return true;
       case 4: return lifestyle.length > 0;
       case 5: return !!dailyRoutine;
-      case 6: return true; // Additional info is optional
+      case 6: return true;
       default: return false;
     }
   };
 
   return (
-    <div className="bg-gradient-to-br from-black/60 to-black/40 rounded-xl p-6 shadow-xl border border-purple-600/30 max-w-3xl mx-auto mb-8">
+    <div ref={wizardRef} className="bg-gradient-to-br from-black/60 to-black/40 rounded-xl p-6 shadow-xl border border-purple-600/30 max-w-3xl mx-auto mb-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-display font-semibold text-white flex items-center">
           <Lightbulb className="h-5 w-5 text-amber-400 mr-2" />
@@ -691,7 +738,7 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   ? 'bg-purple-600 border-purple-600 text-white' 
                   : step === currentStep 
                     ? 'bg-black/50 border-purple-600 text-white'
-                    : 'bg-black/20 border-white/20 text-white/50'
+                    : 'bg-black/20 border-white/20 text-gray-400'
               }`}
             >
               {step < currentStep ? (

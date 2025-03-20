@@ -1,9 +1,7 @@
-
 import React, { useState } from 'react';
 import { Search, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -43,7 +41,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           className={`relative ${!showWizard ? "bg-purple-600/90 hover:bg-purple-700 border border-purple-400/30 text-white" : "bg-purple-700 text-white shadow-lg shadow-purple-600/30"}`}
         >
           {showWizard ? (
-            <>Switch to Free Text Search</>
+            <>Switch to Text Mode</>
           ) : (
             <>
               <Wand2 className="h-5 w-5 mr-2 text-amber-300" />
