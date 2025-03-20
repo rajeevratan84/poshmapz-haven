@@ -32,7 +32,9 @@ export async function analyzeAreaPreferences(
     const prompt = `
 You are an AI assistant for PoshMaps, a service that helps people find neighborhoods in London that match their preferences.
 
-Based on the following user input, identify up to 5 areas in London that best match their preferences.
+Based on the following user input, identify up to 10 areas in London that best match their preferences.
+Ensure good geographical distribution across ALL of London (North, South, East, West, Central).
+Do not bias towards South London. Make sure to include areas from North, East, and West London.
 Only include areas within London, UK.
 
 User input: "${userInput}"
@@ -76,10 +78,12 @@ Format the response as a valid JSON array with objects having these exact keys:
   }
 ]
 
-Ensure all areas are real London neighborhoods with accurate information and actual London coordinates. Sort by match percentage in descending order. PROVIDE OUTPUT IN JSON FORMAT ONLY.
+IMPORTANT: Limit your response to a maximum of 10 areas. Ensure all areas are real London neighborhoods with accurate information and actual London coordinates. 
+Sort by match percentage in descending order. Make sure to include areas from all regions of London (North, South, East, West, Central).
+PROVIDE OUTPUT IN JSON FORMAT ONLY.
     `;
 
-    console.log("Making request to OpenAI API with GPT-4o-mini model");
+    console.log("Making request to OpenAI API with GPT-4o model");
     
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -88,7 +92,7 @@ Ensure all areas are real London neighborhoods with accurate information and act
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini', // Using GPT-4o-mini model
+        model: 'gpt-4o', // Using GPT-4o model for better results
         messages: [
           {
             role: 'system',
@@ -127,7 +131,9 @@ Ensure all areas are real London neighborhoods with accurate information and act
     // Parse the JSON response
     console.log("Received response from OpenAI:", jsonContent);
     const areas = JSON.parse(jsonContent) as AreaMatch[];
-    return areas;
+    
+    // Limit to maximum 10 areas
+    return areas.slice(0, 10);
 
   } catch (error) {
     console.error('Error analyzing area preferences:', error);

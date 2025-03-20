@@ -50,6 +50,14 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
     return 'text-gray-500';
   };
 
+  // Get the crime rate color based on text content
+  const getCrimeRateColor = (crimeRate: string) => {
+    const lowerCrime = crimeRate.toLowerCase();
+    if (lowerCrime.includes('above') || lowerCrime.includes('high')) return 'text-red-500 bg-red-500/10';
+    if (lowerCrime.includes('below') || lowerCrime.includes('low')) return 'text-green-500 bg-green-500/10';
+    return 'text-amber-500 bg-amber-500/10';
+  };
+
   // Get the vibe tag color
   const getVibeTagColor = (vibe: string) => {
     const vibeLower = vibe.toLowerCase();
@@ -99,12 +107,17 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
       <CardContent className="space-y-4 pb-4">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Crime Rate */}
+          {/* Crime Rate - Now with color coding */}
           <div className="flex gap-3">
             <Shield className="h-5 w-5 text-coral shrink-0 mt-0.5" />
             <div>
               <div className="text-white font-medium mb-0.5">Crime Rate</div>
-              <div className="text-sm text-white/70">{areaStats.crimeRate}</div>
+              <div className={cn(
+                "text-sm px-2 py-1 rounded-md font-medium",
+                getCrimeRateColor(areaStats.crimeRate)
+              )}>
+                {areaStats.crimeRate}
+              </div>
             </div>
           </div>
           
