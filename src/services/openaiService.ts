@@ -1,28 +1,5 @@
-
 import { toast } from 'sonner';
-
-// Define interfaces for the OpenAI API response
-interface AreaMatch {
-  name: string;
-  matchPercentage: number;
-  description: string;
-  poshScore: number;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  amenities: string[];
-  areaStats: {
-    crimeRate: string;
-    transportScore: string;
-    walkability: string;
-    propertyGrowth: {
-      flats: string;
-      houses: string;
-    };
-    areaVibe: string[];
-  };
-}
+import { AreaMatch } from '@/types/area';
 
 export async function analyzeAreaPreferences(
   userInput: string,
