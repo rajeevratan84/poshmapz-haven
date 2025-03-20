@@ -37,6 +37,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const apiLoadedRef = useRef<boolean>(false);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   
+  // Log props for debugging
+  useEffect(() => {
+    console.log("GoogleMap areas prop:", areas);
+    console.log("GoogleMap areas count:", areas.length);
+  }, [areas]);
+  
   useEffect(() => {
     // Skip during SSR
     if (typeof window === 'undefined' || !mapRef.current) return;
@@ -61,6 +67,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         // Create info window for tooltips
         infoWindowRef.current = new google.maps.InfoWindow();
         
+        console.log("Map initialized successfully");
+        
       } catch (error) {
         console.error("Error initializing map:", error);
         toast.error("Could not initialize Google Maps.");
@@ -72,6 +80,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       apiLoadedRef.current = true;
       
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+      console.log("Loading Google Maps with API key:", apiKey ? "Key available" : "No API key");
       
       const cleanup = loadGoogleMapsScript(
         apiKey, 
@@ -82,6 +91,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       return cleanup;
     } else if (window.google?.maps) {
       // If API is already loaded, initialize map directly
+      console.log("Google Maps API already loaded, initializing map");
       initMap();
     }
   }, [zoom, center, options]);
@@ -110,21 +120,29 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           )}
           
           {/* Render area markers if areas are provided */}
-          {areas.length > 0 && areas.map((area) => (
-            <AreaMarker
-              key={area.name}
-              area={area}
-              map={mapInstanceRef.current!}
-              infoWindow={infoWindowRef.current!}
-              isSelected={selectedArea?.name === area.name}
-              onClick={() => onAreaSelected && onAreaSelected(area)}
-            />
-          ))}
+          {Array.isArray(areas) && areas.length > 0 && (
+            <>
+              {console.log(`Rendering ${areas.length} area markers`)}
+              {areas.map((area, index) => (
+                <AreaMarker
+                  key={`${area.name}-${index}`}
+                  area={area}
+                  map={mapInstanceRef.current!}
+                  infoWindow={infoWindowRef.current!}
+                  isSelected={selectedArea?.name === area.name}
+                  onClick={() => onAreaSelected && onAreaSelected(area)}
+                />
+              ))}
+            </>
+          )}
         </>
       )}
       
       <div className="text-xs text-center mt-2 text-posh-dark/60">
         <p>Viewing: {showNorthLondonAreas ? "North London Areas" : address || "Map"}</p>
+        {areas && areas.length > 0 && (
+          <p>Showing {areas.length} area markers</p>
+        )}
       </div>
     </div>
   );

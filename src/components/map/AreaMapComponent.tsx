@@ -25,6 +25,12 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
     { lat: 51.509865, lng: -0.118092 }
   );
   
+  // Log results to debug
+  useEffect(() => {
+    console.log("Map results:", results);
+    console.log("Map results count:", results.length);
+  }, [results]);
+  
   // Update the map center when a different country is selected or when results change
   useEffect(() => {
     if (locationType === 'london') {
@@ -98,19 +104,29 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
     return 10;
   };
 
-  // Map styles - using a light mode style that's more neutral
+  // Map styles - using a light mode style
   const mapStyles = [
     {
       "featureType": "administrative",
-      "elementType": "geometry",
+      "elementType": "labels.text.fill",
       "stylers": [
         {
-          "visibility": "simplified"
+          "color": "#444444"
+        }
+      ]
+    },
+    {
+      "featureType": "landscape",
+      "elementType": "all",
+      "stylers": [
+        {
+          "color": "#f2f2f2"
         }
       ]
     },
     {
       "featureType": "poi",
+      "elementType": "all",
       "stylers": [
         {
           "visibility": "simplified"
@@ -119,10 +135,34 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
     },
     {
       "featureType": "road",
-      "elementType": "labels.icon",
+      "elementType": "all",
+      "stylers": [
+        {
+          "saturation": -100
+        },
+        {
+          "lightness": 45
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "all",
       "stylers": [
         {
           "visibility": "simplified"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "all",
+      "stylers": [
+        {
+          "color": "#c4e8ff"
+        },
+        {
+          "visibility": "on"
         }
       ]
     }

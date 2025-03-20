@@ -61,7 +61,7 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       </svg>
     `;
 
-    // Create marker with custom icon - use object literals instead of constructors
+    // Create marker with custom icon
     const marker = new google.maps.Marker({
       position: position,
       map: map,
@@ -69,10 +69,8 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       title: `${title} - ${matchText}`,
       icon: {
         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(markerSvg),
-        // Use object literals instead of Size constructor
-        scaledSize: { width: 36, height: 36 } as google.maps.Size,
-        // Use object literals instead of Point constructor
-        anchor: { x: 18, y: 18 } as google.maps.Point
+        scaledSize: new google.maps.Size(36, 36),
+        anchor: new google.maps.Point(18, 18)
       }
     });
 
@@ -112,7 +110,13 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       infoWindow.setContent(contentString);
       infoWindow.open(map, marker);
       if (onClick) onClick();
+      
+      // Log click for debugging
+      console.log(`Clicked on area: ${title}`);
     });
+
+    // Add logging to confirm marker creation
+    console.log(`Created marker for: ${title} at ${position.lat},${position.lng}`);
 
     // Clean up
     return () => {

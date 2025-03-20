@@ -41,16 +41,25 @@ export const loadGoogleMapsScript = (
 export const mapStyles = [
   {
     "featureType": "administrative",
-    "elementType": "geometry",
+    "elementType": "labels.text.fill",
     "stylers": [
       {
-        "visibility": "simplified"
+        "color": "#444444"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape",
+    "elementType": "all",
+    "stylers": [
+      {
+        "color": "#f2f2f2"
       }
     ]
   },
   {
     "featureType": "poi",
-    "elementType": "labels",
+    "elementType": "all",
     "stylers": [
       {
         "visibility": "simplified"
@@ -59,10 +68,25 @@ export const mapStyles = [
   },
   {
     "featureType": "road",
-    "elementType": "labels.icon",
+    "elementType": "all",
     "stylers": [
       {
-        "visibility": "simplified"
+        "saturation": -100
+      },
+      {
+        "lightness": 45
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "all",
+    "stylers": [
+      {
+        "color": "#c4e8ff"
+      },
+      {
+        "visibility": "on"
       }
     ]
   }
