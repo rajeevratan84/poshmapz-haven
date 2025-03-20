@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search } from "lucide-react";
+import { Check, Home, MapPin, ArrowRight, ArrowLeft, PoundSterling, Lightbulb, Building, Activity, Plus, Search, Bed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,8 @@ interface SearchWizardProps {
 const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCancel }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [type, setType] = useState<'rent' | 'buy'>('rent');
+  const [propertyType, setPropertyType] = useState<'flat' | 'house'>('flat');
+  const [bedrooms, setBedrooms] = useState<'1' | '2' | '3' | '4+'>('2');
   const [priorities, setPriorities] = useState<string[]>([]);
   const [locations, setLocations] = useState<{place: string, time: string}[]>([]);
   const [budget, setBudget] = useState('');
@@ -26,6 +29,20 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
   const [tempTime, setTempTime] = useState('');
 
   const totalSteps = 5;
+
+  // Popular London locations for quick selection
+  const popularLocations = [
+    { name: "Canary Wharf", defaultTime: "30" },
+    { name: "Kings Cross", defaultTime: "25" },
+    { name: "Waterloo", defaultTime: "20" },
+    { name: "Liverpool Street", defaultTime: "25" },
+    { name: "The City", defaultTime: "30" },
+    { name: "Hammersmith", defaultTime: "35" },
+    { name: "Westminster", defaultTime: "25" },
+    { name: "Victoria", defaultTime: "20" },
+    { name: "Paddington", defaultTime: "25" },
+    { name: "Shoreditch", defaultTime: "30" },
+  ];
 
   // More granular budget options
   const rentBudgetOptions = [
@@ -164,6 +181,13 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
     }
   };
 
+  const addPopularLocation = (location: {name: string, defaultTime: string}) => {
+    // Avoid duplicates
+    if (!locations.some(loc => loc.place === location.name)) {
+      setLocations([...locations, {place: location.name, time: location.defaultTime}]);
+    }
+  };
+
   const removeLocation = (index: number) => {
     setLocations(locations.filter((_, i) => i !== index));
   };
@@ -194,7 +218,10 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
       locationsText = `I need to be near ${locationPhrases.join(' and ')}. `;
     }
 
-    const queryText = `I'm looking to ${type} a property in London. I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}.`;
+    // Add property type and bedrooms information
+    const propertyDetailsText = `I'm looking to ${type} a ${bedrooms}-bedroom ${propertyType} in London. `;
+
+    const queryText = `${propertyDetailsText}I value ${prioritiesText}. ${locationsText}My budget is ${budgetText}. I want an area with the following lifestyle elements: ${lifestylePreferences}. I need a ${routineText}.`;
 
     onSearch(queryText);
   };
@@ -217,6 +244,58 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                   <TabsTrigger value="buy" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
                     <PoundSterling className="mr-2 h-4 w-4" />
                     Buy
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            
+            {/* Property type selection - flat or house */}
+            <div className="space-y-4">
+              <label className="text-sm font-medium text-white/80">Property type:</label>
+              <Tabs 
+                defaultValue="flat" 
+                value={propertyType} 
+                onValueChange={(v) => setPropertyType(v as 'flat' | 'house')} 
+                className="w-full"
+              >
+                <TabsList className="grid w-full grid-cols-2 bg-black/30">
+                  <TabsTrigger value="flat" className="data-[state=active]:bg-coral data-[state=active]:text-white">
+                    <Building className="mr-2 h-4 w-4" />
+                    Flat/Apartment
+                  </TabsTrigger>
+                  <TabsTrigger value="house" className="data-[state=active]:bg-coral data-[state=active]:text-white">
+                    <Home className="mr-2 h-4 w-4" />
+                    House
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            
+            {/* Number of bedrooms */}
+            <div className="space-y-4">
+              <label className="text-sm font-medium text-white/80">Number of bedrooms:</label>
+              <Tabs 
+                defaultValue="2" 
+                value={bedrooms} 
+                onValueChange={(v) => setBedrooms(v as '1' | '2' | '3' | '4+')} 
+                className="w-full"
+              >
+                <TabsList className="grid w-full grid-cols-4 bg-black/30">
+                  <TabsTrigger value="1" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                    <Bed className="mr-1 h-3 w-3" />
+                    1
+                  </TabsTrigger>
+                  <TabsTrigger value="2" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                    <Bed className="mr-1 h-3 w-3" />
+                    2
+                  </TabsTrigger>
+                  <TabsTrigger value="3" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                    <Bed className="mr-1 h-3 w-3" />
+                    3
+                  </TabsTrigger>
+                  <TabsTrigger value="4+" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+                    <Bed className="mr-1 h-3 w-3" />
+                    4+
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -375,8 +454,27 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 Add key locations you need to be close to:
               </label>
               
+              {/* Popular locations for quick selection */}
+              <div className="space-y-2">
+                <p className="text-sm text-white/70">Popular locations:</p>
+                <div className="flex flex-wrap gap-2">
+                  {popularLocations.map((location, index) => (
+                    <Button 
+                      key={index}
+                      variant="outline" 
+                      size="sm"
+                      className="bg-black/20 border border-white/10 text-white hover:bg-white/10"
+                      onClick={() => addPopularLocation(location)}
+                    >
+                      <MapPin className="h-3 w-3 mr-1 text-coral" />
+                      {location.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
               {locations.length > 0 && (
-                <div className="space-y-2 mb-4">
+                <div className="space-y-2 mb-4 mt-4">
                   <p className="text-sm text-white/70">Your locations:</p>
                   <div className="space-y-2">
                     {locations.map((loc, index) => (
@@ -396,12 +494,12 @@ const SearchWizard: React.FC<SearchWizardProps> = ({ onSearch, isSearching, onCa
                 </div>
               )}
               
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
                 <div className="flex-grow">
                   <Input
                     value={tempLocation}
                     onChange={(e) => setTempLocation(e.target.value)}
-                    placeholder="e.g., Canary Wharf, UCL, Big Ben"
+                    placeholder="Other location (e.g., workplace, school)"
                     className="bg-white/10 text-white border-white/20 placeholder:text-white/40"
                   />
                 </div>
