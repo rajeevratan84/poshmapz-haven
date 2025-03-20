@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
 import { MapPin, ArrowLeft, Search } from "lucide-react";
@@ -30,11 +29,8 @@ const DemoPage: React.FC = () => {
   const markersRef = useRef<google.maps.Marker[]>([]);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   
-  // OpenAI API key (in a real production app, this would be stored securely on the server)
-  // This is just for demo purposes
   const apiKey = "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";
 
-  // Initialize Google Maps
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
@@ -42,10 +38,8 @@ const DemoPage: React.FC = () => {
       if (!mapRef.current) return;
       
       try {
-        // Default coordinates for London
         const londonCoordinates = { lat: 51.507, lng: -0.127 };
         
-        // Create the map instance
         mapInstanceRef.current = new google.maps.Map(mapRef.current, {
           zoom: 11,
           center: londonCoordinates,
@@ -72,7 +66,6 @@ const DemoPage: React.FC = () => {
           ],
         });
         
-        // Create info window for tooltips
         infoWindowRef.current = new google.maps.InfoWindow();
       } catch (error) {
         console.error("Error initializing map:", error);
@@ -83,7 +76,6 @@ const DemoPage: React.FC = () => {
     if (window.google?.maps) {
       initMap();
     } else {
-      // Load Google Maps API if it's not already loaded
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
       
       const script = document.createElement("script");
@@ -101,7 +93,6 @@ const DemoPage: React.FC = () => {
     }
   }, []);
 
-  // Process search with OpenAI
   const processSearch = async () => {
     if (!userInput.trim()) {
       toast.error("Please enter your preferences");
@@ -111,22 +102,23 @@ const DemoPage: React.FC = () => {
     setIsSearching(true);
     setResults([]);
     
-    // Clear existing markers
     markersRef.current.forEach(marker => marker.setMap(null));
     markersRef.current = [];
     
     try {
-      // Call OpenAI to analyze user preferences
+      toast.info("Analyzing your preferences with AI...");
+      console.log("Sending request to analyze:", userInput);
+      
       const areas = await analyzeAreaPreferences(userInput, apiKey);
       
       if (areas && areas.length > 0) {
+        console.log("Received area matches:", areas);
         setResults(areas);
+        toast.success(`Found ${areas.length} matching areas in London!`);
         
-        // Add markers for each result
         if (mapInstanceRef.current) {
           areas.forEach(area => addMarkerForArea(area));
           
-          // Center map to fit all markers
           if (areas.length && mapInstanceRef.current) {
             const bounds = new google.maps.LatLngBounds();
             markersRef.current.forEach(marker => {
@@ -136,7 +128,6 @@ const DemoPage: React.FC = () => {
             });
             mapInstanceRef.current.fitBounds(bounds);
             
-            // If only one marker, zoom in closer
             if (markersRef.current.length === 1 && mapInstanceRef.current) {
               mapInstanceRef.current.setZoom(14);
             }
@@ -164,7 +155,6 @@ const DemoPage: React.FC = () => {
       title: `${area.name} - ${area.matchPercentage}% match`
     });
     
-    // Create HTML content for info window
     const contentString = `
       <div class="p-3 max-w-xs">
         <div class="flex justify-between items-center mb-1">
@@ -176,7 +166,6 @@ const DemoPage: React.FC = () => {
       </div>
     `;
     
-    // Add event listeners for hover and click
     marker.addListener("mouseover", () => {
       if (infoWindowRef.current && mapInstanceRef.current) {
         infoWindowRef.current.setContent(contentString);
@@ -211,7 +200,6 @@ const DemoPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black pb-20">
-      {/* Header */}
       <header className="w-full bg-black/90 shadow-md sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-1 text-white">
@@ -220,9 +208,9 @@ const DemoPage: React.FC = () => {
           </Link>
           <div className="flex items-center space-x-2">
             <MapPin className="h-6 w-6 text-coral" />
-            <span className="font-display text-xl font-semibold text-white">PoshMaps Demo</span>
+            <span className="font-display text-xl font-semibold text-white">PoshMaps London</span>
           </div>
-          <div className="w-20"></div> {/* Placeholder for balance */}
+          <div className="w-20"></div>
         </div>
       </header>
 
@@ -235,7 +223,6 @@ const DemoPage: React.FC = () => {
             Tell us what you're looking for in a neighborhood, and our AI will find the best matches in London
           </p>
           
-          {/* Search Input */}
           <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-2 mb-6">
             <Input
               value={userInput}
@@ -264,18 +251,16 @@ const DemoPage: React.FC = () => {
           
           <div className="text-xs text-white/60 mb-8">
             <p>Try queries like "near a tube station and park" or "family-friendly with good schools"</p>
-            <p className="mt-1">This demo is currently limited to London areas only</p>
+            <p className="mt-1 text-posh-green font-semibold">This demo is currently limited to London areas only</p>
           </div>
         </div>
         
-        {/* Map Container */}
         <div className="bg-black/20 rounded-xl p-4 shadow-lg">
           <div ref={mapRef} className="w-full h-[500px] rounded-lg mb-6"></div>
           
-          {/* Results */}
           <div className="mt-6">
             <h2 className="text-xl font-display font-semibold mb-4 text-white">
-              {results.length > 0 ? 'Recommended Areas' : 'Enter your preferences to see matches'}
+              {results.length > 0 ? 'Recommended Areas in London' : 'Enter your preferences to see London matches'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -290,7 +275,6 @@ const DemoPage: React.FC = () => {
                   )}
                   onClick={() => {
                     setSelectedArea(area);
-                    // Find the marker for this area and trigger a click
                     const marker = markersRef.current.find(m => m.getTitle()?.startsWith(area.name));
                     if (marker && mapInstanceRef.current) {
                       mapInstanceRef.current.panTo(marker.getPosition()!);
