@@ -26,42 +26,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      
-      if (currentUser) {
-        try {
-          // Check if user exists in the database
-          const userRef = doc(db, 'users', currentUser.uid);
-          const userSnap = await getDoc(userRef);
-          
-          if (!userSnap.exists()) {
-            // Add new user to the database
-            await setDoc(userRef, {
-              email: currentUser.email,
-              displayName: currentUser.displayName,
-              photoURL: currentUser.photoURL,
-              createdAt: serverTimestamp(),
-              lastLogin: serverTimestamp()
-            });
-          } else {
-            // Update last login time
-            await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true });
+    try {
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        setUser(currentUser);
+        
+        if (currentUser) {
+          try {
+            // Check if user exists in the database
+            const userRef = doc(db, 'users', currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            
+            if (!userSnap.exists()) {
+              // Add new user to the database
+              await setDoc(userRef, {
+                email: currentUser.email,
+                displayName: currentUser.displayName,
+                photoURL: currentUser.photoURL,
+                createdAt: serverTimestamp(),
+                lastLogin: serverTimestamp()
+              });
+            } else {
+              // Update last login time
+              await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true });
+            }
+            
+            // Check if user is admin
+            if (currentUser.email === 'mail@rajeevratan.com') {
+              setIsAdmin(true);
+            }
+          } catch (error) {
+            console.error("Error processing user data:", error);
           }
-          
-          // Check if user is admin
-          if (currentUser.email === 'mail@rajeevratan.com') {
-            setIsAdmin(true);
-          }
-        } catch (error) {
-          console.error("Error processing user data:", error);
         }
-      }
-      
-      setLoading(false);
-    });
+        
+        setLoading(false);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Error setting up auth listener:", error);
+      setLoading(false);
+    }
   }, []);
 
   const signInWithGoogle = async () => {
