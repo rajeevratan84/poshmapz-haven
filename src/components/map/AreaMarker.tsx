@@ -40,8 +40,8 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
     // Create custom marker icon with properly constructed objects
     const markerIcon = {
       url: '/placeholder.svg',
-      scaledSize: new window.google.maps.Size(36, 36),
-      anchor: new window.google.maps.Point(18, 18)
+      scaledSize: new google.maps.Size(36, 36),
+      anchor: new google.maps.Point(18, 18)
     };
 
     // Create marker with correct options
@@ -60,7 +60,7 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
         // Safely access Google Maps API methods
         try {
           // Using the Google Maps API correctly
-          marker.set('zIndex', 100);
+          marker.setZIndex(100);
           
           // Set label for selected markers
           const labelOptions = {
@@ -70,7 +70,7 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
             fontWeight: 'bold'
           };
           
-          marker.set('label', labelOptions);
+          marker.setLabel(labelOptions);
         } catch (error) {
           console.error("Error setting marker properties:", error);
         }

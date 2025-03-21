@@ -1,4 +1,3 @@
-
 declare namespace google {
   namespace maps {
     class Map {
@@ -15,6 +14,8 @@ declare namespace google {
       setMap(map: Map | null): void;
       setPosition(latLng: LatLng | LatLngLiteral): void;
       setTitle(title: string): void;
+      setZIndex(zIndex: number): void;
+      setLabel(label: string | MarkerLabel): void;
       addListener(eventName: string, handler: Function): MapsEventListener;
       getPosition(): LatLng | null;
       getTitle(): string | undefined;
@@ -39,16 +40,18 @@ declare namespace google {
       isEmpty(): boolean;
     }
 
-    // Add Size interface
-    interface Size {
+    // Constructor for Size
+    class Size {
+      constructor(width: number, height: number, widthUnit?: string, heightUnit?: string);
       width: number;
       height: number;
       equals(other: Size): boolean;
       toString(): string;
     }
 
-    // Add Point interface
-    interface Point {
+    // Constructor for Point
+    class Point {
+      constructor(x: number, y: number);
       x: number;
       y: number;
       equals(other: Point): boolean;
