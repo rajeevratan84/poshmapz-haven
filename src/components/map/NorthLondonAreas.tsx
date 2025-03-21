@@ -1,38 +1,46 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AreaMarker from './AreaMarker';
-import { getNorthLondonAreas } from '@/utils/mapUtils';
+
+export interface AreaInfo {
+  name: string;
+  coordinates: { lat: number, lng: number };
+  description?: string;
+  matchPercentage: number;
+  poshScore: number;
+}
 
 interface NorthLondonAreasProps {
   map: google.maps.Map | null;
-  infoWindow: google.maps.InfoWindow | null;
 }
 
-const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) => {
+const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map }) => {
+  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(null);
+  
   useEffect(() => {
-    if (!map || !infoWindow) return;
-    
-    // Center between the three areas
-    map.setCenter({ lat: 51.5492, lng: -0.0950 });
-    map.setZoom(13);
-
-    return () => {
-      // No cleanup needed here since AreaMarker components handle their own cleanup
-    };
-  }, [map, infoWindow]);
-
+    if (map) {
+      setInfoWindow(new google.maps.InfoWindow());
+    }
+  }, [map]);
+  
+  const areas: AreaInfo[] = [
+    { name: "Highbury", coordinates: { lat: 51.5485, lng: -0.1028 }, matchPercentage: 94, poshScore: 80 },
+    { name: "Islington", coordinates: { lat: 51.5331, lng: -0.1054 }, matchPercentage: 91, poshScore: 85 },
+    { name: "Stoke Newington", coordinates: { lat: 51.5624, lng: -0.0792 }, matchPercentage: 87, poshScore: 75 }
+  ];
+  
   if (!map || !infoWindow) return null;
-
-  const areas = getNorthLondonAreas();
-
+  
   return (
     <>
       {areas.map((area) => (
-        <AreaMarker 
-          key={area.title} 
-          area={area} 
-          map={map} 
-          infoWindow={infoWindow} 
+        <AreaMarker
+          key={area.name}
+          map={map}
+          position={area.coordinates}
+          name={area.name}
+          matchPercentage={area.matchPercentage}
+          poshScore={area.poshScore}
         />
       ))}
     </>

@@ -49,7 +49,7 @@ const DemoPage: React.FC = () => {
       console.log("Sending request to analyze:", searchInput);
       
       const startTime = Date.now();
-      const areas = await analyzeAreaPreferences(searchInput, apiKey);
+      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode);
       const elapsedTime = Date.now() - startTime;
       
       // Ensure we show the loading animation for at least 25 seconds

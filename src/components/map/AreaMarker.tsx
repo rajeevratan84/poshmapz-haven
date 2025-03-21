@@ -37,30 +37,35 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       content: contentString,
     });
 
-    // Create custom marker icon
+    // Create custom marker icon - use constructors directly
     const markerIcon = {
       url: '/placeholder.svg',
-      // Use the constructors directly instead of static properties
       scaledSize: new google.maps.Size(36, 36),
       anchor: new google.maps.Point(18, 18)
     };
 
+    // Create marker with correct options
     const marker = new google.maps.Marker({
       position,
       map,
       title: name,
       icon: markerIcon,
-      animation: google.maps.Animation.DROP,
-      zIndex: isSelected ? 100 : 1
+      animation: google.maps.Animation.DROP
     });
-
+    
+    // Set marker z-index separately
     if (isSelected) {
-      marker.setLabel({
+      marker.setZIndex(100);
+      
+      // Set label only if selected
+      const label = {
         text: matchPercentage.toString() + '%',
         color: 'white',
         fontSize: '10px',
         fontWeight: 'bold'
-      });
+      };
+      marker.setLabel(label);
+      
       infoWindow.open(map, marker);
     }
 
