@@ -5,6 +5,7 @@ import { MapPin, Menu, X, Sparkles } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from '@/hooks/use-mobile';
+import LoginButton from './auth/LoginButton';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -64,23 +65,20 @@ const Navbar: React.FC = () => {
           >
             Our Solution
           </a>
-          <Link to="/demo">
-            <Button variant="highlight" size="lg" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              <span>Try Demo</span>
-              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">Beta</span>
-            </Button>
-          </Link>
+          <LoginButton />
         </nav>
 
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-white"
-          onClick={toggleMobileMenu}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <LoginButton />
+          <button 
+            className="text-white"
+            onClick={toggleMobileMenu}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
