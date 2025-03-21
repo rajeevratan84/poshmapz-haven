@@ -58,13 +58,12 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       marker.setZIndex(100);
       
       // Set label only if selected
-      const label = {
+      marker.setLabel({
         text: matchPercentage.toString() + '%',
         color: 'white',
         fontSize: '10px',
         fontWeight: 'bold'
-      };
-      marker.setLabel(label);
+      });
       
       infoWindow.open(map, marker);
     }

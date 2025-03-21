@@ -15,13 +15,7 @@ interface NorthLondonAreasProps {
 }
 
 const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map }) => {
-  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(null);
-  
-  useEffect(() => {
-    if (map) {
-      setInfoWindow(new google.maps.InfoWindow());
-    }
-  }, [map]);
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
   
   const areas: AreaInfo[] = [
     { name: "Highbury", coordinates: { lat: 51.5485, lng: -0.1028 }, matchPercentage: 94, poshScore: 80 },
@@ -29,7 +23,7 @@ const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map }) => {
     { name: "Stoke Newington", coordinates: { lat: 51.5624, lng: -0.0792 }, matchPercentage: 87, poshScore: 75 }
   ];
   
-  if (!map || !infoWindow) return null;
+  if (!map) return null;
   
   return (
     <>
@@ -41,6 +35,8 @@ const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map }) => {
           name={area.name}
           matchPercentage={area.matchPercentage}
           poshScore={area.poshScore}
+          onClick={() => setSelectedArea(area.name)}
+          isSelected={selectedArea === area.name}
         />
       ))}
     </>

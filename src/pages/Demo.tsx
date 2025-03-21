@@ -11,6 +11,7 @@ import AreaMapComponent from '@/components/map/AreaMapComponent';
 import AreaResultsList from '@/components/search/AreaResultsList';
 import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const DemoPage: React.FC = () => {
@@ -20,6 +21,7 @@ const DemoPage: React.FC = () => {
   const [selectedArea, setSelectedArea] = useState<AreaMatch | null>(null);
   const [showWizard, setShowWizard] = useState(false);
   const [mapMode, setMapMode] = useState<'london' | 'uk'>('london');
+  const [nearestCity, setNearestCity] = useState<string>('none');
   const isMobile = useIsMobile();
   
   // Use the VITE_ environment variable for the API key
@@ -30,6 +32,24 @@ const DemoPage: React.FC = () => {
     "Young professional area with great nightlife and transport",
     "Quiet residential area with good amenities",
     "Trendy area with cafes and cultural activities"
+  ];
+
+  const ukCities = [
+    { value: 'none', label: 'No preference (anywhere in the UK)' },
+    { value: 'manchester', label: 'Manchester' },
+    { value: 'birmingham', label: 'Birmingham' },
+    { value: 'leeds', label: 'Leeds' },
+    { value: 'liverpool', label: 'Liverpool' },
+    { value: 'newcastle', label: 'Newcastle' },
+    { value: 'edinburgh', label: 'Edinburgh' },
+    { value: 'glasgow', label: 'Glasgow' },
+    { value: 'cardiff', label: 'Cardiff' },
+    { value: 'belfast', label: 'Belfast' },
+    { value: 'bristol', label: 'Bristol' },
+    { value: 'sheffield', label: 'Sheffield' },
+    { value: 'nottingham', label: 'Nottingham' },
+    { value: 'southampton', label: 'Southampton' },
+    { value: 'brighton', label: 'Brighton' }
   ];
 
   const processSearch = async (searchInput: string) => {
@@ -49,7 +69,7 @@ const DemoPage: React.FC = () => {
       console.log("Sending request to analyze:", searchInput);
       
       const startTime = Date.now();
-      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode);
+      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode, nearestCity);
       const elapsedTime = Date.now() - startTime;
       
       // Ensure we show the loading animation for at least 25 seconds
@@ -105,7 +125,12 @@ const DemoPage: React.FC = () => {
             Tell us what you're looking for, and our AI will find the best matches
           </p>
           
-          <Tabs defaultValue="london" className="w-full mb-6" onValueChange={(value) => setMapMode(value as 'london' | 'uk')}>
+          <Tabs defaultValue="london" className="w-full mb-6" onValueChange={(value) => {
+            setMapMode(value as 'london' | 'uk');
+            if (value === 'london') {
+              setNearestCity('none');
+            }
+          }}>
             <TabsList className="grid grid-cols-2 w-full bg-black/40 border border-white/10">
               <TabsTrigger value="london" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
                 <MapPin className="h-4 w-4 mr-2" />
@@ -117,6 +142,23 @@ const DemoPage: React.FC = () => {
               </TabsTrigger>
             </TabsList>
           </Tabs>
+          
+          {mapMode === 'uk' && (
+            <div className="mb-4">
+              <Select value={nearestCity} onValueChange={setNearestCity}>
+                <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
+                  <SelectValue placeholder="Select nearest city (optional)" />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
+                  {ukCities.map(city => (
+                    <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
+                      {city.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           
           <SearchBar 
             onSearch={processSearch}
