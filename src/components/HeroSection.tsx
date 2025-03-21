@@ -61,14 +61,7 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-              <Link to="/demo" className="w-full sm:w-auto">
-                <Button size="xl" className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
-                  <Star className="mr-2 h-5 w-5" />
-                  Try Our Demo
-                </Button>
-              </Link>
-              
+            <div className="flex justify-center items-center">
               <div className="relative w-full sm:w-auto group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-posh-green to-pink-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
                 <Link to="/demo" className="w-full relative">
@@ -79,11 +72,6 @@ const HeroSection: React.FC = () => {
                   </Button>
                 </Link>
               </div>
-            </div>
-            
-            <div className="mt-4 text-sm text-white/60 italic">
-              <Sparkles className="inline-block h-3 w-3 mr-1" />
-              <span>Real-time AI-powered neighbourhood insights</span>
             </div>
           </ScrollAnimation>
         </div>
