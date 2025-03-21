@@ -74,9 +74,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       await signInWithPopup(auth, googleProvider);
       toast.success('Successfully signed in!');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing in with Google:", error);
-      toast.error('Failed to sign in with Google');
+      
+      // Handle specific Firebase auth errors
+      if (error.code === 'auth/unauthorized-domain') {
+        toast.error('This domain is not authorized for authentication. Please add it to your Firebase console.');
+        console.info('To fix this error: Go to Firebase Console → Authentication → Settings → Authorized domains → Add your domain');
+      } else {
+        toast.error('Failed to sign in with Google');
+      }
     } finally {
       setLoading(false);
     }

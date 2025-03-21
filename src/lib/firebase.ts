@@ -11,7 +11,8 @@ const firebaseConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "poshmpas",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "poshmpas.firebasestorage.app",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1016810612374",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1016810612374:web:b8838cd05d27ea3ddec4b7"
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1016810612374:web:b8838cd05d27ea3ddec4b7",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-M1QEZB7VWS"
 };
 
 // Initialize Firebase
