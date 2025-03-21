@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import AreaMarker from './AreaMarker';
 
 export interface AreaInfo {
@@ -17,6 +17,7 @@ interface NorthLondonAreasProps {
 
 const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const markersRef = useRef<{ [key: string]: google.maps.Marker | null }>({});
   
   // Ensure these match the coordinates from the recent changes
   const areas: AreaInfo[] = [
@@ -43,7 +44,7 @@ const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) 
     }
   ];
   
-  // We need to fix this component to properly render the markers
+  // Early return if maps or infoWindow are not available
   if (!map || !infoWindow) return null;
   
   return (

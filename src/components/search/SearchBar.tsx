@@ -18,7 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   suggestions,
   onWizardToggle 
 }) => {
-  const [userInput, setUserInput] = useState('');
+  const [userInput, setUserInput] = useState('I want to live somewhere in North London that\'s within 10 mins of a park, tube station, good Turkish restaurants, gyms, cozy cafes and bakeries and with a family-friendly atmosphere.');
   const [showWizard, setShowWizard] = useState(false);
   const isMobile = useIsMobile();
 
@@ -49,7 +49,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             <>
               <Wand2 className="h-5 w-5 mr-2 text-amber-300" />
               <span className="font-semibold text-white">Use Guided Wizard</span>
-              <span className="absolute -top-2 -right-2 bg-amber-400 text-black text-xs px-1.5 py-0.5 rounded-full animate-pulse font-bold">Recommended</span>
+              <span className="absolute -top-2 -right-2 bg-amber-400 text-black text-xs px-1.5 py-0.5 rounded-full animate-pulse font-bold">New</span>
             </>
           )}
         </Button>

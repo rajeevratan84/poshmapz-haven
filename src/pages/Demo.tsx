@@ -14,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
+import LoginButton from '@/components/auth/LoginButton';
 
 const DemoPage: React.FC = () => {
   // Authentication is now handled by the ProtectedRoute in App.tsx
@@ -115,7 +116,9 @@ const DemoPage: React.FC = () => {
             <MapPin className="h-6 w-6 text-coral" />
             <span className="font-display text-xl font-semibold text-white">PoshMaps</span>
           </div>
-          <div className="w-20"></div>
+          <div>
+            <LoginButton />
+          </div>
         </div>
       </header>
 
