@@ -33,15 +33,19 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       
       try {
         // Create the map instance
-        mapInstanceRef.current = new google.maps.Map(mapRef.current, {
+        const mapOptions = {
           zoom,
-          center: DEFAULT_COORDINATES,
+          center: showNorthLondonAreas ? 
+            { lat: 51.5485, lng: -0.0900 } : // Center on North London when showing those areas
+            DEFAULT_COORDINATES,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: true,
           zoomControl: true,
           styles: mapStyles,
-        });
+        };
+        
+        mapInstanceRef.current = new google.maps.Map(mapRef.current, mapOptions);
         
         // Create info window for tooltips
         infoWindowRef.current = new google.maps.InfoWindow();
@@ -69,7 +73,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       // If API is already loaded, initialize map directly
       initMap();
     }
-  }, [zoom]);
+  }, [zoom, showNorthLondonAreas]);
 
   return (
     <div className={className}>

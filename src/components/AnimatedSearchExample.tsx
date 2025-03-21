@@ -12,8 +12,8 @@ const AnimatedSearchExample: React.FC = () => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [animationRunning, setAnimationRunning] = useState(true);
   
-  // Updated search query to emphasize London specifically
-  const searchQuery = "I want to live somewhere in North London that's within 10 mins of a park, tube station, and good restaurants with a family-friendly atmosphere";
+  // Updated search query with more specific preferences
+  const searchQuery = "I want to live somewhere in North London that's within 10 mins of a park, tube station, good Turkish restaurants, gyms, cozy cafes and bakeries and with a family-friendly atmosphere";
   
   const resetAnimation = () => {
     setSearchPhase(0);
