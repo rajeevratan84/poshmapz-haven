@@ -20,11 +20,6 @@ const HeroSection: React.FC = () => {
     document.getElementById('richmond-example')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleEarlyAccessClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-black">
       <div className="absolute inset-0 hero-gradient z-0"></div>
@@ -49,7 +44,7 @@ const HeroSection: React.FC = () => {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <ScrollAnimation type="fade-down" duration={600}>
             <div className="inline-block mb-4 px-3 py-1 bg-posh-green/20 rounded-full">
-              <span className="text-sm font-medium text-posh-green">Coming Soon - AI-Powered Local Insights</span>
+              <span className="text-sm font-medium text-posh-green">AI-Powered Local Insights</span>
             </div>
           </ScrollAnimation>
           
@@ -67,17 +62,19 @@ const HeroSection: React.FC = () => {
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-              <Button onClick={handleEarlyAccessClick} size="xl" className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
-                <Star className="mr-2 h-5 w-5" />
-                Get Early Access
-              </Button>
+              <Link to="/demo" className="w-full sm:w-auto">
+                <Button size="xl" className="w-full sm:w-auto bg-posh-green hover:bg-green-500 text-white rounded-full px-8 py-6 text-base">
+                  <Star className="mr-2 h-5 w-5" />
+                  Try Our Demo
+                </Button>
+              </Link>
               
               <div className="relative w-full sm:w-auto group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-posh-green to-pink-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
                 <Link to="/demo" className="w-full relative">
                   <Button variant="highlight" size="xl" className="w-full relative flex items-center gap-3 px-8 py-7">
                     <Rocket className="h-5 w-5" />
-                    <span className="font-bold">Try Our Interactive Demo</span>
+                    <span className="font-bold">Interactive Map Demo</span>
                     <span className="absolute -top-3 -right-3 bg-coral text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse-subtle">BETA</span>
                   </Button>
                 </Link>
@@ -86,7 +83,7 @@ const HeroSection: React.FC = () => {
             
             <div className="mt-4 text-sm text-white/60 italic">
               <Sparkles className="inline-block h-3 w-3 mr-1" />
-              <span>Our London beta demo showcases real-time AI-powered insights</span>
+              <span>Real-time AI-powered neighbourhood insights</span>
             </div>
           </ScrollAnimation>
         </div>

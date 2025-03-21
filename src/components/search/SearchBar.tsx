@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import { Search, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -18,6 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const [userInput, setUserInput] = useState('');
   const [showWizard, setShowWizard] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -33,11 +36,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="max-w-3xl mx-auto text-center">
-      <div className="flex justify-center mb-5">
+      <div className="flex justify-center mb-4">
         <Button 
           onClick={toggleWizard}
           variant={showWizard ? "default" : "outline"} 
-          size="lg"
+          size={isMobile ? "default" : "lg"}
           className={`relative ${!showWizard ? "bg-purple-600/90 hover:bg-purple-700 border border-purple-400/30 text-white" : "bg-purple-700 text-white shadow-lg shadow-purple-600/30"}`}
         >
           {showWizard ? (
@@ -54,20 +57,20 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
       {!showWizard && (
         <>
-          <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-2 mb-6">
+          <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-2 mb-4 md:mb-6">
             <Input
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g., I want to live near a tube station, park, and good pubs"
-              className="flex-grow bg-white/10 text-white border-white/20 placeholder:text-white/40 h-12"
+              placeholder={isMobile ? "Describe your ideal area..." : "e.g., I want to live near a tube station, park, and good pubs"}
+              className="flex-grow bg-white/10 text-white border-white/20 placeholder:text-white/40 h-10 md:h-12"
             />
             <Button 
               onClick={() => onSearch(userInput)}
               disabled={isSearching}
               variant="glow"
-              size="lg"
-              className="min-w-[120px] h-12"
+              size={isMobile ? "default" : "lg"}
+              className={`min-w-[120px] ${isMobile ? "h-10" : "h-12"}`}
             >
               {isSearching ? 
                 <div className="flex items-center space-x-2">

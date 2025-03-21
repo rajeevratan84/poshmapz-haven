@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MapPin, ArrowLeft, Sparkles } from "lucide-react";
+import { MapPin, ArrowLeft, Sparkles, MapIcon, HomeIcon } from "lucide-react";
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { analyzeAreaPreferences } from '@/services/openaiService';
@@ -10,6 +10,8 @@ import SearchWizard from '@/components/search/SearchWizard';
 import AreaMapComponent from '@/components/map/AreaMapComponent';
 import AreaResultsList from '@/components/search/AreaResultsList';
 import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const DemoPage: React.FC = () => {
   const [userInput, setUserInput] = useState('');
@@ -17,6 +19,8 @@ const DemoPage: React.FC = () => {
   const [results, setResults] = useState<AreaMatch[]>([]);
   const [selectedArea, setSelectedArea] = useState<AreaMatch | null>(null);
   const [showWizard, setShowWizard] = useState(false);
+  const [mapMode, setMapMode] = useState<'london' | 'uk'>('london');
+  const isMobile = useIsMobile();
   
   // Use the VITE_ environment variable for the API key
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
@@ -56,7 +60,7 @@ const DemoPage: React.FC = () => {
       if (areas && areas.length > 0) {
         console.log("Received area matches:", areas);
         setResults(areas);
-        toast.success(`Found ${areas.length} matching areas in London!`);
+        toast.success(`Found ${areas.length} matching areas in ${mapMode === 'london' ? 'London' : 'the UK'}!`);
       } else {
         toast.error("No matching areas found. Try adjusting your search criteria.");
       }
@@ -77,29 +81,42 @@ const DemoPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black pb-20">
+    <div className="min-h-screen bg-black pb-12">
       <header className="w-full bg-black/90 shadow-md sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-1 text-white">
             <ArrowLeft className="h-5 w-5" />
-            <span className="text-sm">Back to Home</span>
+            <span className="text-sm">Back</span>
           </Link>
           <div className="flex items-center space-x-2">
             <MapPin className="h-6 w-6 text-coral" />
-            <span className="font-display text-xl font-semibold text-white">PoshMaps London</span>
+            <span className="font-display text-xl font-semibold text-white">PoshMaps</span>
           </div>
           <div className="w-20"></div>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 mt-8">
-        <div className="max-w-3xl mx-auto text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-display font-bold mb-4 text-white">
-            Find Your Perfect London Neighbourhood
+      <main className="container mx-auto px-4 mt-6">
+        <div className={`max-w-3xl mx-auto text-center ${isMobile ? 'mb-4' : 'mb-8'}`}>
+          <h1 className="text-2xl md:text-4xl font-display font-bold mb-2 md:mb-4 text-white">
+            Find Your Perfect Neighbourhood
           </h1>
-          <p className="text-lg text-white/80 mb-8">
-            Tell us what you're looking for in a neighborhood, and our AI will find the best matches in London
+          <p className={`text-base md:text-lg text-white/80 ${isMobile ? 'mb-4' : 'mb-8'}`}>
+            Tell us what you're looking for, and our AI will find the best matches
           </p>
+          
+          <Tabs defaultValue="london" className="w-full mb-6" onValueChange={(value) => setMapMode(value as 'london' | 'uk')}>
+            <TabsList className="grid grid-cols-2 w-full bg-black/40 border border-white/10">
+              <TabsTrigger value="london" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
+                <MapPin className="h-4 w-4 mr-2" />
+                London
+              </TabsTrigger>
+              <TabsTrigger value="uk" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
+                <HomeIcon className="h-4 w-4 mr-2" />
+                United Kingdom
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
           
           <SearchBar 
             onSearch={processSearch}
@@ -118,17 +135,18 @@ const DemoPage: React.FC = () => {
           
           <div className="flex items-center justify-center gap-2 text-xs text-purple-400 font-semibold bg-black/30 py-2 px-4 rounded-full mx-auto w-fit">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Early Access Beta - London areas only</span>
+            <span>Beta {mapMode === 'london' ? 'London' : 'UK'} Mode</span>
           </div>
         </div>
         
-        <div className="bg-black/20 rounded-xl p-4 shadow-lg">
+        <div className="bg-black/20 rounded-xl p-3 md:p-4 shadow-lg">
           {isSearching && <SearchLoadingAnimation isVisible={isSearching} />}
           
           <AreaMapComponent 
             results={results}
             onAreaSelected={handleAreaClick}
             selectedArea={selectedArea}
+            mapMode={mapMode}
           />
           
           <AreaResultsList 

@@ -5,7 +5,7 @@ import FadeIn from './animations/FadeIn';
 
 const CTASection: React.FC = () => {
   return (
-    <section className="section-padding bg-[#F5F7FA]">
+    <section id="cta" className="section-padding bg-[#F5F7FA]">
       <div className="container mx-auto px-6">
         <FadeIn>
           <div className="bg-gradient-to-br from-coral/80 to-coral rounded-3xl py-16 px-8 text-center relative overflow-hidden">
@@ -16,7 +16,7 @@ const CTASection: React.FC = () => {
                 Ready to Find Your Perfect Neighbourhood?
               </h2>
               <p className="text-lg text-white/90 mb-8 md:max-w-xl mx-auto">
-                Join the PoshMaps waiting list to be the first to know when we launch. Or try our interactive demo to see a preview of what's coming.
+                Explore our interactive demo to see what PoshMaps can do for you. Use our AI-powered search to discover your ideal location.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
@@ -24,13 +24,13 @@ const CTASection: React.FC = () => {
                   to="/demo"
                   className="bg-white text-coral font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
                 >
-                  Try Demo
+                  Try Interactive Demo
                 </Link>
                 <a 
                   href="#"
                   className="bg-transparent border-2 border-white text-white font-medium px-8 py-3 rounded-full hover:bg-white/10 transition-colors"
                 >
-                  Join Waiting List
+                  Learn More
                 </a>
               </div>
             </div>

@@ -4,10 +4,12 @@ import { cn } from "@/lib/utils";
 import { MapPin, Menu, X, Sparkles } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Handle scroll effect
   useEffect(() => {

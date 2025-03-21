@@ -7,26 +7,55 @@ interface AreaMapComponentProps {
   results: AreaMatch[];
   onAreaSelected: (area: AreaMatch) => void;
   selectedArea: AreaMatch | null;
+  mapMode?: 'london' | 'uk';
 }
 
-const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ results, onAreaSelected, selectedArea }) => {
+const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ 
+  results, 
+  onAreaSelected, 
+  selectedArea,
+  mapMode = 'london'
+}) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
 
+  // Set initial coordinates and zoom based on map mode
+  const getInitialMapSettings = () => {
+    if (mapMode === 'london') {
+      return {
+        coordinates: { lat: 51.507, lng: -0.127 },
+        zoom: 11
+      };
+    } else {
+      return {
+        coordinates: { lat: 54.093, lng: -2.89 }, // Center of UK
+        zoom: 6
+      };
+    }
+  };
+
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return;
+    if (!mapRef.current) return;
+    
+    // If map already exists but mode changed, update the view
+    if (mapInstanceRef.current && infoWindowRef.current) {
+      const { coordinates, zoom } = getInitialMapSettings();
+      mapInstanceRef.current.setCenter(coordinates);
+      mapInstanceRef.current.setZoom(zoom);
+      return;
+    }
 
     const initMap = () => {
       if (!mapRef.current) return;
       
       try {
-        const londonCoordinates = { lat: 51.507, lng: -0.127 };
+        const { coordinates, zoom } = getInitialMapSettings();
         
         mapInstanceRef.current = new google.maps.Map(mapRef.current, {
-          zoom: 11,
-          center: londonCoordinates,
+          zoom,
+          center: coordinates,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: true,
@@ -75,7 +104,16 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ results, onAreaSele
       
       document.head.appendChild(script);
     }
-  }, []);
+  }, [mapMode]);
+
+  // Update map view when mapMode changes
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      const { coordinates, zoom } = getInitialMapSettings();
+      mapInstanceRef.current.setCenter(coordinates);
+      mapInstanceRef.current.setZoom(zoom);
+    }
+  }, [mapMode]);
 
   useEffect(() => {
     if (!mapInstanceRef.current || !infoWindowRef.current) return;
@@ -166,7 +204,7 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ results, onAreaSele
     markersRef.current.push(marker);
   };
 
-  return <div ref={mapRef} className="w-full h-[500px] rounded-lg mb-6"></div>;
+  return <div ref={mapRef} className="w-full h-[400px] md:h-[500px] rounded-lg mb-4 md:mb-6"></div>;
 };
 
 export default AreaMapComponent;
