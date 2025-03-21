@@ -40,8 +40,8 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
     // Create custom marker icon with properly constructed objects
     const markerIcon = {
       url: '/placeholder.svg',
-      scaledSize: new google.maps.Size(36, 36),
-      anchor: new google.maps.Point(18, 18)
+      scaledSize: new window.google.maps.Size(36, 36),
+      anchor: new window.google.maps.Point(18, 18)
     };
 
     // Create marker with correct options
@@ -55,25 +55,22 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
     
     // Set marker z-index and label properties
     if (isSelected) {
-      // Only attempt to set properties if they exist on the marker
+      // Apply selected marker styling
       if (marker) {
-        // Update z-index using the setZIndex method if available
+        // Safely access Google Maps API methods
         try {
-          // @ts-ignore - We're checking at runtime if this method exists
-          if (typeof marker.setZIndex === 'function') {
-            marker.setZIndex(100);
-          }
+          // Using the Google Maps API correctly
+          marker.set('zIndex', 100);
           
-          // Set label only if selected and if setLabel method is available
-          if (typeof marker.setLabel === 'function') {
-            // @ts-ignore - We're checking at runtime if this method exists
-            marker.setLabel({
-              text: matchPercentage.toString() + '%',
-              color: 'white',
-              fontSize: '10px',
-              fontWeight: 'bold'
-            });
-          }
+          // Set label for selected markers
+          const labelOptions = {
+            text: matchPercentage.toString() + '%',
+            color: 'white',
+            fontSize: '10px',
+            fontWeight: 'bold'
+          };
+          
+          marker.set('label', labelOptions);
         } catch (error) {
           console.error("Error setting marker properties:", error);
         }
