@@ -12,9 +12,10 @@ export interface AreaInfo {
 
 interface NorthLondonAreasProps {
   map: google.maps.Map | null;
+  infoWindow: google.maps.InfoWindow | null;
 }
 
-const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map }) => {
+const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   
   const areas: AreaInfo[] = [
