@@ -51,6 +51,11 @@ async function createServer() {
     }
   });
 
+  // Set up a fallback to serve index.html for any non-matching route for client-side routing
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+  });
+
   app.listen(3000, () => {
     console.log('Server running at http://localhost:3000');
   });

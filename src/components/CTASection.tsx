@@ -26,12 +26,12 @@ const CTASection: React.FC = () => {
                 >
                   Try Interactive Demo
                 </Link>
-                <a 
-                  href="#"
+                <Link 
+                  to="/demo"
                   className="bg-transparent border-2 border-white text-white font-medium px-8 py-3 rounded-full hover:bg-white/10 transition-colors"
                 >
                   Learn More
-                </a>
+                </Link>
               </div>
             </div>
           </div>
