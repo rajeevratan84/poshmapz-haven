@@ -50,7 +50,7 @@ const HeroSection: React.FC = () => {
           
           <ScrollAnimation type="fade-up" delay={200} duration={800}>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 max-w-3xl mx-auto tracking-wide leading-tight text-white">
-              Find Your Perfect Neighbourhood with <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-pink-500">Real-Time, AI-Enhanced Insights</span>
+              Find Your Perfect Neighbourhood with <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-pink-500">AI-Enhanced Insights</span>
             </h1>
           </ScrollAnimation>
           
