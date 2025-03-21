@@ -6,9 +6,12 @@ import ScrollAnimation from './animations/ScrollAnimation';
 import GoogleMap from './GoogleMap';
 import AnimatedSearchExample from './AnimatedSearchExample';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 const HeroSection: React.FC = () => {
   const searchDemoRef = useRef<HTMLDivElement>(null);
+  const { user, signInWithGoogle } = useAuth();
   
   const handleDemoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -18,6 +21,15 @@ const HeroSection: React.FC = () => {
   const handleSearchClick = (e: React.MouseEvent) => {
     e.preventDefault();
     document.getElementById('richmond-example')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleDemoButtonClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      toast.info('Please sign in to access the interactive demo');
+      signInWithGoogle();
+    }
+    // If user is logged in, the Link will navigate to /demo naturally
   };
 
   return (
@@ -64,7 +76,11 @@ const HeroSection: React.FC = () => {
             <div className="flex justify-center items-center">
               <div className="relative w-full sm:w-auto group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-posh-green to-pink-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
-                <Link to="/demo" className="w-full relative">
+                <Link 
+                  to="/demo" 
+                  className="w-full relative"
+                  onClick={handleDemoButtonClick}
+                >
                   <Button variant="highlight" size="xl" className="w-full relative flex items-center gap-3 px-8 py-7">
                     <Rocket className="h-5 w-5" />
                     <span className="font-bold">Interactive Map Demo</span>

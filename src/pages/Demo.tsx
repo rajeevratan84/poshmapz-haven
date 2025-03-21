@@ -13,8 +13,11 @@ import SearchLoadingAnimation from '@/components/SearchLoadingAnimation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/context/AuthContext';
 
 const DemoPage: React.FC = () => {
+  // Authentication is now handled by the ProtectedRoute in App.tsx
+  const { user } = useAuth();
   const [userInput, setUserInput] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<AreaMatch[]>([]);
@@ -117,6 +120,7 @@ const DemoPage: React.FC = () => {
       </header>
 
       <main className="container mx-auto px-4 mt-6">
+        {/* User is authenticated at this point thanks to the ProtectedRoute */}
         <div className={`max-w-3xl mx-auto text-center ${isMobile ? 'mb-4' : 'mb-8'}`}>
           <h1 className="text-2xl md:text-4xl font-display font-bold mb-2 md:mb-4 text-white">
             Find Your Perfect Neighbourhood
