@@ -18,7 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   suggestions,
   onWizardToggle 
 }) => {
-  const [userInput, setUserInput] = useState('I want to live somewhere in North London that\'s within 10 mins of a park, tube station, good Turkish restaurants, gyms, cozy cafes and bakeries and with a family-friendly atmosphere.');
+  const [userInput, setUserInput] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const isMobile = useIsMobile();
 
