@@ -17,7 +17,6 @@ interface NorthLondonAreasProps {
 
 const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
-  const markersRef = useRef<{ [key: string]: google.maps.Marker | null }>({});
   
   // Ensure these match the coordinates from the recent changes
   const areas: AreaInfo[] = [

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
@@ -12,6 +11,12 @@ const AddressMarker: React.FC<AddressMarkerProps> = ({ address, map }) => {
 
   useEffect(() => {
     if (!map) return;
+
+    // Clear any existing marker
+    if (markerRef.current) {
+      markerRef.current.setMap(null);
+      markerRef.current = null;
+    }
 
     // Create a marker at the default position initially
     const defaultPosition = { lat: 51.461, lng: -0.306 }; // Richmond, London
@@ -31,6 +36,9 @@ const AddressMarker: React.FC<AddressMarkerProps> = ({ address, map }) => {
           const location = results[0].geometry.location;
           map.setCenter(location);
           markerRef.current.setPosition(location);
+        } else {
+          console.error("Geocoding failed:", status);
+          // Keep default location if geocoding fails
         }
       });
     }

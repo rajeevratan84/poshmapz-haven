@@ -56,6 +56,18 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
         infoWindow.open(map, markerRef.current);
         if (onClick) onClick();
       });
+      
+      // Add mouseover/mouseout for better UX
+      markerRef.current.addListener('mouseover', () => {
+        infoWindow.setContent(contentString);
+        infoWindow.open(map, markerRef.current);
+      });
+      
+      markerRef.current.addListener('mouseout', () => {
+        if (!isSelected) {
+          setTimeout(() => infoWindow.close(), 1000);
+        }
+      });
     }
 
     // Update marker properties

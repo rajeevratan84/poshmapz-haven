@@ -17,7 +17,7 @@ export const loadGoogleMapsScript = (
   errorCallback: () => void
 ): (() => void) => {
   const script = document.createElement("script");
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geocoding`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geocoding&callback=Function.prototype`;
   script.async = true;
   script.defer = true;
   
