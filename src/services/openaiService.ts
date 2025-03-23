@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 import { AreaMatch } from '@/types/area';
 
@@ -34,7 +33,7 @@ export async function analyzeAreaPreferences(
             content: prompt
           }
         ],
-        temperature: 0.3, // Lowered from 0.7 to 0.3 for more consistent results
+        temperature: 0.7, // Increased for more variety in responses
       }),
     });
 
@@ -63,8 +62,8 @@ export async function analyzeAreaPreferences(
     console.log(`Received response from OpenAI for ${mapMode} mode:`, jsonContent);
     const areas = JSON.parse(jsonContent) as AreaMatch[];
     
-    // Limit to maximum 10 areas
-    return areas.slice(0, 10);
+    // Limit to maximum 10 areas but ensure we keep at least 6 for variety
+    return areas.slice(0, Math.max(areas.length, 6)).slice(0, 10);
 
   } catch (error) {
     console.error('Error analyzing area preferences:', error);
@@ -77,12 +76,10 @@ function getLondonPrompt(userInput: string): string {
   return `
 You are an AI assistant for PoshMaps, a service that helps people find neighborhoods in London that match their preferences.
 
-Based on the following user input, identify up to 10 areas in London that best match their preferences.
-Ensure good geographical distribution across ALL of London (North, South, East, West, Central).
-Do not bias towards South London. Make sure to include areas from North, East, and West London.
-Only include areas within London, UK.
-
-IMPORTANT: Don't just include major areas - consider small neighborhoods, villages, and lesser-known areas within London that might be perfect matches.
+Based on the following user input, identify UP TO 10 AREAS across ALL of London that best match their preferences.
+CRUCIAL: PROVIDE DIVERSE GEOGRAPHICAL COVERAGE - include at least 2 areas each from North, South, East, West, and maybe 1-2 from Central London.
+Ensure you include lesser-known areas and neighborhoods, not just the famous ones.
+Make your selection HIGHLY DIVERSE in terms of area types, sizes, and character.
 
 User input: "${userInput}"
 
@@ -91,15 +88,15 @@ For each area, provide:
 2. Match percentage (between 70-98%)
 3. A brief description of the area (2-3 sentences)
 4. A "Posh Score" between 60-95
-5. Coordinates (latitude and longitude) within London
+5. Coordinates (latitude and longitude) within London - BE PRECISE WITH COORDINATES
 6. A list of 3-7 amenities or features that match the user's request
 7. Detailed area statistics including:
-   - Crime rate (Low/Medium/High with specific percentage compared to London average, e.g., "Low - 15% below London average" or "Medium - 5% above London average")
-   - Transport score (Poor/Good/Excellent with specific tube/train lines and time to central London, e.g., "Excellent - 20 min to central via Northern Line")
+   - Crime rate (Low/Medium/High with specific percentage compared to London average)
+   - Transport score (Poor/Good/Excellent with specific tube/train lines and time to central London)
    - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
-   - Property growth (use "+" or "-" followed by percentage for clear growth indicators, e.g., "+3.5%" or "-1.2%")
-   - Area vibe (2-4 tags like: Family-friendly, Upscale, Riverside, Trendy, Historic, etc.)
-8. At the end of each description, add ONE sentence explaining why this area specifically does or does not match the user's requirements.
+   - Property growth (use "+" or "-" followed by percentage for clear growth indicators)
+   - Area vibe (2-4 tags that describe the area character)
+8. At the end of each description, add ONE sentence explaining why this area specifically matches the user's requirements.
 
 Format the response as a valid JSON array with objects having these exact keys:
 [
@@ -126,11 +123,14 @@ Format the response as a valid JSON array with objects having these exact keys:
   }
 ]
 
-IMPORTANT: Limit your response to a maximum of 10 areas. Ensure all areas are real London neighborhoods with accurate information and actual London coordinates. 
-Sort by match percentage in descending order. Make sure to include areas from all regions of London (North, South, East, West, Central).
-Include smaller, lesser-known neighborhoods that might be perfect matches, not just the obvious major areas.
-PROVIDE OUTPUT IN JSON FORMAT ONLY.
-  `;
+IMPORTANT REQUIREMENTS: 
+1. Include up to 10 areas total
+2. Ensure geographic diversity across London (North, South, East, West, Central)
+3. Include lesser-known neighborhoods alongside famous ones
+4. Provide realistic, accurate information and precise coordinates
+5. Sort by match percentage in descending order
+6. PROVIDE OUTPUT IN JSON FORMAT ONLY
+`;
 }
 
 function getUKPrompt(userInput: string, nearestCity: string = 'none'): string {

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import AreaMarker from './AreaMarker';
 
 export interface AreaInfo {
@@ -43,12 +43,9 @@ const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) 
     }
   ];
   
-  // Early return if maps or infoWindow are not available
-  if (!map || !infoWindow) return null;
-  
   return (
     <>
-      {areas.map((area) => (
+      {map && infoWindow && areas.map((area) => (
         <AreaMarker
           key={area.name}
           map={map}

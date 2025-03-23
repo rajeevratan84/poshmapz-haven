@@ -27,7 +27,12 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
   const markerRef = useRef<google.maps.Marker | null>(null);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map) {
+      console.error("Map not provided to AreaMarker");
+      return;
+    }
+
+    console.log(`Creating/updating marker for ${name} at`, position);
 
     // Create the HTML content for the info window
     const contentString = `
@@ -47,7 +52,10 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
         position,
         map,
         title: name,
-        animation: google.maps.Animation.DROP
+        animation: google.maps.Animation.DROP,
+        optimized: false, // Try disabling optimization
+        visible: true,
+        zIndex: isSelected ? 100 : 10
       });
 
       // Add click event listener
@@ -68,37 +76,44 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
           setTimeout(() => infoWindow.close(), 1000);
         }
       });
+      
+      console.log(`Marker created for ${name}`);
+    } else {
+      // Update existing marker
+      markerRef.current.setPosition(position);
+      markerRef.current.setTitle(name);
+      markerRef.current.setVisible(true);
+      console.log(`Marker updated for ${name}`);
     }
 
-    // Update marker properties
+    // Apply styling for selected state
     if (markerRef.current) {
-      markerRef.current.setPosition(position);
+      markerRef.current.setZIndex(isSelected ? 100 : 10);
       
-      // Apply styling for selected state
       if (isSelected) {
-        markerRef.current.setZIndex(100);
+        // Use a different icon or label for selected marker
+        markerRef.current.setIcon({
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: '#22c55e', // green-600
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: 2,
+        });
         
-        const labelOptions = {
-          text: matchPercentage.toString() + '%',
-          color: 'white',
-          fontSize: '10px',
-          fontWeight: 'bold'
-        };
-        
-        markerRef.current.setLabel(labelOptions);
-        
-        // Open info window
+        // Open info window for selected marker
         infoWindow.setContent(contentString);
         infoWindow.open(map, markerRef.current);
       } else {
-        markerRef.current.setZIndex(undefined);
-        markerRef.current.setLabel(null);
+        // Reset to default marker
+        markerRef.current.setIcon(null);
       }
     }
 
     // Clean up on unmount
     return () => {
       if (markerRef.current) {
+        markerRef.current.setVisible(false);
         markerRef.current.setMap(null);
         markerRef.current = null;
       }

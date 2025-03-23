@@ -80,7 +80,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     if (mapInstanceRef.current && infoWindowRef.current) {
       // This will force a re-render of the child components
       // which should re-create the markers
-      const currentCenter = mapInstanceRef.current.getCenter();
+      const currentCenter = mapInstanceRef.current.getCenter?.();
       if (currentCenter) {
         google.maps.event.trigger(mapInstanceRef.current, 'resize');
         mapInstanceRef.current.setCenter(currentCenter);

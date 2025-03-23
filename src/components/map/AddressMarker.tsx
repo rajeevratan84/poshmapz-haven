@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
@@ -31,16 +32,22 @@ const AddressMarker: React.FC<AddressMarkerProps> = ({ address, map }) => {
     // If we have an address, try to geocode it
     if (address) {
       const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === "OK" && results?.[0]?.geometry?.location && map && markerRef.current) {
-          const location = results[0].geometry.location;
-          map.setCenter(location);
-          markerRef.current.setPosition(location);
-        } else {
-          console.error("Geocoding failed:", status);
-          // Keep default location if geocoding fails
-        }
-      });
+      
+      try {
+        geocoder.geocode({ address }, (results, status) => {
+          if (status === "OK" && results && results.length > 0 && results[0].geometry && results[0].geometry.location && map && markerRef.current) {
+            const location = results[0].geometry.location;
+            map.setCenter(location);
+            markerRef.current.setPosition(location);
+            console.log(`Successfully geocoded and placed marker for: ${address}`, location.toString());
+          } else {
+            console.error("Geocoding failed:", status, results);
+            toast.error(`Couldn't find location: ${address}`);
+          }
+        });
+      } catch (error) {
+        console.error("Geocoding error:", error);
+      }
     }
 
     // Clean up
