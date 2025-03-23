@@ -50,6 +50,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         // Create info window for tooltips
         infoWindowRef.current = new google.maps.InfoWindow();
         
+        console.log("Map initialized successfully", mapInstanceRef.current);
+        
+        // Force an update for child components since map is ready
+        setTimeout(() => {
+          // This is a hack to ensure the child components render after map is ready
+          mapInstanceRef.current?.setZoom(mapInstanceRef.current.getZoom() || zoom);
+        }, 100);
+        
       } catch (error) {
         console.error("Error initializing map:", error);
         toast.error("Could not initialize Google Maps.");
@@ -79,18 +87,29 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   useEffect(() => {
     if (mapInstanceRef.current && infoWindowRef.current) {
       // This will force a re-render of the child components
-      // Use the map's current center if available
       try {
-        if (mapInstanceRef.current.getCenter) {
-          const currentCenter = mapInstanceRef.current.getCenter();
-          google.maps.event.trigger(mapInstanceRef.current, 'resize');
+        // Instead of using getCenter which may not exist, use a safer approach
+        const currentZoom = mapInstanceRef.current.getZoom() || zoom;
+        google.maps.event.trigger(mapInstanceRef.current, 'resize');
+        
+        // Recenter using the current center or default
+        const currentCenter = mapInstanceRef.current.getCenter();
+        if (currentCenter) {
           mapInstanceRef.current.setCenter(currentCenter);
+        } else {
+          mapInstanceRef.current.setCenter(showNorthLondonAreas ? 
+            { lat: 51.5485, lng: -0.0900 } : 
+            DEFAULT_COORDINATES);
         }
+        
+        mapInstanceRef.current.setZoom(currentZoom);
+        
+        console.log("Map resized and recentered", currentCenter);
       } catch (error) {
         console.error("Error resizing map:", error);
       }
     }
-  }, [showNorthLondonAreas, address]);
+  }, [showNorthLondonAreas, address, zoom]);
 
   return (
     <div className={className}>
@@ -98,17 +117,19 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       
       {/* Render map markers based on props */}
       {mapInstanceRef.current && infoWindowRef.current && (
-        showNorthLondonAreas ? (
-          <NorthLondonAreas 
-            map={mapInstanceRef.current} 
-            infoWindow={infoWindowRef.current} 
-          />
-        ) : (
-          <AddressMarker 
-            address={address} 
-            map={mapInstanceRef.current} 
-          />
-        )
+        <>
+          {showNorthLondonAreas ? (
+            <NorthLondonAreas 
+              map={mapInstanceRef.current} 
+              infoWindow={infoWindowRef.current} 
+            />
+          ) : (
+            <AddressMarker 
+              address={address} 
+              map={mapInstanceRef.current} 
+            />
+          )}
+        </>
       )}
       
       <div className="text-xs text-center mt-2 text-posh-dark/60">

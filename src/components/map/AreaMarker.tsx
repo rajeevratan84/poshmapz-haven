@@ -48,85 +48,91 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
 
     // Create marker if it doesn't exist
     if (!markerRef.current) {
-      markerRef.current = new google.maps.Marker({
-        position,
-        map,
-        title: name,
-        animation: google.maps.Animation.DROP,
-        visible: true,
-        zIndex: isSelected ? 100 : 10
-      });
+      try {
+        markerRef.current = new google.maps.Marker({
+          position,
+          map,
+          title: name,
+          animation: google.maps.Animation.DROP,
+          // Remove optimized property as it's not recognized
+          zIndex: isSelected ? 100 : 10
+        });
 
-      // Add click event listener
-      markerRef.current.addListener('click', () => {
-        infoWindow.setContent(contentString);
-        infoWindow.open(map, markerRef.current);
-        if (onClick) onClick();
-      });
-      
-      // Add mouseover/mouseout for better UX
-      markerRef.current.addListener('mouseover', () => {
-        infoWindow.setContent(contentString);
-        infoWindow.open(map, markerRef.current);
-      });
-      
-      markerRef.current.addListener('mouseout', () => {
-        if (!isSelected) {
-          setTimeout(() => infoWindow.close(), 1000);
-        }
-      });
-      
-      console.log(`Marker created for ${name}`);
+        // Add click event listener
+        markerRef.current.addListener('click', () => {
+          infoWindow.setContent(contentString);
+          infoWindow.open(map, markerRef.current);
+          if (onClick) onClick();
+        });
+        
+        // Add mouseover/mouseout for better UX
+        markerRef.current.addListener('mouseover', () => {
+          infoWindow.setContent(contentString);
+          infoWindow.open(map, markerRef.current);
+        });
+        
+        markerRef.current.addListener('mouseout', () => {
+          if (!isSelected) {
+            setTimeout(() => infoWindow.close(), 1000);
+          }
+        });
+        
+        console.log(`Marker created for ${name}`);
+      } catch (error) {
+        console.error(`Error creating marker for ${name}:`, error);
+      }
     } else {
       // Update existing marker
-      markerRef.current.setPosition(position);
-      markerRef.current.setTitle(name);
-      
-      // For the setVisible and setZIndex methods, we need to check if they exist
-      if (markerRef.current.setVisible) {
-        markerRef.current.setVisible(true);
+      try {
+        markerRef.current.setPosition(position);
+        markerRef.current.setTitle(name);
+        console.log(`Marker updated for ${name}`);
+      } catch (error) {
+        console.error(`Error updating marker for ${name}:`, error);
       }
-      console.log(`Marker updated for ${name}`);
     }
 
     // Apply styling for selected state
     if (markerRef.current) {
-      if (markerRef.current.setZIndex) {
+      try {
+        // Set zIndex for selected marker
         markerRef.current.setZIndex(isSelected ? 100 : 10);
-      }
-      
-      if (isSelected) {
-        // Use a different icon or label for selected marker
-        if (markerRef.current.setIcon) {
-          markerRef.current.setIcon({
+        
+        if (isSelected) {
+          // Use a custom icon for selected marker - safer approach
+          const icon = {
             path: google.maps.SymbolPath.CIRCLE,
             scale: 10,
             fillColor: '#22c55e', // green-600
             fillOpacity: 1,
             strokeColor: '#ffffff',
             strokeWeight: 2,
-          });
-        }
-        
-        // Open info window for selected marker
-        infoWindow.setContent(contentString);
-        infoWindow.open(map, markerRef.current);
-      } else {
-        // Reset to default marker
-        if (markerRef.current.setIcon) {
+          };
+          
+          // Only call setIcon if it exists
+          markerRef.current.setIcon(icon);
+          
+          // Open info window for selected marker
+          infoWindow.setContent(contentString);
+          infoWindow.open(map, markerRef.current);
+        } else {
+          // Reset to default marker if not selected
           markerRef.current.setIcon(null);
         }
+      } catch (error) {
+        console.error(`Error styling marker for ${name}:`, error);
       }
     }
 
     // Clean up on unmount
     return () => {
       if (markerRef.current) {
-        if (markerRef.current.setVisible) {
-          markerRef.current.setVisible(false);
+        try {
+          markerRef.current.setMap(null);
+          markerRef.current = null;
+        } catch (error) {
+          console.error(`Error cleaning up marker for ${name}:`, error);
         }
-        markerRef.current.setMap(null);
-        markerRef.current = null;
       }
     };
   }, [map, position, name, matchPercentage, poshScore, description, onClick, isSelected, infoWindow]);

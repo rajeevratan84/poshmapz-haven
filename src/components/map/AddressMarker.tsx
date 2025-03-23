@@ -11,7 +11,12 @@ const AddressMarker: React.FC<AddressMarkerProps> = ({ address, map }) => {
   const markerRef = useRef<google.maps.Marker | null>(null);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map) {
+      console.error("Map not provided to AddressMarker");
+      return;
+    }
+
+    console.log(`Setting up address marker for: ${address}`);
 
     // Clear any existing marker
     if (markerRef.current) {
@@ -19,35 +24,61 @@ const AddressMarker: React.FC<AddressMarkerProps> = ({ address, map }) => {
       markerRef.current = null;
     }
 
-    // Create a marker at the default position initially
-    const defaultPosition = { lat: 51.461, lng: -0.306 }; // Richmond, London
-    
-    markerRef.current = new google.maps.Marker({
-      map: map,
-      animation: google.maps.Animation.DROP,
-      position: defaultPosition,
-      title: address
-    });
-
-    // If we have an address, try to geocode it
-    if (address) {
-      const geocoder = new google.maps.Geocoder();
+    try {
+      // Create a marker at the default position initially
+      const defaultPosition = { lat: 51.461, lng: -0.306 }; // Richmond, London
       
-      try {
+      markerRef.current = new google.maps.Marker({
+        map: map,
+        animation: google.maps.Animation.DROP,
+        position: defaultPosition,
+        title: address
+      });
+
+      console.log("Created initial marker at default position", defaultPosition);
+
+      // If we have an address, try to geocode it
+      if (address) {
+        const geocoder = new google.maps.Geocoder();
+        
         geocoder.geocode({ address }, (results, status) => {
-          if (status === "OK" && results && results.length > 0 && results[0].geometry && results[0].geometry.location && map && markerRef.current) {
-            const location = results[0].geometry.location;
-            map.setCenter(location);
-            markerRef.current.setPosition(location);
-            console.log(`Successfully geocoded and placed marker for: ${address}`, location.toString());
-          } else {
-            console.error("Geocoding failed:", status, results);
-            toast.error(`Couldn't find location: ${address}`);
+          try {
+            console.log("Geocode results:", results, "status:", status);
+            
+            if (status === "OK" && results && results.length > 0 && results[0].geometry && results[0].geometry.location) {
+              const location = results[0].geometry.location;
+              
+              console.log(`Successfully geocoded ${address} to:`, location.toString());
+              
+              if (map && markerRef.current) {
+                map.setCenter(location);
+                markerRef.current.setPosition(location);
+                console.log("Map centered and marker positioned at:", location.toString());
+              } else {
+                console.error("Map or marker ref not available for setting position");
+              }
+            } else {
+              console.warn(`Geocoding failed for ${address}: ${status}`);
+              
+              // Use the static coordinates as fallback
+              const fallbackCoordinates = {
+                'Richmond, London, UK': { lat: 51.461, lng: -0.306 }
+              };
+              
+              if (fallbackCoordinates[address] && map && markerRef.current) {
+                const fallbackLocation = fallbackCoordinates[address];
+                map.setCenter(fallbackLocation);
+                markerRef.current.setPosition(fallbackLocation);
+                console.log("Using fallback location:", fallbackLocation);
+              }
+            }
+          } catch (error) {
+            console.error("Error processing geocode results:", error);
           }
         });
-      } catch (error) {
-        console.error("Geocoding error:", error);
       }
+    } catch (error) {
+      console.error("Error in AddressMarker:", error);
     }
 
     // Clean up

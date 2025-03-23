@@ -18,7 +18,7 @@ interface NorthLondonAreasProps {
 const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) => {
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   
-  // Ensure these match the coordinates from the recent changes
+  // Define areas with clearer coordinates
   const areas: AreaInfo[] = [
     { 
       name: "Highbury", 
@@ -42,10 +42,21 @@ const NorthLondonAreas: React.FC<NorthLondonAreasProps> = ({ map, infoWindow }) 
       description: "Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives."
     }
   ];
+
+  useEffect(() => {
+    // Log to ensure component is rendering with valid props
+    console.log("NorthLondonAreas rendering with map:", !!map, "and infoWindow:", !!infoWindow);
+    console.log("Areas to be displayed:", areas);
+  }, [map, infoWindow]);
+  
+  if (!map || !infoWindow) {
+    console.warn("Map or InfoWindow not available for NorthLondonAreas");
+    return null;
+  }
   
   return (
     <>
-      {map && infoWindow && areas.map((area) => (
+      {areas.map((area) => (
         <AreaMarker
           key={area.name}
           map={map}
