@@ -109,7 +109,7 @@ const AnimatedSearchExample: React.FC = () => {
                     <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 94%</div>
                   </div>
                   <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 80/100</div>
-                  <div className="text-xs text-gray-600">Leafy, affluent, and home to professionals. Less flashy than neighbouring Islington but still well-regarded.</div>
+                  <div className="text-xs text-gray-600">Leafy, affluent, and home to professionals. Less flashy than neighbouring Islington but still well-regarded. Perfect match for families seeking green spaces with easy tube access and Turkish restaurants.</div>
                 </div>
                 <div className="bg-white p-3 rounded border border-green-100">
                   <div className="flex justify-between items-center mb-1">
@@ -117,7 +117,7 @@ const AnimatedSearchExample: React.FC = () => {
                     <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 91%</div>
                   </div>
                   <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 85/100</div>
-                  <div className="text-xs text-gray-600">Trendy, wealthy, and full of period townhouses, upscale restaurants, and boutique shops. A strong mix of old wealth and gentrification.</div>
+                  <div className="text-xs text-gray-600">Trendy, wealthy, and full of period townhouses, upscale restaurants, and boutique shops. A strong mix of old wealth and gentrification. Matches your desire for bakeries, cafes, and convenient transport links.</div>
                 </div>
                 <div className="bg-white p-3 rounded border border-green-100">
                   <div className="flex justify-between items-center mb-1">
@@ -125,7 +125,7 @@ const AnimatedSearchExample: React.FC = () => {
                     <div className="text-xs text-white bg-posh-green px-1.5 py-0.5 rounded">Match: 87%</div>
                   </div>
                   <div className="text-xs font-semibold text-posh-green mb-1">Posh Score: 75/100</div>
-                  <div className="text-xs text-gray-600">Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives.</div>
+                  <div className="text-xs text-gray-600">Bohemian area with a village feel, diverse population, and a mix of Victorian houses and new builds. Popular with young families and creatives. Ideal for your needs with excellent Turkish cuisine and family-friendly parks nearby.</div>
                 </div>
               </div>
               <div className="border rounded overflow-hidden h-80 bg-white">

@@ -65,8 +65,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         
         console.log("Map initialized successfully");
         
-        // Mark map as ready
-        setIsMapReady(true);
+        // Force a small delay to ensure map is fully initialized
+        setTimeout(() => {
+          setIsMapReady(true);
+          console.log("Map marked as ready");
+        }, 500);
         
       } catch (error) {
         console.error("Error initializing map:", error);
@@ -110,8 +113,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       mapInstanceRef.current.setZoom(zoom);
       
       // Trigger resize to ensure map renders correctly
-      google.maps.event.trigger(mapInstanceRef.current, 'resize');
-      console.log("Map resized and settings updated");
+      if (window.google?.maps) {
+        google.maps.event.trigger(mapInstanceRef.current, 'resize');
+        console.log("Map resized and settings updated");
+      }
     } catch (error) {
       console.error("Error updating map view:", error);
     }
