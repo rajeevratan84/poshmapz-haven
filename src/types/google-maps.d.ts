@@ -1,9 +1,12 @@
+
 declare namespace google {
   namespace maps {
     class Map {
       constructor(mapDiv: Element, options?: MapOptions);
       setCenter(latLng: LatLng | LatLngLiteral): void;
+      getCenter(): LatLng;
       setZoom(zoom: number): void;
+      getZoom(): number;
       addListener(eventName: string, handler: Function): MapsEventListener;
       panTo(latLng: LatLng | LatLngLiteral): void;
       fitBounds(bounds: LatLngBounds | LatLngBoundsLiteral, padding?: number | Padding): void;
@@ -13,12 +16,18 @@ declare namespace google {
       constructor(opts?: MarkerOptions);
       setMap(map: Map | null): void;
       setPosition(latLng: LatLng | LatLngLiteral): void;
-      setTitle(title: string): void;
-      setZIndex(zIndex: number): void;
-      setLabel(label: string | MarkerLabel): void;
-      addListener(eventName: string, handler: Function): MapsEventListener;
       getPosition(): LatLng | null;
+      setTitle(title: string): void;
       getTitle(): string | undefined;
+      setZIndex(zIndex: number): void;
+      getZIndex(): number | undefined;
+      setLabel(label: string | MarkerLabel): void;
+      getLabel(): string | MarkerLabel | undefined;
+      setIcon(icon: Icon | null): void;
+      getIcon(): Icon | null | undefined;
+      setVisible(visible: boolean): void;
+      getVisible(): boolean | undefined;
+      addListener(eventName: string, handler: Function): MapsEventListener;
     }
 
     class Geocoder {
@@ -74,15 +83,25 @@ declare namespace google {
       animation?: any;
       title?: string;
       label?: string | MarkerLabel;
-      icon?: {
-        url?: string;
-        scaledSize?: Size;
-        size?: Size;
-        origin?: Point;
-        anchor?: Point;
-        labelOrigin?: Point;
-      } | string;
+      visible?: boolean;
+      zIndex?: number;
+      icon?: Icon | string | null;
     }
+
+    type Icon = {
+      url?: string;
+      scaledSize?: Size;
+      size?: Size;
+      origin?: Point;
+      anchor?: Point;
+      labelOrigin?: Point;
+      path?: number;
+      scale?: number;
+      fillColor?: string;
+      fillOpacity?: number;
+      strokeColor?: string;
+      strokeWeight?: number;
+    };
 
     interface MarkerLabel {
       text: string;

@@ -53,7 +53,6 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
         map,
         title: name,
         animation: google.maps.Animation.DROP,
-        optimized: false, // Try disabling optimization
         visible: true,
         zIndex: isSelected ? 100 : 10
       });
@@ -82,38 +81,50 @@ const AreaMarker: React.FC<AreaMarkerProps> = ({
       // Update existing marker
       markerRef.current.setPosition(position);
       markerRef.current.setTitle(name);
-      markerRef.current.setVisible(true);
+      
+      // For the setVisible and setZIndex methods, we need to check if they exist
+      if (markerRef.current.setVisible) {
+        markerRef.current.setVisible(true);
+      }
       console.log(`Marker updated for ${name}`);
     }
 
     // Apply styling for selected state
     if (markerRef.current) {
-      markerRef.current.setZIndex(isSelected ? 100 : 10);
+      if (markerRef.current.setZIndex) {
+        markerRef.current.setZIndex(isSelected ? 100 : 10);
+      }
       
       if (isSelected) {
         // Use a different icon or label for selected marker
-        markerRef.current.setIcon({
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#22c55e', // green-600
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 2,
-        });
+        if (markerRef.current.setIcon) {
+          markerRef.current.setIcon({
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: '#22c55e', // green-600
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+          });
+        }
         
         // Open info window for selected marker
         infoWindow.setContent(contentString);
         infoWindow.open(map, markerRef.current);
       } else {
         // Reset to default marker
-        markerRef.current.setIcon(null);
+        if (markerRef.current.setIcon) {
+          markerRef.current.setIcon(null);
+        }
       }
     }
 
     // Clean up on unmount
     return () => {
       if (markerRef.current) {
-        markerRef.current.setVisible(false);
+        if (markerRef.current.setVisible) {
+          markerRef.current.setVisible(false);
+        }
         markerRef.current.setMap(null);
         markerRef.current = null;
       }
