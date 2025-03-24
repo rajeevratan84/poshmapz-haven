@@ -6,26 +6,34 @@
 
 @layer base {
   :root {
-    /* Dark theme colors (default) */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
+
     --card: 0 0% 4%;
     --card-foreground: 0 0% 100%;
+
     --popover: 0 0% 4%;
     --popover-foreground: 0 0% 100%;
+
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
+
     --secondary: 16 100% 65.9%;
     --secondary-foreground: 0 0% 0%;
+
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 70%;
+
     --accent: 16 100% 65.9%;
     --accent-foreground: 0 0% 0%;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
+
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 0 0% 40%;
+
     --radius: 0.75rem;
     
     /* Color scheme variables */
@@ -33,33 +41,6 @@
     --coral: #FF7F50;
     --charcoal: #333333;
     --light-bg: #F8F8F8;
-    --text-dark: #212121;
-  }
-
-  /* Light theme colors - improved for better contrast */
-  .light {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 16 100% 60%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 25%;  /* Darker muted text for better visibility */
-    --accent: 16 100% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 80%;
-    --input: 0 0% 80%;
-    --ring: 0 0% 70%;
-
-    /* Color scheme variables */
-    --light-bg: #FFFFFF;
     --text-dark: #212121;
   }
 
@@ -84,20 +65,14 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-black text-white font-sans;
     overflow-x: hidden;
     will-change: auto;
     content-visibility: auto;
   }
 
-  /* Dark mode specific styles */
-  .dark .hero-gradient {
+  .hero-gradient {
     background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%);
-  }
-
-  /* Light mode specific styles */
-  .light .hero-gradient {
-    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.9) 100%);
   }
 
   .text-balance {
@@ -105,13 +80,11 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-coral;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-coral;
   }
 
   .glass-panel {
-    @apply backdrop-blur-md border shadow-glass;
-    @apply dark:bg-black/40 dark:border-white/10;
-    @apply light:bg-white/80 light:border-gray-200;
+    @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-glass;
   }
 
   .section-padding {
@@ -144,32 +117,23 @@
     }
   }
 
-  /* Button styling for both modes */
   .btn-primary {
     @apply bg-coral text-white px-6 py-3 rounded-full font-medium transition-all duration-300
     hover:bg-coral/90 hover:shadow-button focus:ring-2 focus:ring-coral/30 focus:outline-none;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 rounded-full font-medium transition-all duration-300 
-    focus:ring-2 focus:outline-none;
-    @apply dark:bg-black/60 dark:text-white dark:border dark:border-white/20 
-    dark:hover:bg-black/80 dark:hover:shadow-button dark:focus:ring-white/20;
-    @apply light:bg-white light:text-gray-800 light:border light:border-gray-300
-    light:hover:bg-gray-100 light:hover:shadow-button light:focus:ring-gray-500;
+    @apply bg-black/60 text-white border border-white/20 px-6 py-3 rounded-full font-medium
+    transition-all duration-300 hover:bg-black/80 hover:shadow-button focus:ring-2 focus:ring-white/20 focus:outline-none;
   }
 
   .feature-card {
-    @apply p-6 rounded-2xl border transition-all duration-300
+    @apply p-6 rounded-2xl bg-black/60 border border-white/10 shadow-feature transition-all duration-300
     hover:shadow-card hover:-translate-y-1;
-    @apply dark:bg-black/60 dark:border-white/10 dark:shadow-feature;
-    @apply light:bg-white light:border-gray-200 light:shadow-md;
   }
 
   .testimonial-card {
-    @apply p-8 rounded-2xl border;
-    @apply dark:bg-black/60 dark:border-white/10 dark:shadow-card;
-    @apply light:bg-white light:border-gray-200 light:shadow-md;
+    @apply p-8 rounded-2xl bg-black/60 border border-white/10 shadow-card;
   }
 
   .scroll-reveal {
@@ -218,8 +182,7 @@
   }
 
   .prose {
-    @apply leading-relaxed;
-    @apply dark:text-white/80 light:text-gray-800;
+    @apply text-white/80 leading-relaxed;
   }
   
   .prose p {
@@ -231,7 +194,7 @@
   }
   
   .prose-invert {
-    @apply dark:text-white/80 light:text-gray-800;
+    @apply text-white/80;
   }
   
   .prose-invert a {
@@ -254,23 +217,19 @@
   }
   
   .dark-card {
-    @apply dark:bg-black/60 dark:border-white/10 dark:rounded-xl;
-    @apply light:bg-white light:border-gray-200 light:rounded-xl;
+    @apply bg-black/60 border border-white/10 rounded-xl;
   }
   
   .dark-input {
-    @apply dark:bg-black/60 dark:border-white/20 dark:text-white;
-    @apply light:bg-white light:border-gray-300 light:text-gray-800;
+    @apply bg-black/60 border border-white/20 text-white;
   }
   
   .dark-shadow {
-    @apply dark:shadow-[0_8px_16px_rgba(0,0,0,0.5)];
-    @apply light:shadow-[0_8px_16px_rgba(0,0,0,0.1)];
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   }
   
   .dark-glow {
-    @apply dark:shadow-[0_0_15px_rgba(255,127,80,0.4)];
-    @apply light:shadow-[0_0_15px_rgba(255,127,80,0.4)];
+    box-shadow: 0 0 15px rgba(255, 127, 80, 0.4);
   }
 
   .hover-scale {
@@ -282,8 +241,7 @@
   }
   
   .hover-glow:hover {
-    @apply dark:shadow-[0_0_15px_rgba(255,127,80,0.5)];
-    @apply light:shadow-[0_0_15px_rgba(255,127,80,0.5)];
+    @apply shadow-[0_0_15px_rgba(255,127,80,0.5)];
   }
 
   .hover-lift {

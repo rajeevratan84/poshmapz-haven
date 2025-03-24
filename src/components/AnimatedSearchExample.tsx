@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Search, RefreshCw } from "lucide-react";
 import GoogleMap from './GoogleMap';
-import { useTheme } from '@/context/ThemeContext';
 
 const AnimatedSearchExample: React.FC = () => {
   const [searchPhase, setSearchPhase] = useState(0);
@@ -12,8 +11,6 @@ const AnimatedSearchExample: React.FC = () => {
   const [showResults, setShowResults] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [animationRunning, setAnimationRunning] = useState(true);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
   
   // Updated search query with more specific preferences
   const searchQuery = "I want to live somewhere in North London that's within 10 mins of a park, tube station, good Turkish restaurants, gyms, cozy cafes and bakeries and with a family-friendly atmosphere";
@@ -62,7 +59,7 @@ const AnimatedSearchExample: React.FC = () => {
   }, [searchPhase, animationRunning, searchQuery]);
   
   return (
-    <div id="search-demo" className={`relative p-4 ${isDark ? 'bg-white/90' : 'bg-black/5'} backdrop-blur-sm rounded-xl shadow-lg w-full max-w-4xl mx-auto`}>
+    <div id="search-demo" className="relative p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-4xl mx-auto">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-5 w-5 text-posh-green" />
         <div className="flex-1 font-medium text-sm text-gray-800">PoshMaps AI Search <span className="text-xs text-posh-green">(London Only)</span></div>
@@ -82,7 +79,7 @@ const AnimatedSearchExample: React.FC = () => {
       
       <div className="relative">
         <textarea 
-          className={`w-full p-3 border ${isDark ? 'border-gray-200' : 'border-gray-300'} rounded-lg text-sm h-24 ${isDark ? 'bg-white' : 'bg-white'} resize-none text-gray-800`}
+          className="w-full p-3 border border-gray-200 rounded-lg text-sm h-24 bg-white resize-none text-gray-800"
           value={searchText}
           readOnly
         />

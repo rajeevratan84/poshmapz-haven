@@ -162,11 +162,5 @@ export default {
 	future: {
 		hoverOnlyWhenSupported: true,
 	},
-	plugins: [
-		require("tailwindcss-animate"),
-		function({ addVariant }) {
-			// Add light mode variant
-			addVariant('light', '.light &');
-		}
-	],
+	plugins: [require("tailwindcss-animate")],
 } satisfies Config;

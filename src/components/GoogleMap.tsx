@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 import { loadGoogleMapsScript, mapStyles, DEFAULT_COORDINATES } from '@/utils/mapUtils';
 import NorthLondonAreas from './map/NorthLondonAreas';
 import AddressMarker from './map/AddressMarker';
-import { useTheme } from '@/context/ThemeContext';
 
 interface GoogleMapProps {
   address?: string;
@@ -24,18 +23,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const apiLoadedRef = useRef<boolean>(false);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  
-  // Get light or dark map styles based on theme
-  const getMapStyles = () => {
-    if (isDark) {
-      return mapStyles;
-    } else {
-      // Return a light theme version or empty array for default Google styling
-      return [];
-    }
-  };
   
   // Determine the initial map center based on showNorthLondonAreas
   const getInitialCenter = () => {
@@ -67,7 +54,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           streetViewControl: false,
           fullscreenControl: true,
           zoomControl: true,
-          styles: getMapStyles(),
+          styles: mapStyles,
         };
         
         // Create the map
@@ -110,17 +97,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       initMap();
     }
   }, [zoom]);
-  
-  // Handle theme changes
-  useEffect(() => {
-    if (!mapInstanceRef.current || !isMapReady) return;
-    
-    // Update map styles when theme changes
-    mapInstanceRef.current.setOptions({
-      styles: getMapStyles(),
-    });
-    
-  }, [theme, isMapReady]);
 
   // Handle changes to showNorthLondonAreas or address
   useEffect(() => {
@@ -167,7 +143,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         </>
       )}
       
-      <div className={`text-xs text-center mt-2 ${isDark ? 'text-posh-dark/60' : 'text-gray-600'}`}>
+      <div className="text-xs text-center mt-2 text-posh-dark/60">
         <p>Viewing: {showNorthLondonAreas ? "North London Areas" : address}</p>
       </div>
     </div>
