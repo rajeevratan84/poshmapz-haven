@@ -6,6 +6,8 @@ import NotFound from './pages/NotFound';
 import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
 import './App.css';
 import { Toaster } from 'sonner';
 
@@ -15,7 +17,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   
   // Show loading state while checking authentication
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen bg-black">
+    return <div className="flex items-center justify-center min-h-screen bg-black dark:bg-black light:bg-white">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-posh-green"></div>
     </div>;
   }
@@ -32,6 +34,7 @@ function AppRoutes() {
   return (
     <>
       <Toaster richColors position="top-center" />
+      <ThemeToggle />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/demo" element={
@@ -57,9 +60,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
