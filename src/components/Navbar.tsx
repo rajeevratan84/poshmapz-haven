@@ -6,11 +6,14 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from '@/hooks/use-mobile';
 import LoginButton from './auth/LoginButton';
+import { useTheme } from '@/context/ThemeContext';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   // Handle scroll effect
   useEffect(() => {
@@ -31,14 +34,18 @@ const Navbar: React.FC = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300",
-        scrolled ? "bg-black/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        scrolled 
+          ? isDark 
+            ? "bg-black/90 backdrop-blur-md shadow-sm" 
+            : "bg-white/90 backdrop-blur-md shadow-sm"
+          : "bg-transparent"
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <Link 
           to="/" 
-          className="flex items-center space-x-2 text-white"
+          className={`flex items-center space-x-2 ${isDark ? 'text-white' : 'text-black'}`}
           aria-label="PoshMaps"
         >
           <MapPin className="h-6 w-6 text-coral" />
@@ -49,19 +56,25 @@ const Navbar: React.FC = () => {
         <nav className="hidden md:flex items-center space-x-8">
           <a 
             href="#features" 
-            className="text-sm text-white/90 font-medium hover:text-coral transition-colors"
+            className={`text-sm font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white/90' : 'text-black/90'
+            }`}
           >
             Features
           </a>
           <a 
             href="#search-demo" 
-            className="text-sm text-white/90 font-medium hover:text-coral transition-colors"
+            className={`text-sm font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white/90' : 'text-black/90'
+            }`}
           >
             See It In Action
           </a>
           <a 
             href="#problem" 
-            className="text-sm text-white/90 font-medium hover:text-coral transition-colors"
+            className={`text-sm font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white/90' : 'text-black/90'
+            }`}
           >
             Our Solution
           </a>
@@ -72,7 +85,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center gap-2 md:hidden">
           <LoginButton />
           <button 
-            className="text-white"
+            className={isDark ? "text-white" : "text-black"}
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
@@ -84,21 +97,26 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <div 
         className={cn(
-          "fixed inset-x-0 top-[72px] bg-black/90 shadow-lg md:hidden transition-transform duration-300 ease-in-out",
+          "fixed inset-x-0 top-[72px] shadow-lg md:hidden transition-transform duration-300 ease-in-out",
+          isDark ? "bg-black/90" : "bg-white/90",
           mobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}
       >
         <div className="container mx-auto px-6 py-8 flex flex-col space-y-6">
           <a 
             href="#features" 
-            className="text-lg text-white font-medium hover:text-coral transition-colors"
+            className={`text-lg font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white' : 'text-black'
+            }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             Features
           </a>
           <a 
             href="#search-demo" 
-            className="text-lg text-white font-medium hover:text-coral transition-colors"
+            className={`text-lg font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white' : 'text-black'
+            }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             See It In Action
