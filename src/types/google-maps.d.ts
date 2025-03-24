@@ -7,6 +7,7 @@ declare namespace google {
       getCenter(): LatLng;
       setZoom(zoom: number): void;
       getZoom(): number;
+      setOptions(options: MapOptions): void;
       addListener(eventName: string, handler: Function): MapsEventListener;
       panTo(latLng: LatLng | LatLngLiteral): void;
       fitBounds(bounds: LatLngBounds | LatLngBoundsLiteral, padding?: number | Padding): void;
