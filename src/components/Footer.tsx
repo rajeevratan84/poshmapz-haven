@@ -13,13 +13,13 @@ interface FooterColumnProps {
 
 const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => (
   <div>
-    <h3 className="font-semibold text-sm text-white mb-4">{title}</h3>
+    <h3 className="font-semibold text-sm dark:text-white light:text-gray-900 mb-4">{title}</h3>
     <ul className="space-y-3">
       {links.map((link, index) => (
         <li key={index}>
           <a 
             href={link.href} 
-            className="text-sm text-white/70 hover:text-coral transition-colors"
+            className="text-sm dark:text-white/70 light:text-gray-700 hover:text-coral transition-colors"
           >
             {link.label}
           </a>
@@ -33,15 +33,15 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-black pt-20 pb-10 border-t border-white/10">
+    <footer className="dark:bg-black light:bg-gray-100 pt-20 pb-10 dark:border-t dark:border-white/10 light:border-t light:border-gray-200">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2">
-            <div className="flex items-center space-x-2 text-white mb-4">
+            <div className="flex items-center space-x-2 dark:text-white light:text-gray-900 mb-4">
               <MapPin className="h-5 w-5 text-coral" />
               <span className="font-display text-lg font-semibold">PoshMaps</span>
             </div>
-            <p className="text-sm text-white/70 mb-6 max-w-xs">
+            <p className="text-sm dark:text-white/70 light:text-gray-700 mb-6 max-w-xs">
               Transforming location intelligence with elegant, powerful mapping solutions powered by AI.
             </p>
             <div className="flex space-x-4">
@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
                 <a 
                   key={social} 
                   href={`#${social}`} 
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-coral hover:text-white transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-full dark:bg-white/10 dark:text-white/70 light:bg-gray-200 light:text-gray-700 hover:bg-coral hover:text-white transition-colors"
                   aria-label={social}
                 >
                   <span className="sr-only">{social}</span>
@@ -93,7 +93,7 @@ const Footer: React.FC = () => {
           />
         </div>
         
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-sm text-white/60">
+        <div className="mt-16 pt-8 dark:border-t dark:border-white/10 light:border-t light:border-gray-200 flex flex-col md:flex-row justify-between items-center text-sm dark:text-white/60 light:text-gray-600">
           <div className="mb-4 md:mb-0">
             © {currentYear} PoshMaps. All rights reserved.
           </div>

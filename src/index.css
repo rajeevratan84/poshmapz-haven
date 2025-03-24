@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
 
 @tailwind base;
@@ -37,20 +36,20 @@
     --text-dark: #212121;
   }
 
-  /* Light theme colors */
+  /* Light theme colors - improved for better contrast */
   .light {
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
-    --card: 0 0% 96%;
+    --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
-    --popover: 0 0% 96%;
+    --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
     --secondary: 16 100% 60%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 90%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 25%;  /* Darker muted text for better visibility */
     --accent: 16 100% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
@@ -112,7 +111,7 @@
   .glass-panel {
     @apply backdrop-blur-md border shadow-glass;
     @apply dark:bg-black/40 dark:border-white/10;
-    @apply light:bg-white/40 light:border-black/10;
+    @apply light:bg-white/80 light:border-gray-200;
   }
 
   .section-padding {
@@ -156,21 +155,21 @@
     focus:ring-2 focus:outline-none;
     @apply dark:bg-black/60 dark:text-white dark:border dark:border-white/20 
     dark:hover:bg-black/80 dark:hover:shadow-button dark:focus:ring-white/20;
-    @apply light:bg-white/60 light:text-black light:border light:border-black/20
-    light:hover:bg-white/80 light:hover:shadow-button light:focus:ring-black/20;
+    @apply light:bg-white light:text-gray-800 light:border light:border-gray-300
+    light:hover:bg-gray-100 light:hover:shadow-button light:focus:ring-gray-500;
   }
 
   .feature-card {
     @apply p-6 rounded-2xl border transition-all duration-300
     hover:shadow-card hover:-translate-y-1;
     @apply dark:bg-black/60 dark:border-white/10 dark:shadow-feature;
-    @apply light:bg-white/60 light:border-black/10 light:shadow-sm;
+    @apply light:bg-white light:border-gray-200 light:shadow-md;
   }
 
   .testimonial-card {
     @apply p-8 rounded-2xl border;
     @apply dark:bg-black/60 dark:border-white/10 dark:shadow-card;
-    @apply light:bg-white/60 light:border-black/10 light:shadow-sm;
+    @apply light:bg-white light:border-gray-200 light:shadow-md;
   }
 
   .scroll-reveal {
@@ -220,7 +219,7 @@
 
   .prose {
     @apply leading-relaxed;
-    @apply dark:text-white/80 light:text-black/80;
+    @apply dark:text-white/80 light:text-gray-800;
   }
   
   .prose p {
@@ -232,7 +231,7 @@
   }
   
   .prose-invert {
-    @apply dark:text-white/80 light:text-black/80;
+    @apply dark:text-white/80 light:text-gray-800;
   }
   
   .prose-invert a {
@@ -256,12 +255,12 @@
   
   .dark-card {
     @apply dark:bg-black/60 dark:border-white/10 dark:rounded-xl;
-    @apply light:bg-white/60 light:border-black/10 light:rounded-xl;
+    @apply light:bg-white light:border-gray-200 light:rounded-xl;
   }
   
   .dark-input {
     @apply dark:bg-black/60 dark:border-white/20 dark:text-white;
-    @apply light:bg-white/60 light:border-black/20 light:text-black;
+    @apply light:bg-white light:border-gray-300 light:text-gray-800;
   }
   
   .dark-shadow {
