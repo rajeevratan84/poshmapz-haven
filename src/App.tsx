@@ -5,6 +5,7 @@ import Demo from './pages/Demo';
 import NotFound from './pages/NotFound';
 import Admin from './pages/Admin';
 import Profile from './pages/Profile';
+import Maps from './pages/Maps';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
@@ -37,6 +38,7 @@ function AppRoutes() {
       <ThemeToggle />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/maps" element={<Maps />} />
         <Route path="/demo" element={
           <ProtectedRoute>
             <Demo />
