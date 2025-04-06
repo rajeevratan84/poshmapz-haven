@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -159,7 +160,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Fix: Fix event handlers by removing the third parameter
+    // Fixed event handlers with the correct number of arguments
     mapInstanceRef.current.on('click', 'points-circle', function(e) {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
@@ -183,14 +184,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    // Fix: Fix mouseenter handler by removing the third parameter
+    // Fixed mouseenter handler with the correct number of arguments
     mapInstanceRef.current.on('mouseenter', 'points-circle', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    // Fix: Fix mouseleave handler by removing the third parameter
+    // Fixed mouseleave handler with the correct number of arguments
     mapInstanceRef.current.on('mouseleave', 'points-circle', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
@@ -284,6 +285,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
     mapInstanceRef.current.setStyle(mapStyle);
     
+    // Add event listener for style load to ensure layers are re-added
     mapInstanceRef.current.once('style.load', () => {
       addDataLayers();
     });
