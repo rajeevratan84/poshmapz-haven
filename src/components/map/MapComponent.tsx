@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -16,6 +15,18 @@ declare global {
   interface Window {
     maplibregl: typeof maplibregl;
   }
+}
+
+// Using a more accurate event type definition for MapLibre GL events
+interface MapMouseEvent {
+  type: string;
+  target: maplibregl.Map;
+  originalEvent: MouseEvent;
+  point: maplibregl.Point;
+  lngLat: maplibregl.LngLat;
+  features?: GeoJSON.Feature[];
+  preventDefault: () => void;
+  defaultPrevented: boolean;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ 
@@ -80,7 +91,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     console.log("Adding data layers");
     
     try {
-      // Clean up previous layers if they exist
       if (mapInstanceRef.current.getSource('london-heatmap')) {
         mapInstanceRef.current.removeLayer('heatmap-layer');
         mapInstanceRef.current.removeSource('london-heatmap');
@@ -115,7 +125,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     
     console.log("Filtered points:", filteredPoints.length);
     
-    // Add GeoJSON source for points
     mapInstanceRef.current.addSource('points-source', {
       type: 'geojson',
       data: {
@@ -137,7 +146,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Add circle layer
     mapInstanceRef.current.addLayer({
       id: 'points-circle',
       type: 'circle',
@@ -160,8 +168,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Fixed event handlers with the correct number of arguments
-    mapInstanceRef.current.on('click', 'points-circle', function(e) {
+    mapInstanceRef.current.on('click', 'points-circle', function(e: MapMouseEvent) {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
       const feature = e.features[0];
@@ -184,21 +191,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    // Fixed mouseenter handler with the correct number of arguments
     mapInstanceRef.current.on('mouseenter', 'points-circle', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    // Fixed mouseleave handler with the correct number of arguments
     mapInstanceRef.current.on('mouseleave', 'points-circle', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
       }
     });
     
-    // Add heatmap layer if in heatmap mode
     if (mapMode === 'heatmap') {
       mapInstanceRef.current.addLayer({
         id: 'heatmap-layer',
@@ -235,13 +239,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
         console.log("Loading MapLibre script...");
         
         try {
-          // Load CSS first
           const link = document.createElement('link');
           link.rel = 'stylesheet';
           link.href = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css';
           document.head.appendChild(link);
           
-          // Load JS with a promise
           const script = document.createElement('script');
           script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
           script.async = true;
@@ -255,7 +257,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
           });
           
           console.log("MapLibre loaded successfully");
-          // Give a small delay to ensure the library is fully initialized
           setTimeout(initializeMap, 100);
         } catch (error) {
           console.error("Failed to load MapLibre:", error);
@@ -285,7 +286,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
     mapInstanceRef.current.setStyle(mapStyle);
     
-    // Add event listener for style load to ensure layers are re-added
     mapInstanceRef.current.once('style.load', () => {
       addDataLayers();
     });
