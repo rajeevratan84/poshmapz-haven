@@ -222,6 +222,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     
     // Configure popup on click
+    // FIX: The event handler was using incorrect arguments
     mapInstanceRef.current.on('click', 'points-circle', (e) => {
       if (!e.features || e.features.length === 0 || !mapInstanceRef.current) return;
       
@@ -248,6 +249,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     
     // Change cursor on hover
+    // FIX: The event handlers were using incorrect arguments
     mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
