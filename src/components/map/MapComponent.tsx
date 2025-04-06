@@ -170,6 +170,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     
     // Add click event to show area information
+    // Fixed: Removed the third parameter which was causing the error
     mapInstanceRef.current.on('click', 'area-layer', (e) => {
       if (e.features && e.features.length > 0) {
         const feature = e.features[0];
@@ -190,12 +191,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     
     // Change cursor on hover
+    // Fixed: Removed the third parameter which was causing the error
     mapInstanceRef.current.on('mouseenter', 'area-layer', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
+    // Fixed: Removed the third parameter which was causing the error
     mapInstanceRef.current.on('mouseleave', 'area-layer', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
