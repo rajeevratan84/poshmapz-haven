@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -17,14 +18,17 @@ declare global {
   }
 }
 
-// Using a more accurate event type definition for MapLibre GL events
+// Import GeoJSON namespace for TypeScript
+import type { Feature, FeatureCollection } from 'geojson';
+
+// Custom event interface for MapLibre events - modified to match expected parameters
 interface MapMouseEvent {
   type: string;
   target: maplibregl.Map;
   originalEvent: MouseEvent;
   point: maplibregl.Point;
   lngLat: maplibregl.LngLat;
-  features?: GeoJSON.Feature[];
+  features?: Feature[];
   preventDefault: () => void;
   defaultPrevented: boolean;
 }
@@ -168,7 +172,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    mapInstanceRef.current.on('click', 'points-circle', function(e: MapMouseEvent) {
+    // Fix event handlers - use two arguments instead of three and proper type
+    mapInstanceRef.current.on('click', 'points-circle', (e: any) => {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
       const feature = e.features[0];
@@ -191,13 +196,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    mapInstanceRef.current.on('mouseenter', 'points-circle', function() {
+    mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    mapInstanceRef.current.on('mouseleave', 'points-circle', function() {
+    mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
       }
