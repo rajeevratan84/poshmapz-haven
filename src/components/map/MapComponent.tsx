@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -8,6 +9,13 @@ interface MapComponentProps {
   filters: MapFilters;
   searchQuery: string;
   mapMode: 'standard' | 'heatmap';
+}
+
+// Declare MapLibre globally to avoid TypeScript errors
+declare global {
+  interface Window {
+    maplibregl: typeof maplibregl;
+  }
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ 
@@ -29,29 +37,37 @@ const MapComponent: React.FC<MapComponentProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
     
-    const initMapLibre = () => {
+    const initMapLibre = async () => {
       if (!window.maplibregl) {
         console.log("Loading MapLibre script...");
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
-        script.async = true;
         
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css';
-        
-        document.head.appendChild(link);
-        document.body.appendChild(script);
-        
-        script.onload = () => {
+        try {
+          // Load CSS first
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css';
+          document.head.appendChild(link);
+          
+          // Load JS with a promise
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
+          script.async = true;
+          document.body.appendChild(script);
+          
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = () => {
+              reject(new Error("Failed to load MapLibre script"));
+            };
+          });
+          
           console.log("MapLibre loaded successfully");
-          initializeMap();
-        };
-        
-        script.onerror = () => {
-          console.error("Failed to load MapLibre");
+          // Give a small delay to ensure the library is fully initialized
+          setTimeout(initializeMap, 100);
+        } catch (error) {
+          console.error("Failed to load MapLibre:", error);
           toast.error("Failed to load map library");
-        };
+        }
       } else {
         console.log("MapLibre already loaded");
         initializeMap();
@@ -127,6 +143,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     console.log("Adding data layers");
     
     try {
+      // Clean up previous layers if they exist
       if (mapInstanceRef.current.getSource('london-heatmap')) {
         mapInstanceRef.current.removeLayer('heatmap-layer');
         mapInstanceRef.current.removeSource('london-heatmap');
@@ -161,6 +178,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     
     console.log("Filtered points:", filteredPoints.length);
     
+    // Add GeoJSON source for points
     mapInstanceRef.current.addSource('points-source', {
       type: 'geojson',
       data: {
@@ -182,6 +200,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
+    // Add circle layer
     mapInstanceRef.current.addLayer({
       id: 'points-circle',
       type: 'circle',
@@ -204,10 +223,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    mapInstanceRef.current.on('click', function(e) {
-      const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, { layers: ['points-circle'] });
+    // Add click handler (updated to use correct parameter count)
+    mapInstanceRef.current.on('click', (e) => {
+      if (!mapInstanceRef.current) return;
       
-      if (!features || features.length === 0 || !mapInstanceRef.current) return;
+      const features = mapInstanceRef.current.queryRenderedFeatures(e.point, { layers: ['points-circle'] });
+      
+      if (!features || features.length === 0) return;
       
       const feature = features[0];
       const props = feature.properties;
@@ -229,22 +251,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    mapInstanceRef.current.on('mouseenter', function() {
+    // Updated to use correct parameter count
+    mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
       if (mapInstanceRef.current) {
-        const canvas = mapInstanceRef.current.getCanvas();
-        const features = mapInstanceRef.current.queryRenderedFeatures(undefined, { layers: ['points-circle'] });
-        if (features.length > 0) {
-          canvas.style.cursor = 'pointer';
-        }
+        mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    mapInstanceRef.current.on('mouseleave', function() {
+    // Updated to use correct parameter count
+    mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
       }
     });
     
+    // Add heatmap layer if in heatmap mode
     if (mapMode === 'heatmap') {
       mapInstanceRef.current.addLayer({
         id: 'heatmap-layer',
@@ -273,6 +294,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
   };
   
+  // Update the data layers when filters or map mode changes
   useEffect(() => {
     if (!mapLoaded || !mapInstanceRef.current) return;
     
