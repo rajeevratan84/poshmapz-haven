@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -159,7 +160,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Add click handler (fixed parameter count)
+    // FIX: Update click handler to match expected argument count
     mapInstanceRef.current.on('click', 'points-circle', (e) => {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
@@ -183,14 +184,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    // Fixed mouseenter handler (correct parameter count)
+    // FIX: Update mouseenter handler to match expected argument count
     mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    // Fixed mouseleave handler (correct parameter count)
+    // FIX: Update mouseleave handler to match expected argument count
     mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
