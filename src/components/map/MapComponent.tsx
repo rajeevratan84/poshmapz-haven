@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -33,57 +32,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
   
   const LIGHT_STYLE = 'https://api.maptiler.com/maps/streets/style.json?key=85SXWZQit3New3rvMQHb';
   const DARK_STYLE = 'https://api.maptiler.com/maps/streets-dark/style.json?key=85SXWZQit3New3rvMQHb';
-  
-  useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return;
-    
-    const initMapLibre = async () => {
-      if (!window.maplibregl) {
-        console.log("Loading MapLibre script...");
-        
-        try {
-          // Load CSS first
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css';
-          document.head.appendChild(link);
-          
-          // Load JS with a promise
-          const script = document.createElement('script');
-          script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
-          script.async = true;
-          document.body.appendChild(script);
-          
-          await new Promise((resolve, reject) => {
-            script.onload = resolve;
-            script.onerror = () => {
-              reject(new Error("Failed to load MapLibre script"));
-            };
-          });
-          
-          console.log("MapLibre loaded successfully");
-          // Give a small delay to ensure the library is fully initialized
-          setTimeout(initializeMap, 100);
-        } catch (error) {
-          console.error("Failed to load MapLibre:", error);
-          toast.error("Failed to load map library");
-        }
-      } else {
-        console.log("MapLibre already loaded");
-        initializeMap();
-      }
-    };
-    
-    initMapLibre();
-    
-    return () => {
-      if (mapInstanceRef.current) {
-        console.log("Cleaning up map");
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, []);
   
   const initializeMap = () => {
     if (!mapContainerRef.current || !window.maplibregl) {
@@ -121,18 +69,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       toast.error("Could not initialize map");
     }
   };
-  
-  useEffect(() => {
-    if (!mapInstanceRef.current || !mapLoaded) return;
-    
-    console.log("Updating map style based on theme");
-    const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
-    mapInstanceRef.current.setStyle(mapStyle);
-    
-    mapInstanceRef.current.once('style.load', () => {
-      addDataLayers();
-    });
-  }, [theme, mapLoaded]);
   
   const addDataLayers = () => {
     if (!mapInstanceRef.current || !mapLoaded) {
@@ -223,15 +159,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Add click handler (updated to use correct parameter count)
-    mapInstanceRef.current.on('click', (e) => {
-      if (!mapInstanceRef.current) return;
+    // Add click handler (fixed parameter count)
+    mapInstanceRef.current.on('click', 'points-circle', (e) => {
+      if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
-      const features = mapInstanceRef.current.queryRenderedFeatures(e.point, { layers: ['points-circle'] });
-      
-      if (!features || features.length === 0) return;
-      
-      const feature = features[0];
+      const feature = e.features[0];
       const props = feature.properties;
       const coords = feature.geometry.coordinates.slice();
       
@@ -251,14 +183,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    // Updated to use correct parameter count
+    // Fixed mouseenter handler (correct parameter count)
     mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    // Updated to use correct parameter count
+    // Fixed mouseleave handler (correct parameter count)
     mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
@@ -294,7 +226,69 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
   };
   
-  // Update the data layers when filters or map mode changes
+  useEffect(() => {
+    if (!mapContainerRef.current || mapInstanceRef.current) return;
+    
+    const initMapLibre = async () => {
+      if (!window.maplibregl) {
+        console.log("Loading MapLibre script...");
+        
+        try {
+          // Load CSS first
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css';
+          document.head.appendChild(link);
+          
+          // Load JS with a promise
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
+          script.async = true;
+          document.body.appendChild(script);
+          
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = () => {
+              reject(new Error("Failed to load MapLibre script"));
+            };
+          });
+          
+          console.log("MapLibre loaded successfully");
+          // Give a small delay to ensure the library is fully initialized
+          setTimeout(initializeMap, 100);
+        } catch (error) {
+          console.error("Failed to load MapLibre:", error);
+          toast.error("Failed to load map library");
+        }
+      } else {
+        console.log("MapLibre already loaded");
+        initializeMap();
+      }
+    };
+    
+    initMapLibre();
+    
+    return () => {
+      if (mapInstanceRef.current) {
+        console.log("Cleaning up map");
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+  
+  useEffect(() => {
+    if (!mapInstanceRef.current || !mapLoaded) return;
+    
+    console.log("Updating map style based on theme");
+    const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
+    mapInstanceRef.current.setStyle(mapStyle);
+    
+    mapInstanceRef.current.once('style.load', () => {
+      addDataLayers();
+    });
+  }, [theme, mapLoaded]);
+  
   useEffect(() => {
     if (!mapLoaded || !mapInstanceRef.current) return;
     
