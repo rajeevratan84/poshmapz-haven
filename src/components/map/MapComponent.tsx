@@ -170,10 +170,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     
     // Add click event to show area information
-    // Fixed: Removed the third parameter which was causing the error
-    mapInstanceRef.current.on('click', 'area-layer', (e) => {
-      if (e.features && e.features.length > 0) {
-        const feature = e.features[0];
+    mapInstanceRef.current.on('click', (e) => {
+      const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, { 
+        layers: ['area-layer'] 
+      });
+      
+      if (features && features.length > 0) {
+        const feature = features[0];
         const props = feature.properties;
         
         new window.maplibregl.Popup()
@@ -191,17 +194,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     
     // Change cursor on hover
-    // Fixed: Removed the third parameter which was causing the error
-    mapInstanceRef.current.on('mouseenter', 'area-layer', () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
+    mapInstanceRef.current.on('mouseenter', () => {
+      const canvas = mapInstanceRef.current?.getCanvas();
+      if (canvas) {
+        canvas.style.cursor = 'pointer';
       }
     });
     
-    // Fixed: Removed the third parameter which was causing the error
-    mapInstanceRef.current.on('mouseleave', 'area-layer', () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.getCanvas().style.cursor = '';
+    mapInstanceRef.current.on('mouseleave', () => {
+      const canvas = mapInstanceRef.current?.getCanvas();
+      if (canvas) {
+        canvas.style.cursor = '';
       }
     });
   };
