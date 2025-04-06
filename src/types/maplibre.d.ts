@@ -1,4 +1,3 @@
-
 declare namespace maplibregl {
   export class Map {
     constructor(options: MapOptions);
@@ -25,6 +24,11 @@ declare namespace maplibregl {
     setZoom(zoom: number): this;
     setPaintProperty(layerId: string, name: string, value: any): this;
     setLayoutProperty(layerId: string, name: string, value: any): this;
+    
+    queryRenderedFeatures(
+      pointOrBox?: PointLike | [PointLike, PointLike],
+      options?: { layers?: string[]; filter?: any[] }
+    ): any[];
   }
   
   export class NavigationControl implements Control {
