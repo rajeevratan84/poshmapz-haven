@@ -54,6 +54,14 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
+          <Link 
+            to="/maps" 
+            className={`text-sm font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white/90' : 'text-black/90'
+            }`}
+          >
+            AI Maps
+          </Link>
           <a 
             href="#features" 
             className={`text-sm font-medium hover:text-coral transition-colors ${
@@ -103,6 +111,15 @@ const Navbar: React.FC = () => {
         )}
       >
         <div className="container mx-auto px-6 py-8 flex flex-col space-y-6">
+          <Link 
+            to="/maps" 
+            className={`text-lg font-medium hover:text-coral transition-colors ${
+              isDark ? 'text-white' : 'text-black'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            AI Maps
+          </Link>
           <a 
             href="#features" 
             className={`text-lg font-medium hover:text-coral transition-colors ${

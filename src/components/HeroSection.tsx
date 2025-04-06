@@ -83,7 +83,7 @@ const HeroSection: React.FC = () => {
                 >
                   <Button variant="highlight" size="xl" className="w-full relative flex items-center gap-3 px-8 py-7">
                     <Rocket className="h-5 w-5" />
-                    <span className="font-bold">Interactive Map Demo</span>
+                    <span className="font-bold">Use AI to find your Ideal Neighborhood</span>
                     <span className="absolute -top-3 -right-3 bg-coral text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse-subtle">BETA</span>
                   </Button>
                 </Link>
