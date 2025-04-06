@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
 import { useTheme } from '@/context/ThemeContext';
+import { Circle } from 'lucide-react';
 
 interface MapComponentProps {
   filters: MapFilters;
@@ -21,24 +22,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
-  // Mock data for demonstration
-  const mockData = {
-    points: [
-      { name: "High-priced Area", lat: 51.507, lng: -0.127, price: 900000, crime: 20, green: 80 },
-      { name: "Mid-range Area", lat: 51.517, lng: -0.097, price: 600000, crime: 40, green: 60 },
-      { name: "Affordable Area", lat: 51.527, lng: -0.147, price: 350000, crime: 60, green: 30 },
-    ]
-  };
+  // London's center coordinates
+  const LONDON_CENTER = [-0.118, 51.509];
+  
+  // Free OpenStreetMap tile servers
+  const LIGHT_STYLE = 'https://api.maptiler.com/maps/streets/style.json?key=85SXWZQit3New3rvMQHb';
+  const DARK_STYLE = 'https://api.maptiler.com/maps/streets-dark/style.json?key=85SXWZQit3New3rvMQHb';
   
   // Initialize map when component mounts
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
     
-    // We'll use a try-catch to handle potential issues with map initialization
-    try {
-      // Check if MapLibre script has been added
+    const initMapLibre = () => {
       if (!window.maplibregl) {
-        // Add MapLibre script dynamically
+        console.log("Loading MapLibre script...");
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
         script.async = true;
@@ -51,20 +48,26 @@ const MapComponent: React.FC<MapComponentProps> = ({
         document.head.appendChild(link);
         document.body.appendChild(script);
         
-        script.onload = initializeMap;
+        script.onload = () => {
+          console.log("MapLibre loaded successfully");
+          initializeMap();
+        };
+        
         script.onerror = () => {
+          console.error("Failed to load MapLibre");
           toast.error("Failed to load map library");
         };
       } else {
+        console.log("MapLibre already loaded");
         initializeMap();
       }
-    } catch (error) {
-      console.error("Error setting up map:", error);
-      toast.error("There was an error setting up the map");
-    }
+    };
+    
+    initMapLibre();
     
     return () => {
       if (mapInstanceRef.current) {
+        console.log("Cleaning up map");
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
@@ -73,25 +76,38 @@ const MapComponent: React.FC<MapComponentProps> = ({
   
   // Initialize the map
   const initializeMap = () => {
-    if (!mapContainerRef.current || !window.maplibregl) return;
+    if (!mapContainerRef.current || !window.maplibregl) {
+      console.error("Map container not found or MapLibre not loaded");
+      return;
+    }
     
     try {
+      console.log("Initializing map...");
+      const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
+      
       // Create map instance
       mapInstanceRef.current = new window.maplibregl.Map({
         container: mapContainerRef.current,
-        style: isDark 
-          ? 'https://api.maptiler.com/maps/6d9296b5-f15b-43cc-9547-a5af89ae18aa/style.json?key=85SXWZQit3New3rvMQHb'
-          : 'https://api.maptiler.com/maps/bright-v2/style.json?key=85SXWZQit3New3rvMQHb',
-        center: [-0.118, 51.509], // London
-        zoom: 12
+        style: mapStyle,
+        center: LONDON_CENTER,
+        zoom: 11,
+        attributionControl: true,
+        pitch: 0,
+        bearing: 0
       });
       
+      // Add navigation control
+      mapInstanceRef.current.addControl(
+        new window.maplibregl.NavigationControl(),
+        'top-right'
+      );
+      
+      // Log when map is finished loading
       mapInstanceRef.current.on('load', () => {
+        console.log("Map loaded");
         setMapLoaded(true);
-        addMockDataLayers();
+        addDataLayers();
       });
-      
-      mapInstanceRef.current.addControl(new window.maplibregl.NavigationControl(), 'top-right');
       
     } catch (error) {
       console.error("Error initializing map:", error);
@@ -103,146 +119,182 @@ const MapComponent: React.FC<MapComponentProps> = ({
   useEffect(() => {
     if (!mapInstanceRef.current || !mapLoaded) return;
     
-    const newStyle = isDark
-      ? 'https://api.maptiler.com/maps/6d9296b5-f15b-43cc-9547-a5af89ae18aa/style.json?key=85SXWZQit3New3rvMQHb'
-      : 'https://api.maptiler.com/maps/bright-v2/style.json?key=85SXWZQit3New3rvMQHb';
-      
-    mapInstanceRef.current.setStyle(newStyle);
+    console.log("Updating map style based on theme");
+    const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
+    mapInstanceRef.current.setStyle(mapStyle);
+    
+    // Need to add the data layers again after style change
+    mapInstanceRef.current.once('style.load', () => {
+      addDataLayers();
+    });
   }, [theme, mapLoaded]);
   
-  // Add mock data layers to map
-  const addMockDataLayers = () => {
-    if (!mapInstanceRef.current || !mapLoaded) return;
-    
-    // Clear existing sources and layers
-    if (mapInstanceRef.current.getSource('areas')) {
-      mapInstanceRef.current.removeLayer('area-layer');
-      mapInstanceRef.current.removeSource('areas');
+  // Add data layers to map - for now just showing London boroughs with mock data
+  const addDataLayers = () => {
+    if (!mapInstanceRef.current || !mapLoaded) {
+      console.log("Map not ready for adding layers");
+      return;
     }
     
-    // Add GeoJSON source with mock data
-    mapInstanceRef.current.addSource('areas', {
+    console.log("Adding data layers");
+    
+    // Remove existing sources and layers if they exist
+    try {
+      if (mapInstanceRef.current.getSource('london-heatmap')) {
+        mapInstanceRef.current.removeLayer('heatmap-layer');
+        mapInstanceRef.current.removeSource('london-heatmap');
+      }
+      
+      if (mapInstanceRef.current.getSource('points-source')) {
+        mapInstanceRef.current.removeLayer('points-circle');
+        mapInstanceRef.current.removeSource('points-source');
+      }
+    } catch (error) {
+      console.warn("Error cleaning up previous layers:", error);
+    }
+    
+    // Sample points for London (simplified)
+    const samplePoints = [
+      { name: "Westminster", coord: [-0.1278, 51.5074], score: 95, price: 1200000, crime: 40, green: 75 },
+      { name: "Camden", coord: [-0.1426, 51.5390], score: 85, price: 900000, crime: 45, green: 65 },
+      { name: "Hackney", coord: [-0.0702, 51.5444], score: 79, price: 750000, crime: 50, green: 60 },
+      { name: "Islington", coord: [-0.1029, 51.5362], score: 88, price: 850000, crime: 42, green: 50 },
+      { name: "Hammersmith", coord: [-0.2192, 51.4931], score: 82, price: 820000, crime: 35, green: 70 },
+      { name: "Lambeth", coord: [-0.1099, 51.4923], score: 75, price: 680000, crime: 55, green: 45 },
+      { name: "Greenwich", coord: [0.0098, 51.4810], score: 78, price: 550000, crime: 38, green: 80 }
+    ];
+    
+    // Filter the points based on user filters
+    const filteredPoints = samplePoints.filter(point => {
+      return (
+        point.price >= filters.priceRange[0] &&
+        point.price <= filters.priceRange[1] &&
+        point.crime <= filters.crimeIndex &&
+        point.green >= filters.greenSpaceScore
+      );
+    });
+    
+    console.log("Filtered points:", filteredPoints.length);
+    
+    // Add a GeoJSON source with the filtered points
+    mapInstanceRef.current.addSource('points-source', {
       type: 'geojson',
       data: {
         type: 'FeatureCollection',
-        features: mockData.points.map(point => ({
+        features: filteredPoints.map(point => ({
           type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [point.lng, point.lat]
-          },
           properties: {
             name: point.name,
+            score: point.score,
             price: point.price,
             crime: point.crime,
             green: point.green
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: point.coord
           }
         }))
       }
     });
     
-    // Add areas layer
+    // Add circle layer for standard view
     mapInstanceRef.current.addLayer({
-      id: 'area-layer',
+      id: 'points-circle',
       type: 'circle',
-      source: 'areas',
+      source: 'points-source',
       paint: {
         'circle-radius': [
           'interpolate', ['linear'], ['zoom'],
-          12, 8,
-          16, 25
+          10, 6,
+          15, 20
         ],
         'circle-color': [
-          'case',
-          ['all', 
-            ['>=', ['get', 'price'], filters.priceRange[0]],
-            ['<=', ['get', 'price'], filters.priceRange[1]],
-            ['>=', ['get', 'green'], filters.greenSpaceScore],
-            ['<=', ['get', 'crime'], filters.crimeIndex]
-          ],
-          '#FF7F50', // Areas that match filters
-          '#888888' // Areas that don't match
+          'interpolate', ['linear'], ['get', 'score'],
+          60, '#FF9800',  // Lower scores: orange
+          75, '#FF7F50',  // Medium scores: coral
+          90, '#4CAF50'   // Higher scores: green
         ],
-        'circle-opacity': 0.7,
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ffffff'
+        'circle-opacity': mapMode === 'heatmap' ? 0.6 : 0.8,
+        'circle-stroke-width': 1.5,
+        'circle-stroke-color': 'white'
       }
     });
     
-    // Add click event to show area information
-    mapInstanceRef.current.on('click', (e) => {
-      const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, { 
-        layers: ['area-layer'] 
-      });
+    // Configure popup on click
+    mapInstanceRef.current.on('click', 'points-circle', (e) => {
+      if (!e.features || e.features.length === 0 || !mapInstanceRef.current) return;
       
-      if (features && features.length > 0) {
-        const feature = features[0];
-        const props = feature.properties;
-        
-        new window.maplibregl.Popup()
-          .setLngLat(e.lngLat)
-          .setHTML(`
-            <div class="p-2">
-              <h3 class="font-bold">${props.name}</h3>
-              <p>Price: £${props.price.toLocaleString()}</p>
-              <p>Crime Index: ${props.crime}/100</p>
-              <p>Green Space: ${props.green}/100</p>
-            </div>
-          `)
-          .addTo(mapInstanceRef.current);
-      }
+      const feature = e.features[0];
+      const props = feature.properties;
+      const coords = feature.geometry.coordinates.slice();
+      
+      // Create popup content
+      const popupContent = `
+        <div class="p-2">
+          <h3 class="font-bold">${props.name}</h3>
+          <p>Match Score: ${props.score}/100</p>
+          <p>Price: £${props.price.toLocaleString()}</p>
+          <p>Crime Index: ${props.crime}/100</p>
+          <p>Green Space: ${props.green}/100</p>
+        </div>
+      `;
+      
+      // Create the popup
+      new window.maplibregl.Popup()
+        .setLngLat(coords)
+        .setHTML(popupContent)
+        .addTo(mapInstanceRef.current);
     });
     
     // Change cursor on hover
-    mapInstanceRef.current.on('mouseenter', () => {
-      const canvas = mapInstanceRef.current?.getCanvas();
-      if (canvas) {
-        canvas.style.cursor = 'pointer';
+    mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    mapInstanceRef.current.on('mouseleave', () => {
-      const canvas = mapInstanceRef.current?.getCanvas();
-      if (canvas) {
-        canvas.style.cursor = '';
+    mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.getCanvas().style.cursor = '';
       }
     });
+    
+    // Add heatmap source and layer
+    if (mapMode === 'heatmap') {
+      // Add heatmap-like layer (simulated with circles for maplibre)
+      mapInstanceRef.current.addLayer({
+        id: 'heatmap-layer',
+        type: 'circle',
+        source: 'points-source',
+        paint: {
+          'circle-radius': [
+            'interpolate', ['linear'], ['zoom'],
+            10, 20,
+            15, 40
+          ],
+          'circle-color': [
+            'interpolate', ['linear'], ['get', 'score'],
+            60, '#FF9800',
+            75, '#FF7F50',
+            90, '#4CAF50'
+          ],
+          'circle-opacity': 0.4,
+          'circle-blur': 1
+        }
+      });
+      
+      // Place the heatmap layer underneath the point layer
+      mapInstanceRef.current.moveLayer('heatmap-layer', 'points-circle');
+    }
   };
   
-  // Update layers when filters change
+  // Update map when filters or map mode changes
   useEffect(() => {
-    if (!mapInstanceRef.current || !mapLoaded) return;
+    if (!mapLoaded || !mapInstanceRef.current) return;
     
-    // Update the filter expression for the area layer
-    mapInstanceRef.current.setPaintProperty('area-layer', 'circle-color', [
-      'case',
-      ['all', 
-        ['>=', ['get', 'price'], filters.priceRange[0]],
-        ['<=', ['get', 'price'], filters.priceRange[1]],
-        ['>=', ['get', 'green'], filters.greenSpaceScore],
-        ['<=', ['get', 'crime'], filters.crimeIndex]
-      ],
-      '#FF7F50', // Areas that match filters
-      '#888888' // Areas that don't match
-    ]);
-    
-    // If in heatmap mode, adjust layer styling
-    if (mapMode === 'heatmap') {
-      mapInstanceRef.current.setPaintProperty('area-layer', 'circle-blur', 1);
-      mapInstanceRef.current.setPaintProperty('area-layer', 'circle-radius', [
-        'interpolate', ['linear'], ['zoom'],
-        12, 15,
-        16, 40
-      ]);
-    } else {
-      mapInstanceRef.current.setPaintProperty('area-layer', 'circle-blur', 0);
-      mapInstanceRef.current.setPaintProperty('area-layer', 'circle-radius', [
-        'interpolate', ['linear'], ['zoom'],
-        12, 8,
-        16, 25
-      ]);
-    }
-    
+    console.log("Filters or map mode changed, updating data layers");
+    addDataLayers();
   }, [filters, mapMode, mapLoaded]);
   
   return (
@@ -255,10 +307,27 @@ const MapComponent: React.FC<MapComponentProps> = ({
       {/* Map overlay with information */}
       <div className="absolute bottom-4 right-4 p-3 bg-background/60 backdrop-blur-sm rounded-lg border shadow-sm z-10">
         <div className="text-xs font-medium">
-          <p>Map Mode: {mapMode === 'standard' ? 'Standard' : 'Heat Map'}</p>
-          <p className="mt-1">Filters: {filters.activeAmenities.join(', ')}</p>
+          <p className="flex items-center gap-1">
+            <Circle className="h-3 w-3 text-green-500" fill="#4CAF50" />
+            <span>High Score</span>
+          </p>
+          <p className="flex items-center gap-1">
+            <Circle className="h-3 w-3 text-orange-400" fill="#FF9800" />
+            <span>Low Score</span>
+          </p>
+          <p className="mt-1">Mode: {mapMode === 'standard' ? 'Standard' : 'Heat Map'}</p>
         </div>
       </div>
+      
+      {/* Loading state */}
+      {!mapLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-2">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+            <p className="text-sm font-medium">Loading map...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

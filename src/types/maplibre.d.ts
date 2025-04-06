@@ -1,3 +1,4 @@
+
 declare namespace maplibregl {
   export class Map {
     constructor(options: MapOptions);
@@ -81,6 +82,20 @@ declare namespace maplibregl {
     toString(): string;
     distanceTo(lngLat: LngLat): number;
     toBounds(radius: number): LngLatBounds;
+  }
+  
+  export class LngLatBounds {
+    constructor(sw?: LngLatLike, ne?: LngLatLike);
+    extend(lngLat: LngLatLike | LngLatBounds): this;
+    getCenter(): LngLat;
+    getSouthWest(): LngLat;
+    getNorthEast(): LngLat;
+    getNorthWest(): LngLat;
+    getSouthEast(): LngLat;
+    isEmpty(): boolean;
+    toArray(): [LngLatLike, LngLatLike];
+    toString(): string;
+    contains(lngLat: LngLatLike): boolean;
   }
   
   export interface PopupOptions {
