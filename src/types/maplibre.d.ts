@@ -15,6 +15,7 @@ declare namespace maplibregl {
     
     on(type: string, listener: Function): this;
     off(type: string, listener: Function): this;
+    once(type: string, listener: Function): this;
     
     remove(): void;
     removeLayer(id: string): this;
@@ -25,6 +26,7 @@ declare namespace maplibregl {
     setZoom(zoom: number): this;
     setPaintProperty(layerId: string, name: string, value: any): this;
     setLayoutProperty(layerId: string, name: string, value: any): this;
+    moveLayer(id: string, beforeId?: string): this;
     
     queryRenderedFeatures(
       pointOrBox?: PointLike | [PointLike, PointLike],

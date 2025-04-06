@@ -23,7 +23,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const isDark = theme === 'dark';
   
   // London's center coordinates
-  const LONDON_CENTER = [-0.118, 51.509];
+  const LONDON_CENTER: [number, number] = [-0.118, 51.509];
   
   // Free OpenStreetMap tile servers
   const LIGHT_STYLE = 'https://api.maptiler.com/maps/streets/style.json?key=85SXWZQit3New3rvMQHb';
@@ -285,7 +285,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
       });
       
       // Place the heatmap layer underneath the point layer
-      mapInstanceRef.current.moveLayer('heatmap-layer', 'points-circle');
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.moveLayer('heatmap-layer', 'points-circle');
+      }
     }
   };
   
