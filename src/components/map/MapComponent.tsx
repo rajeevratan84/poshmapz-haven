@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -22,14 +21,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
-  // London's center coordinates
   const LONDON_CENTER: [number, number] = [-0.118, 51.509];
   
-  // Free OpenStreetMap tile servers
   const LIGHT_STYLE = 'https://api.maptiler.com/maps/streets/style.json?key=85SXWZQit3New3rvMQHb';
   const DARK_STYLE = 'https://api.maptiler.com/maps/streets-dark/style.json?key=85SXWZQit3New3rvMQHb';
   
-  // Initialize map when component mounts
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
     
@@ -40,7 +36,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
         script.async = true;
         
-        // Add MapLibre CSS
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css';
@@ -74,7 +69,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     };
   }, []);
   
-  // Initialize the map
   const initializeMap = () => {
     if (!mapContainerRef.current || !window.maplibregl) {
       console.error("Map container not found or MapLibre not loaded");
@@ -85,7 +79,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       console.log("Initializing map...");
       const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
       
-      // Create map instance
       mapInstanceRef.current = new window.maplibregl.Map({
         container: mapContainerRef.current,
         style: mapStyle,
@@ -96,13 +89,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
         bearing: 0
       });
       
-      // Add navigation control
       mapInstanceRef.current.addControl(
         new window.maplibregl.NavigationControl(),
         'top-right'
       );
       
-      // Log when map is finished loading
       mapInstanceRef.current.on('load', () => {
         console.log("Map loaded");
         setMapLoaded(true);
@@ -115,7 +106,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
   };
   
-  // Update map style when theme changes
   useEffect(() => {
     if (!mapInstanceRef.current || !mapLoaded) return;
     
@@ -123,13 +113,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapStyle = isDark ? DARK_STYLE : LIGHT_STYLE;
     mapInstanceRef.current.setStyle(mapStyle);
     
-    // Need to add the data layers again after style change
     mapInstanceRef.current.once('style.load', () => {
       addDataLayers();
     });
   }, [theme, mapLoaded]);
   
-  // Add data layers to map - for now just showing London boroughs with mock data
   const addDataLayers = () => {
     if (!mapInstanceRef.current || !mapLoaded) {
       console.log("Map not ready for adding layers");
@@ -138,7 +126,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     
     console.log("Adding data layers");
     
-    // Remove existing sources and layers if they exist
     try {
       if (mapInstanceRef.current.getSource('london-heatmap')) {
         mapInstanceRef.current.removeLayer('heatmap-layer');
@@ -153,7 +140,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       console.warn("Error cleaning up previous layers:", error);
     }
     
-    // Sample points for London (simplified)
     const samplePoints = [
       { name: "Westminster", coord: [-0.1278, 51.5074], score: 95, price: 1200000, crime: 40, green: 75 },
       { name: "Camden", coord: [-0.1426, 51.5390], score: 85, price: 900000, crime: 45, green: 65 },
@@ -164,7 +150,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       { name: "Greenwich", coord: [0.0098, 51.4810], score: 78, price: 550000, crime: 38, green: 80 }
     ];
     
-    // Filter the points based on user filters
     const filteredPoints = samplePoints.filter(point => {
       return (
         point.price >= filters.priceRange[0] &&
@@ -176,7 +161,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     
     console.log("Filtered points:", filteredPoints.length);
     
-    // Add a GeoJSON source with the filtered points
     mapInstanceRef.current.addSource('points-source', {
       type: 'geojson',
       data: {
@@ -198,7 +182,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Add circle layer for standard view
     mapInstanceRef.current.addLayer({
       id: 'points-circle',
       type: 'circle',
@@ -221,50 +204,48 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Configure popup on click
-    // FIX: The event handler was using incorrect arguments
-    mapInstanceRef.current.on('click', 'points-circle', (e) => {
-      if (!e.features || e.features.length === 0 || !mapInstanceRef.current) return;
+    mapInstanceRef.current.on('click', function(e) {
+      const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, { layers: ['points-circle'] });
       
-      const feature = e.features[0];
+      if (!features || features.length === 0 || !mapInstanceRef.current) return;
+      
+      const feature = features[0];
       const props = feature.properties;
       const coords = feature.geometry.coordinates.slice();
       
-      // Create popup content
       const popupContent = `
         <div class="p-2">
           <h3 class="font-bold">${props.name}</h3>
           <p>Match Score: ${props.score}/100</p>
-          <p>Price: £${props.price.toLocaleString()}</p>
+          <p>Price: £${Number(props.price).toLocaleString()}</p>
           <p>Crime Index: ${props.crime}/100</p>
           <p>Green Space: ${props.green}/100</p>
         </div>
       `;
       
-      // Create the popup
       new window.maplibregl.Popup()
         .setLngLat(coords)
         .setHTML(popupContent)
         .addTo(mapInstanceRef.current);
     });
     
-    // Change cursor on hover
-    // FIX: The event handlers were using incorrect arguments
-    mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
+    mapInstanceRef.current.on('mouseenter', function() {
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
+        const canvas = mapInstanceRef.current.getCanvas();
+        const features = mapInstanceRef.current.queryRenderedFeatures(undefined, { layers: ['points-circle'] });
+        if (features.length > 0) {
+          canvas.style.cursor = 'pointer';
+        }
       }
     });
     
-    mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
+    mapInstanceRef.current.on('mouseleave', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
       }
     });
     
-    // Add heatmap source and layer
     if (mapMode === 'heatmap') {
-      // Add heatmap-like layer (simulated with circles for maplibre)
       mapInstanceRef.current.addLayer({
         id: 'heatmap-layer',
         type: 'circle',
@@ -286,14 +267,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
       });
       
-      // Place the heatmap layer underneath the point layer
       if (mapInstanceRef.current) {
         mapInstanceRef.current.moveLayer('heatmap-layer', 'points-circle');
       }
     }
   };
   
-  // Update map when filters or map mode changes
   useEffect(() => {
     if (!mapLoaded || !mapInstanceRef.current) return;
     
@@ -308,7 +287,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         className="absolute inset-0"
       />
       
-      {/* Map overlay with information */}
       <div className="absolute bottom-4 right-4 p-3 bg-background/60 backdrop-blur-sm rounded-lg border shadow-sm z-10">
         <div className="text-xs font-medium">
           <p className="flex items-center gap-1">
@@ -323,7 +301,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         </div>
       </div>
       
-      {/* Loading state */}
       {!mapLoaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-2">
