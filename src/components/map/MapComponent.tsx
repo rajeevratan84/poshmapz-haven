@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -186,7 +187,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    mapInstanceRef.current.on('click', 'points-circle', (e: MapMouseEvent) => {
+    // Fix 1: Update event handler with correct parameter count
+    // The MapLibre API expects (type: string, listener: Function) pattern
+    mapInstanceRef.current.on('click', function(e: MapMouseEvent) {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
       const feature = e.features[0] as PointFeature;
@@ -209,13 +212,15 @@ const MapComponent: React.FC<MapComponentProps> = ({
         .addTo(mapInstanceRef.current);
     });
     
-    mapInstanceRef.current.on('mouseenter', 'points-circle', () => {
+    // Fix 2: Update mouseenter event handler
+    mapInstanceRef.current.on('mouseenter', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
       }
     });
     
-    mapInstanceRef.current.on('mouseleave', 'points-circle', () => {
+    // Fix 3: Update mouseleave event handler
+    mapInstanceRef.current.on('mouseleave', function() {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.getCanvas().style.cursor = '';
       }
