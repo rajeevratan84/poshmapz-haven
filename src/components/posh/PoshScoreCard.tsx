@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { MapPin, Banknote, Shield, Train, Tree, Coffee, Footprints, TrendingUp } from 'lucide-react';
+import { MapPin, Banknote, Shield, Train, Trees, Coffee, Footprints, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTheme } from '@/context/ThemeContext';
 import PoshScoreChart from './PoshScoreChart';
@@ -42,7 +41,6 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
     }).format(value);
   };
   
-  // Determine score color based on poshScore value
   const getScoreColor = (score: number) => {
     if (score >= 85) return 'text-green-500';
     if (score >= 70) return 'text-emerald-500';
@@ -50,7 +48,6 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
     return 'text-red-500';
   };
   
-  // Determine score label based on poshScore value
   const getScoreLabel = (score: number) => {
     if (score >= 90) return 'Ultra-Premium';
     if (score >= 80) return 'Premium';
@@ -136,7 +133,7 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
             </div>
             <div>
               <MetricRow 
-                icon={<Tree className="h-4 w-4 text-green-600" />} 
+                icon={<Trees className="h-4 w-4 text-green-600" />} 
                 label="Green Space Access" 
                 value={areaData.greenSpaceAccess} 
                 suffix="/100"

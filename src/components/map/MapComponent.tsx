@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-// Import GeoJSON namespace for TypeScript
+// Import GeoJSON types for TypeScript
 import type { Feature, FeatureCollection } from 'geojson';
 
 // Custom event interface for MapLibre events - modified to match expected parameters
