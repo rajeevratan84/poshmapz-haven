@@ -171,7 +171,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    mapInstanceRef.current.on('click', 'points-circle', (e: any) => {
+    mapInstanceRef.current.on('click', 'points-circle', (e: MapMouseEvent) => {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
       const feature = e.features[0];
