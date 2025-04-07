@@ -9,6 +9,7 @@ import PoshScoreCard from '@/components/posh/PoshScoreCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useTheme } from '@/context/ThemeContext';
+import { formatCurrency } from '@/utils/formatters';
 
 const PostcodeSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,11 +66,16 @@ const PostcodeSearch = () => {
     
     // Generate a score between 60-95 based on the length of the query (just for demo)
     const baseScore = 60 + (query.length * 2) % 36;
+    const basePrice = (baseScore * 20000) + 300000;
     
     return {
       name: formattedQuery,
       poshScore: baseScore,
-      averagePrice: Math.round((baseScore * 20000) + 300000),
+      averagePrice: Math.round(basePrice),
+      propertyPrices: {
+        flatTwoBed: Math.round(basePrice * 0.9),
+        houseThreeBed: Math.round(basePrice * 1.4)
+      },
       crimeIndex: Math.round(100 - baseScore * 0.8),
       transportScore: Math.round(50 + (baseScore % 30)),
       greenSpaceAccess: Math.round(40 + (baseScore % 50)),
@@ -100,6 +106,10 @@ const PostcodeSearch = () => {
       recentTrends: "Increasing demand from wealthy international buyers seeking green space and village charm while maintaining proximity to central London.",
       gentrificationIndex: 85,
       averagePrice: 1750000,
+      propertyPrices: {
+        flatTwoBed: 950000,
+        houseThreeBed: 2400000
+      },
       crimeIndex: 35,
       crimeRateDescription: "Low - 25% below London average",
       transportScore: 82,
@@ -155,6 +165,10 @@ const PostcodeSearch = () => {
       recentTrends: "Continued development of luxury apartments and office spaces for tech companies, with increasing tensions between original creative communities and corporate influx.",
       gentrificationIndex: 78,
       averagePrice: 750000,
+      propertyPrices: {
+        flatTwoBed: 650000,
+        houseThreeBed: 1200000
+      },
       crimeIndex: 55,
       crimeRateDescription: "Average for London",
       transportScore: 79,
@@ -211,6 +225,10 @@ const PostcodeSearch = () => {
       recentTrends: "Resilient prime property market despite broader London fluctuations, with continued interest from international ultra-wealthy buyers seeking safe haven investments.",
       gentrificationIndex: 100,
       averagePrice: 2950000,
+      propertyPrices: {
+        flatTwoBed: 1450000,
+        houseThreeBed: 4200000
+      },
       crimeIndex: 30,
       crimeRateDescription: "Low - 30% below London average",
       transportScore: 85,
@@ -267,6 +285,10 @@ const PostcodeSearch = () => {
       recentTrends: "Rapid gentrification has sparked debates about preserving local character while embracing positive development. New dining concepts and apartment developments continue to transform the area.",
       gentrificationIndex: 65,
       averagePrice: 580000,
+      propertyPrices: {
+        flatTwoBed: 490000,
+        houseThreeBed: 850000
+      },
       crimeIndex: 62,
       crimeRateDescription: "Above London average in some areas",
       transportScore: 76,
@@ -360,6 +382,9 @@ const PostcodeSearch = () => {
             <div className="mt-4 text-sm text-muted-foreground">
               <p>Examples: "SW3 1AA", "Hampstead", "Richmond Upon Thames"</p>
               <p className="mt-1 italic">Try "Hampstead", "Shoreditch", "Kensington" or "Brixton" for detailed area profiles</p>
+              <div className="mt-2 p-2 bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200 rounded-md text-xs">
+                <strong>Note:</strong> This is a demonstration using mock data. In a production app, this would use real-time property data from APIs and AI-powered analysis.
+              </div>
             </div>
           </CardContent>
         </Card>

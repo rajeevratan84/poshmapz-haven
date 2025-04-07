@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { MapPin, Banknote, Shield, Train, Trees, Coffee, Footprints, TrendingUp, ThumbsUp, ThumbsDown, Smile, History } from 'lucide-react';
+import { MapPin, Banknote, Shield, Train, Trees, Coffee, Footprints, TrendingUp, ThumbsUp, ThumbsDown, Smile, History, Home, Building } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTheme } from '@/context/ThemeContext';
 import PoshScoreChart from './PoshScoreChart';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { formatCurrency } from '@/utils/formatters';
 
 interface ScoreBreakdown {
   property: number;
@@ -15,10 +16,16 @@ interface ScoreBreakdown {
   environment: number;
 }
 
+interface PropertyPrices {
+  flatTwoBed: number;
+  houseThreeBed: number;
+}
+
 interface AreaData {
   name: string;
   poshScore: number;
   averagePrice: number;
+  propertyPrices?: PropertyPrices;
   crimeIndex: number;
   transportScore: number;
   greenSpaceAccess: number;
@@ -55,14 +62,6 @@ interface PoshScoreCardProps {
 const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
   
   const getScoreColor = (score: number) => {
     if (score >= 85) return 'text-green-500';
@@ -185,6 +184,32 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
               <div className="border border-white/10 p-3 rounded-md bg-black/20">
                 <p className="text-sm text-white/80">{areaData.description}</p>
               </div>
+              
+              {/* Property Prices Section */}
+              {areaData.propertyPrices && (
+                <div className="border border-white/10 p-3 rounded-md bg-black/20">
+                  <div className="flex gap-2 items-center mb-3">
+                    <Banknote className="h-4 w-4 text-coral" />
+                    <h4 className="text-white font-medium">Property Prices</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="flex items-center gap-2 bg-black/30 p-2 rounded-md">
+                      <Building className="h-4 w-4 text-blue-400" />
+                      <div className="flex-1">
+                        <div className="text-xs text-white/70">2-Bed Flat</div>
+                        <div className="text-sm font-semibold text-white">{formatCurrency(areaData.propertyPrices.flatTwoBed)}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 bg-black/30 p-2 rounded-md">
+                      <Home className="h-4 w-4 text-green-400" />
+                      <div className="flex-1">
+                        <div className="text-xs text-white/70">3-Bed House</div>
+                        <div className="text-sm font-semibold text-white">{formatCurrency(areaData.propertyPrices.houseThreeBed)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Pros and Cons */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -398,13 +423,32 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
               <div>
-                <div className="flex items-center justify-between py-2 border-b">
-                  <div className="flex items-center gap-2">
-                    <Banknote className="h-4 w-4 text-green-500" />
-                    <span>Average Property Price</span>
+                {areaData.propertyPrices ? (
+                  <>
+                    <div className="flex items-center justify-between py-2 border-b">
+                      <div className="flex items-center gap-2">
+                        <Building className="h-4 w-4 text-blue-500" />
+                        <span>2-Bed Flat Price</span>
+                      </div>
+                      <span>{formatCurrency(areaData.propertyPrices.flatTwoBed)}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 border-b">
+                      <div className="flex items-center gap-2">
+                        <Home className="h-4 w-4 text-green-500" />
+                        <span>3-Bed House Price</span>
+                      </div>
+                      <span>{formatCurrency(areaData.propertyPrices.houseThreeBed)}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex items-center gap-2">
+                      <Banknote className="h-4 w-4 text-green-500" />
+                      <span>Average Property Price</span>
+                    </div>
+                    <span>{formatCurrency(areaData.averagePrice)}</span>
                   </div>
-                  <span>{formatCurrency(areaData.averagePrice)}</span>
-                </div>
+                )}
                 <div className="flex items-center justify-between py-2 border-b">
                   <div className="flex items-center gap-2">
                     <Shield className="h-4 w-4 text-blue-500" />
