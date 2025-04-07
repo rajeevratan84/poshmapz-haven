@@ -21,4 +21,18 @@ export interface AreaMatch {
   };
   amenities: string[];
   areaStats: AreaStats;
+  // Extended fields for enhanced data
+  areaType?: string;
+  history?: string;
+  demographics?: string;
+  attractions?: string;
+  recentTrends?: string;
+  gentrificationIndex?: number;
+  pros?: string[];
+  cons?: string[];
+  matchingAmenities?: string[];
+  propertyPrices?: {
+    flatTwoBed: number;
+    houseThreeBed: number;
+  };
 }

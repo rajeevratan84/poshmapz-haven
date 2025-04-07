@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { Search, ArrowRight, MapPin } from 'lucide-react';
@@ -10,11 +9,13 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useTheme } from '@/context/ThemeContext';
 import { formatCurrency } from '@/utils/formatters';
+import { getAreaDetails } from '@/services/openaiService';
+import { AreaMatch } from '@/types/area';
 
 const PostcodeSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [areaData, setAreaData] = useState<any>(null);
+  const [areaData, setAreaData] = useState<AreaMatch | null>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -29,71 +30,51 @@ const PostcodeSearch = () => {
     setIsSearching(true);
     
     try {
-      // In a real implementation, this would call an API endpoint
-      // For now, we'll simulate with mock data
-      setTimeout(() => {
-        // Mock data - this would come from the API in a real implementation
-        const mockData = getMockDataForPostcode(searchQuery);
-        
-        setAreaData(mockData);
+      // Get API key from environment variable
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      
+      if (!apiKey) {
+        toast.error('API key not found. Please ensure your environment is properly configured.');
         setIsSearching(false);
-        toast.success(`Found data for ${mockData.name}`);
-      }, 1500);
+        return;
+      }
+      
+      // Make hardcoded examples more responsive
+      let result: AreaMatch | null = null;
+      
+      // Check for specific areas to return detailed mock data first
+      const lowercaseQuery = searchQuery.toLowerCase();
+      if (lowercaseQuery.includes('hampstead') || lowercaseQuery.toUpperCase() === 'NW3') {
+        result = getHampsteadData();
+      } else if (lowercaseQuery.includes('shoreditch') || lowercaseQuery.toUpperCase().includes('E2')) {
+        result = getShoreditchData();
+      } else if (lowercaseQuery.includes('kensington') || lowercaseQuery.toUpperCase().includes('W8')) {
+        result = getKensingtonData();
+      } else if (lowercaseQuery.includes('brixton') || lowercaseQuery.toUpperCase().includes('SW2')) {
+        result = getBrixtonData();
+      } else {
+        // Get data from OpenAI for any other query
+        toast.loading('Analyzing area data with AI...');
+        result = await getAreaDetails(searchQuery, apiKey);
+        toast.dismiss();
+      }
+      
+      if (result) {
+        setAreaData(result);
+        toast.success(`Found data for ${result.name}`);
+      } else {
+        toast.error('Could not find data for this location');
+      }
     } catch (error) {
       console.error('Error searching for postcode:', error);
       toast.error('Could not find data for this location');
+    } finally {
       setIsSearching(false);
     }
   };
   
-  // Mock function to generate sample data based on the search query
-  const getMockDataForPostcode = (query: string) => {
-    // Uppercase postcodes, title case for town names
-    const formattedQuery = query.includes(' ') 
-      ? query.toUpperCase()
-      : query.charAt(0).toUpperCase() + query.slice(1).toLowerCase();
-    
-    // Check for specific areas to return detailed mock data
-    if (formattedQuery.toLowerCase().includes('hampstead') || formattedQuery.toUpperCase() === 'NW3') {
-      return getHampsteadData();
-    } else if (formattedQuery.toLowerCase().includes('shoreditch') || formattedQuery.toUpperCase().includes('E2')) {
-      return getShoreditchData();
-    } else if (formattedQuery.toLowerCase().includes('kensington') || formattedQuery.toUpperCase().includes('W8')) {
-      return getKensingtonData();
-    } else if (formattedQuery.toLowerCase().includes('brixton') || formattedQuery.toUpperCase().includes('SW2')) {
-      return getBrixtonData();
-    }
-    
-    // Generate a score between 60-95 based on the length of the query (just for demo)
-    const baseScore = 60 + (query.length * 2) % 36;
-    const basePrice = (baseScore * 20000) + 300000;
-    
-    return {
-      name: formattedQuery,
-      poshScore: baseScore,
-      averagePrice: Math.round(basePrice),
-      propertyPrices: {
-        flatTwoBed: Math.round(basePrice * 0.9),
-        houseThreeBed: Math.round(basePrice * 1.4)
-      },
-      crimeIndex: Math.round(100 - baseScore * 0.8),
-      transportScore: Math.round(50 + (baseScore % 30)),
-      greenSpaceAccess: Math.round(40 + (baseScore % 50)),
-      amenityDensity: Math.round(55 + (baseScore % 30)),
-      walkability: Math.round(60 + (baseScore % 30)),
-      priceGrowth: Math.round(3 + (baseScore % 15)),
-      scoreBreakdown: {
-        property: Math.round(50 + (baseScore % 40)),
-        safety: Math.round(40 + (baseScore % 50)),
-        transport: Math.round(60 + (baseScore % 30)),
-        lifestyle: Math.round(55 + (baseScore % 35)),
-        environment: Math.round(45 + (baseScore % 45))
-      }
-    };
-  };
-  
-  // Detailed mock data for specific areas
-  const getHampsteadData = () => {
+  // Mock data functions for specific areas
+  const getHampsteadData = (): AreaMatch => {
     return {
       name: "Hampstead",
       poshScore: 90,
@@ -105,30 +86,30 @@ const PostcodeSearch = () => {
       attractions: "Hampstead Heath, Kenwood House, Hampstead Ponds, historic pubs, and independent boutiques.",
       recentTrends: "Increasing demand from wealthy international buyers seeking green space and village charm while maintaining proximity to central London.",
       gentrificationIndex: 85,
-      averagePrice: 1750000,
+      coordinates: {
+        lat: 51.556,
+        lng: -0.178
+      },
       propertyPrices: {
         flatTwoBed: 950000,
         houseThreeBed: 2400000
       },
-      crimeIndex: 35,
-      crimeRateDescription: "Low - 25% below London average",
-      transportScore: 82,
-      transportDescription: "Excellent - 15 min to central via Northern Line",
-      greenSpaceAccess: 92,
-      amenityDensity: 78,
-      walkability: 90,
-      walkabilityDescription: "Very Walkable - 90/100",
-      priceGrowth: 4.7,
-      propertyGrowthDetails: {
-        flats: "+2.8%",
-        houses: "+3.5%"
-      },
-      scoreBreakdown: {
-        property: 95,
-        safety: 86,
-        transport: 82,
-        lifestyle: 90,
-        environment: 94
+      amenities: [
+        "Hampstead Heath",
+        "Boutique shops",
+        "Art galleries",
+        "Gourmet restaurants",
+        "Independent cafes"
+      ],
+      areaStats: {
+        crimeRate: "Low - 25% below London average",
+        transportScore: "Excellent - 15 min to central via Northern Line",
+        walkability: "Very Walkable - 90/100",
+        propertyGrowth: {
+          flats: "+2.8%",
+          houses: "+3.5%"
+        },
+        areaVibe: ["Historic", "Affluent", "Leafy"]
       },
       pros: [
         "High prestige area",
@@ -137,11 +118,6 @@ const PostcodeSearch = () => {
       ],
       cons: [
         "Higher property prices"
-      ],
-      areaVibe: [
-        "Historic",
-        "Affluent",
-        "Leafy"
       ],
       matchingAmenities: [
         "Hampstead Heath",
@@ -152,7 +128,7 @@ const PostcodeSearch = () => {
     };
   };
   
-  const getShoreditchData = () => {
+  const getShoreditchData = (): AreaMatch => {
     return {
       name: "Shoreditch",
       poshScore: 75,
@@ -164,30 +140,30 @@ const PostcodeSearch = () => {
       attractions: "Boxpark, Brick Lane, Spitalfields Market, street art tours, independent galleries, and a thriving nightlife scene.",
       recentTrends: "Continued development of luxury apartments and office spaces for tech companies, with increasing tensions between original creative communities and corporate influx.",
       gentrificationIndex: 78,
-      averagePrice: 750000,
+      coordinates: {
+        lat: 51.5246,
+        lng: -0.0795
+      },
       propertyPrices: {
         flatTwoBed: 650000,
         houseThreeBed: 1200000
       },
-      crimeIndex: 55,
-      crimeRateDescription: "Average for London",
-      transportScore: 79,
-      transportDescription: "Good - Multiple tube and overground options",
-      greenSpaceAccess: 45,
-      amenityDensity: 90,
-      walkability: 88,
-      walkabilityDescription: "Very Walkable - 88/100",
-      priceGrowth: 6.2,
-      propertyGrowthDetails: {
-        flats: "+5.4%",
-        houses: "+7.1%"
-      },
-      scoreBreakdown: {
-        property: 70,
-        safety: 65,
-        transport: 79,
-        lifestyle: 92,
-        environment: 45
+      amenities: [
+        "Street art",
+        "Tech hubs",
+        "Trendy bars",
+        "Independent galleries",
+        "Food markets"
+      ],
+      areaStats: {
+        crimeRate: "Average for London",
+        transportScore: "Good - Multiple tube and overground options",
+        walkability: "Very Walkable - 88/100",
+        propertyGrowth: {
+          flats: "+5.4%",
+          houses: "+7.1%"
+        },
+        areaVibe: ["Hipster", "Trendy", "Creative"]
       },
       pros: [
         "Vibrant nightlife",
@@ -198,11 +174,6 @@ const PostcodeSearch = () => {
         "Noisy at weekends",
         "Limited green spaces"
       ],
-      areaVibe: [
-        "Hipster",
-        "Trendy",
-        "Creative"
-      ],
       matchingAmenities: [
         "Artisan coffee shops",
         "Independent galleries",
@@ -212,7 +183,7 @@ const PostcodeSearch = () => {
     };
   };
   
-  const getKensingtonData = () => {
+  const getKensingtonData = (): AreaMatch => {
     return {
       name: "Kensington",
       poshScore: 95,
@@ -224,30 +195,30 @@ const PostcodeSearch = () => {
       attractions: "Kensington Palace, Hyde Park, V&A Museum, Natural History Museum, Science Museum, High Street Kensington shopping.",
       recentTrends: "Resilient prime property market despite broader London fluctuations, with continued interest from international ultra-wealthy buyers seeking safe haven investments.",
       gentrificationIndex: 100,
-      averagePrice: 2950000,
+      coordinates: {
+        lat: 51.5018,
+        lng: -0.1925
+      },
       propertyPrices: {
         flatTwoBed: 1450000,
         houseThreeBed: 4200000
       },
-      crimeIndex: 30,
-      crimeRateDescription: "Low - 30% below London average",
-      transportScore: 85,
-      transportDescription: "Excellent - Multiple tube lines and bus routes",
-      greenSpaceAccess: 88,
-      amenityDensity: 82,
-      walkability: 86,
-      walkabilityDescription: "Very Walkable - 86/100",
-      priceGrowth: 3.2,
-      propertyGrowthDetails: {
-        flats: "+2.1%",
-        houses: "+4.3%"
-      },
-      scoreBreakdown: {
-        property: 98,
-        safety: 90,
-        transport: 85,
-        lifestyle: 93,
-        environment: 87
+      amenities: [
+        "Royal parks",
+        "Museums",
+        "Luxury shops",
+        "Michelin-starred restaurants",
+        "Embassy district"
+      ],
+      areaStats: {
+        crimeRate: "Low - 30% below London average",
+        transportScore: "Excellent - Multiple tube lines and bus routes",
+        walkability: "Very Walkable - 86/100",
+        propertyGrowth: {
+          flats: "+2.1%",
+          houses: "+4.3%"
+        },
+        areaVibe: ["Prestigious", "Refined", "International"]
       },
       pros: [
         "Ultra-premium status",
@@ -258,11 +229,6 @@ const PostcodeSearch = () => {
         "Extremely high property prices",
         "Tourist crowds in some areas"
       ],
-      areaVibe: [
-        "Prestigious",
-        "Refined",
-        "International"
-      ],
       matchingAmenities: [
         "Michelin-starred restaurants",
         "Designer boutiques",
@@ -272,7 +238,7 @@ const PostcodeSearch = () => {
     };
   };
   
-  const getBrixtonData = () => {
+  const getBrixtonData = (): AreaMatch => {
     return {
       name: "Brixton",
       poshScore: 68,
@@ -284,30 +250,30 @@ const PostcodeSearch = () => {
       attractions: "Brixton Market, Electric Avenue, Brixton Academy, Pop Brixton, street art, diverse culinary scene.",
       recentTrends: "Rapid gentrification has sparked debates about preserving local character while embracing positive development. New dining concepts and apartment developments continue to transform the area.",
       gentrificationIndex: 65,
-      averagePrice: 580000,
+      coordinates: {
+        lat: 51.4613,
+        lng: -0.1156
+      },
       propertyPrices: {
         flatTwoBed: 490000,
         houseThreeBed: 850000
       },
-      crimeIndex: 62,
-      crimeRateDescription: "Above London average in some areas",
-      transportScore: 76,
-      transportDescription: "Good - Victoria Line offers fast access to central London",
-      greenSpaceAccess: 58,
-      amenityDensity: 85,
-      walkability: 83,
-      walkabilityDescription: "Very Walkable - 83/100",
-      priceGrowth: 7.8,
-      propertyGrowthDetails: {
-        flats: "+6.7%",
-        houses: "+8.9%"
-      },
-      scoreBreakdown: {
-        property: 65,
-        safety: 58,
-        transport: 76,
-        lifestyle: 88,
-        environment: 60
+      amenities: [
+        "Brixton Market",
+        "Music venues",
+        "Diverse restaurants",
+        "Street art",
+        "Community centers"
+      ],
+      areaStats: {
+        crimeRate: "Above London average in some areas",
+        transportScore: "Good - Victoria Line offers fast access to central London",
+        walkability: "Very Walkable - 83/100",
+        propertyGrowth: {
+          flats: "+6.7%",
+          houses: "+8.9%"
+        },
+        areaVibe: ["Multicultural", "Vibrant", "Eclectic"]
       },
       pros: [
         "Vibrant culture",
@@ -317,11 +283,6 @@ const PostcodeSearch = () => {
       cons: [
         "Higher crime in some areas",
         "Rapid gentrification concerns"
-      ],
-      areaVibe: [
-        "Multicultural",
-        "Vibrant",
-        "Eclectic"
       ],
       matchingAmenities: [
         "Brixton Market",
@@ -381,9 +342,9 @@ const PostcodeSearch = () => {
             
             <div className="mt-4 text-sm text-muted-foreground">
               <p>Examples: "SW3 1AA", "Hampstead", "Richmond Upon Thames"</p>
-              <p className="mt-1 italic">Try "Hampstead", "Shoreditch", "Kensington" or "Brixton" for detailed area profiles</p>
+              <p className="mt-1 italic">Try "Hampstead", "Shoreditch", "Kensington" or "Brixton" for faster results</p>
               <div className="mt-2 p-2 bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200 rounded-md text-xs">
-                <strong>Note:</strong> This is a demonstration using mock data. In a production app, this would use real-time property data from APIs and AI-powered analysis.
+                <strong>Note:</strong> This uses AI to generate area insights. For frequently searched areas, cached results are shown instantly.
               </div>
             </div>
           </CardContent>

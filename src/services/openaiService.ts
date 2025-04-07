@@ -72,6 +72,69 @@ export async function analyzeAreaPreferences(
   }
 }
 
+export async function getAreaDetails(
+  postcodeOrArea: string,
+  apiKey: string
+): Promise<AreaMatch | null> {
+  try {
+    console.log(`Making request to OpenAI API for area details for: ${postcodeOrArea}`);
+    
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that provides detailed information about UK locations in JSON format only.'
+          },
+          {
+            role: 'user',
+            content: getPostcodeAreaPrompt(postcodeOrArea)
+          }
+        ],
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('OpenAI API error:', errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices[0]?.message?.content;
+    
+    if (!content) {
+      throw new Error('No content in OpenAI response');
+    }
+
+    // Extract JSON from the response
+    let jsonContent = content;
+    if (content.includes('```json')) {
+      jsonContent = content.split('```json')[1].split('```')[0].trim();
+    } else if (content.includes('```')) {
+      jsonContent = content.split('```')[1].split('```')[0].trim();
+    }
+
+    // Parse the JSON response
+    console.log('Received area details from OpenAI:', jsonContent);
+    const areaDetails = JSON.parse(jsonContent) as AreaMatch;
+    
+    return areaDetails;
+
+  } catch (error) {
+    console.error('Error getting area details:', error);
+    toast.error(`AI processing error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    return null;
+  }
+}
+
 function getLondonPrompt(userInput: string): string {
   return `
 You are an AI assistant for PoshMaps, a service that helps people find neighborhoods in London that match their preferences.
@@ -201,3 +264,58 @@ ${nearestCity !== 'none' ? `- Focus on areas within approximately 30 miles of ${
 PROVIDE OUTPUT IN JSON FORMAT ONLY.
   `;
 }
+
+function getPostcodeAreaPrompt(postcodeOrArea: string): string {
+  return `
+You are an AI assistant for PoshMaps, a service that helps people find information about specific areas or postcodes in the UK.
+
+Based on the provided input "${postcodeOrArea}", which could be a UK postcode or area name, provide COMPREHENSIVE and DETAILED information about this specific location.
+
+If this is a London area, provide extensive details about the neighborhood. If it's outside of London, provide information about the town, city, or village.
+
+Return a SINGLE location object with the following structure:
+
+{
+  "name": "Full Location Name, Region",
+  "matchPercentage": 100,
+  "description": "Detailed 3-4 sentence description of the area, including its character and notable features.",
+  "areaType": "Urban/Suburban/Rural/Village/etc.",
+  "history": "2-3 sentences about the area's historical development.",
+  "demographics": "Description of who typically lives in this area.",
+  "attractions": "Notable attractions, landmarks, or amenities in the area.",
+  "recentTrends": "Recent developments or trends in the property market or community.",
+  "poshScore": 85, (a score between 60-95 indicating how upscale the area is)
+  "gentrificationIndex": 70, (a score between 30-100 indicating the level of gentrification)
+  "coordinates": {
+    "lat": 51.5074,
+    "lng": -0.1278
+  },
+  "propertyPrices": {
+    "flatTwoBed": 450000,
+    "houseThreeBed": 750000
+  },
+  "amenities": ["amenity1", "amenity2", "amenity3", "amenity4", "amenity5"],
+  "matchingAmenities": ["specific match 1", "specific match 2", "specific match 3"],
+  "areaStats": {
+    "crimeRate": "Low - 25% below UK average",
+    "transportScore": "Excellent - Direct trains to London (25 min)",
+    "walkability": "Very Walkable - 85/100",
+    "propertyGrowth": {
+      "flats": "+3.5%",
+      "houses": "+4.2%"
+    },
+    "areaVibe": ["Historic", "Family-friendly", "Upscale"]
+  },
+  "pros": ["Pro 1", "Pro 2", "Pro 3"],
+  "cons": ["Con 1", "Con 2"]
+}
+
+IMPORTANT REQUIREMENTS:
+1. Provide REALISTIC and ACCURATE information
+2. Include PRECISE coordinates for the location
+3. Be SPECIFIC about property prices based on current market trends
+4. Include NUMERICAL values for all scores (poshScore, gentrificationIndex)
+5. ALWAYS return valid, properly formatted JSON
+6. DO NOT include any explanatory text outside of the JSON object
+7. Ensure the response is a SINGLE location object, not an array
+`;
