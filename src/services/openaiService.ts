@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 import { AreaMatch } from '@/types/area';
 
@@ -319,3 +320,4 @@ IMPORTANT REQUIREMENTS:
 6. DO NOT include any explanatory text outside of the JSON object
 7. Ensure the response is a SINGLE location object, not an array
 `;
+}
