@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapFilters } from '@/pages/Maps';
 import { Slider } from '@/components/ui/slider';
@@ -7,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Layers, MapPin } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters';
+import { Link } from 'react-router-dom';
 
 interface FilterPanelProps {
   filters: MapFilters;
@@ -30,19 +30,16 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     { id: 'park', label: 'Parks' }
   ];
   
-  // Handler for price range changes
   const handlePriceChange = (value: number[]) => {
     onChange({ priceRange: [value[0], value[1]] as [number, number] });
   };
   
-  // Handler for amenity selection
   const handleAmenityChange = (value: string[]) => {
     onChange({ activeAmenities: value.length > 0 ? value : ['cafe'] });
   };
   
   return (
-    <div className="space-y-6">
-      {/* Map mode selector */}
+    <div className="space-y-6 h-full overflow-y-auto pr-1 pb-4">
       <div className="mb-6">
         <Label className="text-sm font-medium mb-2 block">Map View</Label>
         <ToggleGroup 
@@ -63,7 +60,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </ToggleGroup>
       </div>
       
-      {/* Price range slider */}
       <div className="space-y-2">
         <div className="flex justify-between">
           <Label className="text-sm font-medium">Price Range</Label>
@@ -81,7 +77,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         />
       </div>
       
-      {/* Crime index slider */}
       <div className="space-y-2">
         <div className="flex justify-between">
           <Label className="text-sm font-medium">Crime Index</Label>
@@ -102,7 +97,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </p>
       </div>
       
-      {/* Green space score slider */}
       <div className="space-y-2">
         <div className="flex justify-between">
           <Label className="text-sm font-medium">Green Space</Label>
@@ -123,7 +117,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </p>
       </div>
       
-      {/* Amenity density slider */}
       <div className="space-y-2">
         <div className="flex justify-between">
           <Label className="text-sm font-medium">Amenity Density</Label>
@@ -141,7 +134,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         />
       </div>
       
-      {/* Amenity type selector */}
       <div className="space-y-2">
         <Label className="text-sm font-medium block mb-2">Amenity Types</Label>
         <ToggleGroup 
@@ -164,7 +156,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </ToggleGroup>
       </div>
       
-      {/* Toggles for schools and transport */}
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="near-school" className="text-sm font-medium">Near Schools</Label>
@@ -182,6 +173,19 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             onCheckedChange={(checked) => onChange({ nearTransport: checked })}
           />
         </div>
+      </div>
+      
+      <div className="mt-8">
+        <Link 
+          to="/postcode" 
+          className="flex flex-col items-center justify-center p-4 border border-dashed border-primary/50 rounded-md hover:border-primary hover:bg-primary/5 transition-all"
+        >
+          <MapPin className="h-8 w-8 text-primary mb-2" />
+          <h4 className="font-medium text-center">How Posh is My Postcode?</h4>
+          <p className="text-xs text-center text-muted-foreground mt-1">
+            Check your area's PoshScore
+          </p>
+        </Link>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { MapFilters } from '@/pages/Maps';
@@ -172,7 +171,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       }
     });
     
-    // Fix event handlers - use two arguments instead of three and proper type
     mapInstanceRef.current.on('click', 'points-circle', (e: any) => {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       

@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound';
 import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import Maps from './pages/Maps';
+import PostcodeSearch from './pages/PostcodeSearch';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
@@ -39,6 +40,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/maps" element={<Maps />} />
+        <Route path="/postcode" element={<PostcodeSearch />} />
         <Route path="/demo" element={
           <ProtectedRoute>
             <Demo />
