@@ -18,7 +18,7 @@ declare global {
 }
 
 // Import GeoJSON types for TypeScript
-import type { Feature, FeatureCollection } from 'geojson';
+import type { Feature, FeatureCollection, Point, Position } from 'geojson';
 
 // Custom event interface for MapLibre events - modified to match expected parameters
 interface MapMouseEvent {
@@ -30,6 +30,21 @@ interface MapMouseEvent {
   features?: Feature[];
   preventDefault: () => void;
   defaultPrevented: boolean;
+}
+
+// Define a more specific feature type for our points
+interface PointFeature extends Feature {
+  geometry: {
+    type: "Point";
+    coordinates: Position;
+  };
+  properties: {
+    name: string;
+    score: number;
+    price: number;
+    crime: number;
+    green: number;
+  };
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ 
@@ -174,9 +189,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
     mapInstanceRef.current.on('click', 'points-circle', (e: MapMouseEvent) => {
       if (!mapInstanceRef.current || !e.features || e.features.length === 0) return;
       
-      const feature = e.features[0];
+      const feature = e.features[0] as PointFeature;
       const props = feature.properties;
-      const coords = feature.geometry.coordinates.slice();
+      const coords = feature.geometry.coordinates;
       
       const popupContent = `
         <div class="p-2">
@@ -189,7 +204,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       `;
       
       new window.maplibregl.Popup()
-        .setLngLat(coords)
+        .setLngLat(coords as [number, number])
         .setHTML(popupContent)
         .addTo(mapInstanceRef.current);
     });
