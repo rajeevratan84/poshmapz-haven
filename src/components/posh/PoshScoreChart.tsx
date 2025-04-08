@@ -30,17 +30,19 @@ const PoshScoreChart: React.FC<PoshScoreChartProps> = ({ scoreBreakdown }) => {
   
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={chartData}>
         <PolarGrid stroke={isDark ? '#4a5568' : '#e2e8f0'} />
         <PolarAngleAxis 
           dataKey="subject" 
-          tick={{ fill: isDark ? '#a0aec0' : '#4a5568', fontSize: 12 }} 
+          tick={{ fill: isDark ? '#a0aec0' : '#4a5568', fontSize: 14 }}
         />
         <PolarRadiusAxis 
           angle={90} 
           domain={[0, 100]} 
-          tick={{ fill: isDark ? '#a0aec0' : '#4a5568' }} 
+          tick={{ fill: isDark ? '#a0aec0' : '#4a5568' }}
+          tickCount={5}
           stroke={isDark ? '#4a5568' : '#e2e8f0'}
+          axisLine={false}
         />
         <Radar
           name="Score"

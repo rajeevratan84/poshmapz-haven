@@ -35,6 +35,9 @@ export interface AreaMatch {
     flatTwoBed: number;
     houseThreeBed: number;
   };
+  // New fields for improved area description
+  livingDescription?: string;
+  postcodeSpecifics?: string;
 }
 
 export interface AreaData {
@@ -79,4 +82,7 @@ export interface AreaData {
     houses: string;
   };
   matchingAmenities?: string[];
+  // New fields for improved area description
+  livingDescription?: string;
+  postcodeSpecifics?: string;
 }
