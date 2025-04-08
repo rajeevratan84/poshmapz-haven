@@ -57,14 +57,14 @@ async function createServer() {
     });
   }
 
-  // This is the crucial part - serve index.html for any route in both dev and prod
+  // IMPORTANT: This needs to be the LAST route defined!
+  // This makes sure all routes in both development and production are handled by serving index.html
   app.get('*', (req, res) => {
     if (isProd) {
+      // In production, serve the index.html file for any route
       const indexHtml = path.resolve(__dirname, 'dist', 'index.html');
+      console.log(`Serving index.html for path: ${req.path}`);
       res.sendFile(indexHtml);
-    } else {
-      // In development, this should be handled by the middleware above
-      res.status(404).send('Not found in development mode');
     }
   });
 
