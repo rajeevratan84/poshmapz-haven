@@ -1,4 +1,3 @@
-
 export interface AreaStats {
   crimeRate: string;
   transportScore: string;

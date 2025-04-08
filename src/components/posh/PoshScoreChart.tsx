@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from 'recharts';
 import { useTheme } from '@/context/ThemeContext';
 
 interface ScoreBreakdown {
@@ -34,7 +34,8 @@ const PoshScoreChart: React.FC<PoshScoreChartProps> = ({ scoreBreakdown }) => {
         <PolarGrid stroke={isDark ? '#4a5568' : '#e2e8f0'} />
         <PolarAngleAxis 
           dataKey="subject" 
-          tick={{ fill: isDark ? '#a0aec0' : '#4a5568', fontSize: 14 }}
+          tick={{ fill: isDark ? '#ffffff' : '#4a5568', fontSize: 14, fontWeight: 500 }}
+          stroke={isDark ? '#4a5568' : '#e2e8f0'}
         />
         <PolarRadiusAxis 
           angle={90} 
@@ -49,8 +50,9 @@ const PoshScoreChart: React.FC<PoshScoreChartProps> = ({ scoreBreakdown }) => {
           dataKey="A"
           stroke="#10b981"
           fill="#10b981"
-          fillOpacity={0.4}
+          fillOpacity={0.6}
         />
+        <Legend />
       </RadarChart>
     </ResponsiveContainer>
   );
