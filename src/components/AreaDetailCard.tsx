@@ -80,7 +80,7 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
               <h3 className="font-bold text-lg">{areaName}</h3>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="success" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 border-0">
+              <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 border-0">
                 {matchPercentage}% Match
               </Badge>
               <div className="flex items-center gap-1 bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-medium">
