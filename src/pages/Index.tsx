@@ -8,7 +8,7 @@ import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
 import TeamSection from '@/components/TeamSection';
 import { Button } from '@/components/ui/button';
-import { MapPin, Search, History } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 // Lazy load components that are lower in the page
 const CTASection = lazy(() => import('@/components/CTASection'));
@@ -65,28 +65,19 @@ const Index = () => {
       <main className="space-y-0">
         <HeroSection />
         
-        {/* Quick Access Buttons for Tools */}
-        <div className="container mx-auto py-4 px-4 flex flex-wrap justify-center gap-4">
-          <Button asChild size="lg" className="shadow-md">
-            <Link to="/demo" className="flex items-center gap-2">
-              <Search className="h-4 w-4" />
-              <span>Use AI to find your Ideal Neighborhood</span>
+        {/* New prominent postcode search link */}
+        <div className="bg-gradient-to-r from-blue-600 to-coral py-8 px-4">
+          <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left">
+              Discover How Posh Your Postcode Is
+            </h2>
+            <Link to="/postcode">
+              <Button size="xl" variant="glow" className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                <span>Check Your Postcode Now</span>
+              </Button>
             </Link>
-          </Button>
-          
-          <Button asChild size="lg" variant="secondary" className="shadow-md">
-            <Link to="/postcode" className="flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              <span>Discover How Posh Your Postcode Is</span>
-            </Link>
-          </Button>
-          
-          <Button asChild size="lg" variant="outline" className="shadow-md">
-            <Link to="/searches" className="flex items-center gap-2">
-              <History className="h-4 w-4" />
-              <span>My Searches & Comparisons</span>
-            </Link>
-          </Button>
+          </div>
         </div>
         
         <SearchExampleSection />

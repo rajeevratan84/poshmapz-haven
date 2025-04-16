@@ -1,317 +1,557 @@
+
 import React from 'react';
-import { AreaMatch } from '@/types/area';
+import { MapPin, Banknote, Shield, Train, Trees, Coffee, Footprints, TrendingUp, ThumbsUp, ThumbsDown, Smile, History, Home, Building, Users, HomeIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import PoshScoreChart from '@/components/posh/PoshScoreChart';
-import { MapPin, Home, Shield, Train, Coffee, Leaf, Star, Bookmark, BookmarkCheck } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
+import PoshScoreChart from './PoshScoreChart';
+import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/utils/formatters';
-import { useSavedResults } from '@/context/SavedResultsContext';
+import { AreaMatch, AreaData, AreaStats } from '@/types/area';
+
+interface ScoreBreakdown {
+  property: number;
+  safety: number;
+  transport: number;
+  lifestyle: number;
+  environment: number;
+}
 
 interface PoshScoreCardProps {
-  areaData: AreaMatch;
+  areaData: AreaMatch | AreaData;
 }
 
 const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
-  const { saveArea, isSaved, removeArea } = useSavedResults();
-  
-  const isAreaSaved = isSaved(areaData.name);
-  
-  const handleSaveToggle = () => {
-    if (isAreaSaved) {
-      // Find the ID of the saved area
-      const areaId = areaData.id;
-      if (areaId) {
-        removeArea(areaId);
-      }
-    } else {
-      saveArea(areaData, 'postcode');
-    }
-  };
-  
-  // Create a score breakdown if it doesn't exist
-  const scoreBreakdown = {
-    property: areaData.scoreBreakdown?.property || Math.round(areaData.poshScore * 0.8),
-    safety: areaData.scoreBreakdown?.safety || Math.round(areaData.poshScore * 1.1),
-    transport: areaData.scoreBreakdown?.transport || Math.round(areaData.poshScore * 0.9),
-    lifestyle: areaData.scoreBreakdown?.lifestyle || Math.round(areaData.poshScore * 1.2),
-    environment: areaData.scoreBreakdown?.environment || Math.round(areaData.poshScore),
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  // Type guard function to check if we have an AreaMatch
+  const isAreaMatch = (area: AreaMatch | AreaData): area is AreaMatch => {
+    return 'matchPercentage' in area && 'areaStats' in area;
   };
 
-  // Ensure no score is above 100
-  Object.keys(scoreBreakdown).forEach(key => {
-    scoreBreakdown[key as keyof typeof scoreBreakdown] = Math.min(scoreBreakdown[key as keyof typeof scoreBreakdown], 100);
-  });
-  
+  const scoreBreakdown: ScoreBreakdown = 'scoreBreakdown' in areaData 
+    ? areaData.scoreBreakdown
+    : {
+        property: areaData.poshScore * 0.8,
+        safety: areaData.poshScore * 0.9,
+        transport: areaData.poshScore * 0.7,
+        lifestyle: areaData.poshScore * 0.85,
+        environment: areaData.poshScore * 0.75
+      };
+
+  const getAmenityDensity = (): number => {
+    if ('amenityDensity' in areaData) return areaData.amenityDensity;
+    if (areaData.amenities) return Math.min(areaData.amenities.length * 10, 90);
+    return 70;
+  };
+
+  const getCrimeIndex = (): number => {
+    if ('crimeIndex' in areaData) return areaData.crimeIndex;
+    
+    if (isAreaMatch(areaData) && areaData.areaStats) {
+      const crimeRateDesc = areaData.areaStats.crimeRate.toLowerCase();
+      if (crimeRateDesc.includes('low')) return 30;
+      if (crimeRateDesc.includes('medium')) return 50;
+      if (crimeRateDesc.includes('high')) return 75;
+    }
+    return 45;
+  };
+
+  const getTransportScore = (): number => {
+    if ('transportScore' in areaData && typeof areaData.transportScore === 'number') return areaData.transportScore;
+    
+    if (isAreaMatch(areaData) && areaData.areaStats) {
+      const transportDesc = areaData.areaStats.transportScore.toLowerCase();
+      if (transportDesc.includes('excellent')) return 85;
+      if (transportDesc.includes('good')) return 70;
+      if (transportDesc.includes('poor')) return 40;
+    }
+    return 65;
+  };
+
+  const getWalkabilityScore = (): number => {
+    if ('walkability' in areaData && typeof areaData.walkability === 'number') return areaData.walkability;
+    
+    if (isAreaMatch(areaData) && areaData.areaStats) {
+      const walkDesc = areaData.areaStats.walkability;
+      const match = walkDesc.match(/(\d+)\/100/);
+      if (match && match[1]) return parseInt(match[1], 10);
+      
+      if (walkDesc.toLowerCase().includes('very')) return 85;
+      if (walkDesc.toLowerCase().includes('moderately')) return 65;
+    }
+    return 50;
+  };
+
+  const getGreenSpaceAccess = (): number => {
+    if ('greenSpaceAccess' in areaData) return areaData.greenSpaceAccess;
+    
+    const hasGreenSpace = areaData.amenities?.some(a => 
+      a.toLowerCase().includes('park') || 
+      a.toLowerCase().includes('green') || 
+      a.toLowerCase().includes('garden') ||
+      a.toLowerCase().includes('heath')
+    );
+    
+    return hasGreenSpace ? 75 : 50;
+  };
+
+  const getPriceGrowth = (): number => {
+    if ('priceGrowth' in areaData) return areaData.priceGrowth;
+    
+    if (isAreaMatch(areaData) && areaData.areaStats?.propertyGrowth) {
+      const houseGrowth = areaData.areaStats.propertyGrowth.houses;
+      if (houseGrowth) {
+        const match = houseGrowth.match(/([+-]?\d+(?:\.\d+)?)/);
+        if (match && match[1]) return parseFloat(match[1]);
+      }
+    }
+    
+    return 3.0;
+  };
+
+  const getAreaStats = (): {
+    crimeRateDescription?: string;
+    transportDescription?: string;
+    walkabilityDescription?: string;
+    propertyGrowthDetails?: { flats: string; houses: string };
+    areaVibe?: string[];
+  } => {
+    if (isAreaMatch(areaData)) {
+      return {
+        crimeRateDescription: areaData.areaStats?.crimeRate,
+        transportDescription: areaData.areaStats?.transportScore,
+        walkabilityDescription: areaData.areaStats?.walkability,
+        propertyGrowthDetails: areaData.areaStats?.propertyGrowth,
+        areaVibe: areaData.areaStats?.areaVibe
+      };
+    }
+    
+    return {
+      crimeRateDescription: areaData.crimeRateDescription,
+      transportDescription: areaData.transportDescription,
+      walkabilityDescription: areaData.walkabilityDescription,
+      propertyGrowthDetails: areaData.propertyGrowthDetails,
+      areaVibe: areaData.areaVibe
+    };
+  };
+
+  const processedAreaData = {
+    ...areaData,
+    scoreBreakdown,
+    amenityDensity: getAmenityDensity(),
+    crimeIndex: getCrimeIndex(),
+    transportScore: getTransportScore(),
+    walkability: getWalkabilityScore(),
+    greenSpaceAccess: getGreenSpaceAccess(),
+    priceGrowth: getPriceGrowth(),
+    averagePrice: 'averagePrice' in areaData ? areaData.averagePrice : 
+      (areaData.propertyPrices ? 
+        Math.round((areaData.propertyPrices.flatTwoBed + areaData.propertyPrices.houseThreeBed) / 2) : 
+        750000),
+    ...getAreaStats()
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score >= 85) return 'text-green-500';
+    if (score >= 70) return 'text-emerald-500';
+    if (score >= 50) return 'text-amber-500';
+    return 'text-red-500';
+  };
+
+  const getScoreLabel = (score: number) => {
+    if (score >= 90) return 'Excellent';
+    if (score >= 80) return 'Premium';
+    if (score >= 70) return 'Very Good';
+    if (score >= 60) return 'Good';
+    if (score >= 50) return 'Average';
+    if (score >= 40) return 'Below Average';
+    return 'Needs Improvement';
+  };
+
+  const getGentrificationLabel = (score?: number) => {
+    if (!score) return 'Not Available';
+    if (score >= 90) return 'Fully Gentrified';
+    if (score >= 70) return 'Highly Gentrified';
+    if (score >= 50) return 'Ongoing Gentrification';
+    if (score >= 30) return 'Early Signs';
+    return 'Minimal Gentrification';
+  };
+
+  const getVibeTagColor = (vibe: string) => {
+    const vibeLower = vibe.toLowerCase();
+    if (vibeLower.includes('historic')) return 'bg-amber-600';
+    if (vibeLower.includes('affluent')) return 'bg-blue-600';
+    if (vibeLower.includes('leafy')) return 'bg-green-600';
+    if (vibeLower.includes('family')) return 'bg-green-700';
+    if (vibeLower.includes('hipster')) return 'bg-purple-600';
+    if (vibeLower.includes('trendy')) return 'bg-pink-600';
+    if (vibeLower.includes('diverse')) return 'bg-indigo-600';
+    if (vibeLower.includes('creative') || vibeLower.includes('artsy')) return 'bg-indigo-600';
+    return 'bg-gray-600';
+  };
+
+  const getCrimeRateColor = (description?: string) => {
+    if (!description) return 'bg-gray-600';
+    const lowerDesc = description.toLowerCase();
+    if (lowerDesc.includes('low') || lowerDesc.includes('below')) return 'bg-green-600';
+    if (lowerDesc.includes('average')) return 'bg-amber-600';
+    return 'bg-red-600';
+  };
+
+  const getTransportColor = (description?: string) => {
+    if (!description) return 'bg-gray-600';
+    const lowerDesc = description.toLowerCase();
+    if (lowerDesc.includes('excellent')) return 'bg-green-600';
+    if (lowerDesc.includes('good')) return 'bg-blue-600';
+    return 'bg-amber-600';
+  };
+
+  const getWalkabilityColor = (description?: string) => {
+    if (!description) return 'bg-gray-600';
+    const lowerDesc = description.toLowerCase();
+    if (lowerDesc.includes('very')) return 'bg-green-600';
+    if (lowerDesc.includes('moderately')) return 'bg-blue-600';
+    return 'bg-amber-600';
+  };
+
+  const getPropertyGrowthColor = (growth: string) => {
+    if (growth.includes('+')) {
+      const percentage = parseFloat(growth.match(/\+(\d+\.?\d*)%/)?.[1] || "0");
+      if (percentage >= 3) return 'bg-green-600';
+      if (percentage > 0) return 'bg-blue-600';
+    }
+    return 'bg-red-600';
+  };
+
+  const formatPropertyGrowth = (growth: number) => {
+    return `${growth > 0 ? '+' : ''}${growth}%`;
+  };
+
+  const hasRichData = !!processedAreaData.description;
+
   return (
-    <Card className="shadow-lg">
-      <CardHeader className="pb-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <MapPin className="h-5 w-5 text-primary" />
-              <CardTitle className="text-3xl font-display">{areaData.name}</CardTitle>
-              {areaData.areaType && (
-                <Badge variant="outline" className="ml-2">
-                  {areaData.areaType}
-                </Badge>
-              )}
-            </div>
-            
-            {areaData.matchPercentage && (
-              <span className="text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 px-2 py-1 rounded-full">
-                {areaData.matchPercentage}% Match
-              </span>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              className={isAreaSaved ? "bg-primary/10 border-primary text-primary" : ""}
-              onClick={handleSaveToggle}
-            >
-              {isAreaSaved ? (
-                <>
-                  <BookmarkCheck className="mr-2 h-4 w-4" />
-                  Saved
-                </>
-              ) : (
-                <>
-                  <Bookmark className="mr-2 h-4 w-4" />
-                  Save
-                </>
-              )}
-            </Button>
-            
-            <div className="flex flex-col items-center">
-              <div className="bg-gradient-to-br from-amber-400 to-amber-600 text-white px-3 py-2 rounded-lg flex items-center">
-                <Star className="h-5 w-5 text-white fill-white mr-1" />
-                <span className="text-2xl font-bold">{areaData.poshScore}</span>
-              </div>
-              <span className="text-xs text-center mt-1">PoshScore™</span>
-            </div>
-          </div>
+    <div className="max-w-5xl mx-auto">
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center gap-2">
+          <MapPin className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl md:text-3xl font-bold">{processedAreaData.name}</h2>
         </div>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="overview" className="mt-4">
-          <TabsList className="grid grid-cols-5 mb-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="property">Property</TabsTrigger>
-            <TabsTrigger value="lifestyle">Lifestyle</TabsTrigger>
-            <TabsTrigger value="transport">Transport</TabsTrigger>
-            <TabsTrigger value="safety">Safety</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Area Overview</h3>
-                <p className="text-muted-foreground">{areaData.description}</p>
-                
-                {areaData.livingDescription && (
-                  <div className="mt-4">
-                    <h4 className="font-medium mb-2">Living in {areaData.name}</h4>
-                    <p className="text-sm text-muted-foreground">{areaData.livingDescription}</p>
-                  </div>
-                )}
-                
-                {areaData.postcodeSpecifics && (
-                  <div className="mt-4">
-                    <h4 className="font-medium mb-2">Postcode Specifics</h4>
-                    <p className="text-sm text-muted-foreground">{areaData.postcodeSpecifics}</p>
-                  </div>
-                )}
-                
-                {areaData.pros && areaData.pros.length > 0 && (
-                  <div className="mt-4 space-y-2">
-                    <h4 className="font-medium">Pros</h4>
-                    <ul className="list-disc list-inside space-y-1">
-                      {areaData.pros.map((pro, index) => (
-                        <li key={index} className="text-sm">{pro}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {areaData.cons && areaData.cons.length > 0 && (
-                  <div className="mt-4 space-y-2">
-                    <h4 className="font-medium">Cons</h4>
-                    <ul className="list-disc list-inside space-y-1">
-                      {areaData.cons.map((con, index) => (
-                        <li key={index} className="text-sm text-muted-foreground">{con}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold mb-3">PoshScore™ Breakdown</h3>
-                <PoshScoreChart scoreBreakdown={scoreBreakdown} />
-                
-                {areaData.amenities && areaData.amenities.length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="font-medium mb-2">Notable Amenities</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {areaData.amenities.map((amenity, index) => (
-                        <Badge key={index} variant="secondary">
-                          {amenity}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="property">
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Home className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold">Property Information</h3>
-              </div>
-              
-              {areaData.propertyPrices ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-center">
-                        <h4 className="text-sm text-muted-foreground">Average 2 Bedroom Flat</h4>
-                        <p className="text-2xl font-bold mt-2">
-                          {formatCurrency(areaData.propertyPrices.flatTwoBed)}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-center">
-                        <h4 className="text-sm text-muted-foreground">Average 3 Bedroom House</h4>
-                        <p className="text-2xl font-bold mt-2">
-                          {formatCurrency(areaData.propertyPrices.houseThreeBed)}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : (
-                <p className="text-muted-foreground">Property price data not available for this area.</p>
-              )}
-              
-              {areaData.areaStats?.propertyGrowth && (
-                <div className="mt-6">
-                  <h4 className="font-medium mb-2">Property Growth</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-muted/30 p-4 rounded-md">
-                      <span className="text-sm text-muted-foreground">Flats</span>
-                      <p className={`text-lg font-medium ${
-                        areaData.areaStats.propertyGrowth.flats.includes('+') 
-                          ? 'text-green-600 dark:text-green-400' 
-                          : 'text-rose-600 dark:text-rose-400'
-                        }`}>
-                        {areaData.areaStats.propertyGrowth.flats}
-                      </p>
-                    </div>
-                    <div className="bg-muted/30 p-4 rounded-md">
-                      <span className="text-sm text-muted-foreground">Houses</span>
-                      <p className={`text-lg font-medium ${
-                        areaData.areaStats.propertyGrowth.houses.includes('+') 
-                          ? 'text-green-600 dark:text-green-400' 
-                          : 'text-rose-600 dark:text-rose-400'
-                        }`}>
-                        {areaData.areaStats.propertyGrowth.houses}
-                      </p>
-                    </div>
-                  </div>
+      </div>
+      
+      <Card className="shadow-md bg-gray-800 border border-gray-700 mb-6">
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+            <div className="flex flex-col items-center bg-gray-900 p-6 rounded-lg border border-gray-700 w-full md:w-auto">
+              <h3 className="text-xl font-medium text-white mb-2">PoshScore™</h3>
+              <div className="text-6xl font-bold text-primary mb-2">{processedAreaData.poshScore}%</div>
+              <div className="text-xl font-medium text-white">{getScoreLabel(processedAreaData.poshScore)}</div>
+              {processedAreaData.matchPercentage && (
+                <div className="mt-2 text-sm text-white/60">
+                  {processedAreaData.matchPercentage}% Match to Your Preferences
                 </div>
               )}
             </div>
-          </TabsContent>
+            
+            <div className="w-full md:w-2/3 lg:w-3/4">
+              <h3 className="text-xl font-medium text-white mb-4 text-center">PoshScore™ Breakdown</h3>
+              <PoshScoreChart scoreBreakdown={processedAreaData.scoreBreakdown} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Area Description Card */}
+      <Card className="shadow-md bg-gray-800 border border-gray-700 mb-6">
+        <CardHeader className="pb-0">
+          <CardTitle className="text-xl text-white">Area Overview</CardTitle>
+        </CardHeader>
+        
+        <CardContent className="space-y-5 pt-4">
+          {/* General Description */}
+          <div className="border border-white/10 p-4 rounded-md bg-black/20">
+            <h4 className="text-lg font-medium text-white mb-2 flex items-center">
+              <MapPin className="h-4 w-4 text-coral mr-2" />
+              About {processedAreaData.name}
+            </h4>
+            <p className="text-sm text-white/80">{processedAreaData.description}</p>
+          </div>
           
-          <TabsContent value="lifestyle">
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Coffee className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold">Lifestyle</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  {areaData.areaStats?.walkability && (
-                    <div className="mb-4">
-                      <h4 className="font-medium mb-1">Walkability</h4>
-                      <p className="text-muted-foreground">{areaData.areaStats.walkability}</p>
-                    </div>
-                  )}
-                  
-                  {areaData.areaStats?.areaVibe && areaData.areaStats.areaVibe.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-medium mb-2">Area Vibe</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {areaData.areaStats.areaVibe.map((vibe, index) => (
-                          <Badge key={index} variant="outline">
-                            {vibe}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  {areaData.amenities && (
-                    <div>
-                      <h4 className="font-medium mb-2">Local Amenities</h4>
-                      <ul className="list-disc list-inside space-y-1">
-                        {areaData.amenities.map((amenity, index) => (
-                          <li key={index} className="text-sm text-muted-foreground">{amenity}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+          {/* What it's like to live here */}
+          <div className="border border-white/10 p-4 rounded-md bg-black/20">
+            <h4 className="text-lg font-medium text-white mb-2 flex items-center">
+              <HomeIcon className="h-4 w-4 text-coral mr-2" />
+              What It's Like To Live Here
+            </h4>
+            <p className="text-sm text-white/80">
+              {processedAreaData.livingDescription || 
+              processedAreaData.history || 
+              `${processedAreaData.name} offers ${processedAreaData.propertyGrowthDetails?.houses.includes('+') ? 'growing' : 'stable'} property values with ${processedAreaData.transportDescription?.toLowerCase() || 'good transport links'} and ${processedAreaData.walkabilityDescription?.toLowerCase() || 'moderate walkability'}. ${processedAreaData.areaStats?.areaVibe?.join(' and ') ? `The area has a ${processedAreaData.areaStats?.areaVibe?.join(' and ').toLowerCase()} feel.` : ''} ${processedAreaData.attractions || ''}`}
+            </p>
+          </div>
+          
+          {/* Who lives here */}
+          <div className="border border-white/10 p-4 rounded-md bg-black/20">
+            <h4 className="text-lg font-medium text-white mb-2 flex items-center">
+              <Users className="h-4 w-4 text-coral mr-2" />
+              Who Lives Here
+            </h4>
+            <p className="text-sm text-white/80">
+              {processedAreaData.demographics || 
+              `${processedAreaData.name} is home to a ${processedAreaData.areaStats?.areaVibe?.some(v => v.toLowerCase().includes('diverse')) ? 'diverse' : 'mixed'} community, with ${processedAreaData.propertyPrices?.flatTwoBed && processedAreaData.propertyPrices.flatTwoBed > 600000 ? 'affluent' : processedAreaData.propertyPrices?.flatTwoBed && processedAreaData.propertyPrices.flatTwoBed > 400000 ? 'middle-class' : 'working and middle-class'} residents including ${processedAreaData.areaStats?.areaVibe?.some(v => v.toLowerCase().includes('family')) ? 'many families' : 'young professionals, couples, and some families'}.`}
+            </p>
+          </div>
+          
+          {/* Postcode Specifics - if available */}
+          {processedAreaData.postcodeSpecifics && (
+            <div className="border border-white/10 p-4 rounded-md bg-black/20">
+              <h4 className="text-lg font-medium text-white mb-2 flex items-center">
+                <MapPin className="h-4 w-4 text-coral mr-2" />
+                Postcode Specifics
+              </h4>
+              <p className="text-sm text-white/80">
+                {processedAreaData.postcodeSpecifics}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      
+      {/* Property Prices Card */}
+      {processedAreaData.propertyPrices && (
+        <Card className="shadow-md bg-gray-800 border border-gray-700 mb-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl text-white flex items-center">
+              <Banknote className="h-5 w-5 text-coral mr-2" />
+              Property Prices
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 bg-black/20 p-4 rounded-md border border-white/10">
+              <Building className="h-7 w-7 text-blue-400" />
+              <div className="flex-1">
+                <div className="text-sm text-white/70">2-Bed Flat</div>
+                <div className="text-xl font-semibold text-white">{formatCurrency(processedAreaData.propertyPrices.flatTwoBed)}</div>
               </div>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="transport">
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Train className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold">Transport</h3>
+            <div className="flex items-center gap-3 bg-black/20 p-4 rounded-md border border-white/10">
+              <Home className="h-7 w-7 text-green-400" />
+              <div className="flex-1">
+                <div className="text-sm text-white/70">3-Bed House</div>
+                <div className="text-xl font-semibold text-white">{formatCurrency(processedAreaData.propertyPrices.houseThreeBed)}</div>
               </div>
-              
-              {areaData.areaStats?.transportScore && (
-                <div className="bg-muted/30 p-6 rounded-lg max-w-md">
-                  <h4 className="font-medium mb-2">Transport Score</h4>
-                  <p className="text-lg">{areaData.areaStats.transportScore}</p>
-                </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
+      {/* Key Stats */}
+      <Card className="shadow-md bg-gray-800 border border-gray-700 mb-6">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl text-white">Key Area Statistics</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Crime Rate */}
+          <div className="bg-black/20 p-4 rounded-md border border-white/10">
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2 items-center">
+                <Shield className="h-5 w-5 text-coral" />
+                <h4 className="text-white font-medium">Crime Rate</h4>
+              </div>
+              {processedAreaData.crimeRateDescription && (
+                <span className={cn("text-sm text-white px-2 py-1 rounded-md", getCrimeRateColor(processedAreaData.crimeRateDescription))}>
+                  {processedAreaData.crimeRateDescription}
+                </span>
               )}
             </div>
-          </TabsContent>
+          </div>
           
-          <TabsContent value="safety">
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold">Safety</h3>
+          {/* Transport Score */}
+          <div className="bg-black/20 p-4 rounded-md border border-white/10">
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2 items-center">
+                <Train className="h-5 w-5 text-coral" />
+                <h4 className="text-white font-medium">Transport</h4>
               </div>
-              
-              {areaData.areaStats?.crimeRate && (
-                <div className="bg-muted/30 p-6 rounded-lg max-w-md">
-                  <h4 className="font-medium mb-2">Crime Rate</h4>
-                  <p className="text-lg">{areaData.areaStats.crimeRate}</p>
-                </div>
+              {processedAreaData.transportDescription && (
+                <span className={cn("text-sm text-white px-2 py-1 rounded-md", getTransportColor(processedAreaData.transportDescription))}>
+                  {processedAreaData.transportDescription}
+                </span>
               )}
             </div>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+          </div>
+          
+          {/* Walkability */}
+          <div className="bg-black/20 p-4 rounded-md border border-white/10">
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2 items-center">
+                <Footprints className="h-5 w-5 text-coral" />
+                <h4 className="text-white font-medium">Walkability</h4>
+              </div>
+              {processedAreaData.walkabilityDescription && (
+                <span className={cn("text-sm text-white px-2 py-1 rounded-md", getWalkabilityColor(processedAreaData.walkabilityDescription))}>
+                  {processedAreaData.walkabilityDescription}
+                </span>
+              )}
+            </div>
+          </div>
+          
+          {/* Amenities Score */}
+          <div className="bg-black/20 p-4 rounded-md border border-white/10">
+            <div className="flex gap-2 items-center mb-2">
+              <Coffee className="h-5 w-5 text-coral" />
+              <h4 className="text-white font-medium">Amenities</h4>
+            </div>
+            <div className="w-full">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-white/80">{processedAreaData.amenityDensity}/100</span>
+              </div>
+              <Progress 
+                value={processedAreaData.amenityDensity} 
+                className="h-2 bg-white/10" 
+                indicatorClassName={processedAreaData.amenityDensity >= 70 ? "bg-green-600" : processedAreaData.amenityDensity >= 50 ? "bg-amber-600" : "bg-red-600"}
+              />
+            </div>
+          </div>
+          
+          {/* Future Property Growth */}
+          <div className="bg-black/20 p-4 rounded-md border border-white/10 col-span-1 md:col-span-2">
+            <div className="flex gap-2 items-center mb-2">
+              <TrendingUp className="h-5 w-5 text-coral" />
+              <h4 className="text-white font-medium">Future Property Growth</h4>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
+              {processedAreaData.propertyGrowthDetails && (
+                <>
+                  <div className={cn("text-sm text-white px-3 py-2 rounded-md flex items-center justify-between flex-1", getPropertyGrowthColor(processedAreaData.propertyGrowthDetails.flats))}>
+                    <span>Flats:</span>
+                    <span className="font-medium">{processedAreaData.propertyGrowthDetails.flats}</span>
+                  </div>
+                  <div className={cn("text-sm text-white px-3 py-2 rounded-md flex items-center justify-between flex-1", getPropertyGrowthColor(processedAreaData.propertyGrowthDetails.houses))}>
+                    <span>Houses:</span>
+                    <span className="font-medium">{processedAreaData.propertyGrowthDetails.houses}</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Pros and Cons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <Card className="shadow-md bg-gray-800 border border-gray-700">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl text-white flex items-center">
+              <ThumbsUp className="h-5 w-5 text-green-500 mr-2" />
+              Pros
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-2">
+              {processedAreaData.pros?.map((pro, idx) => (
+                <div key={idx} className="flex items-center gap-2 bg-green-900/30 border border-green-800/30 p-2 rounded-md">
+                  <ThumbsUp className="h-4 w-4 text-green-500 shrink-0" />
+                  <span className="text-sm text-white">{pro}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-md bg-gray-800 border border-gray-700">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl text-white flex items-center">
+              <ThumbsDown className="h-5 w-5 text-red-500 mr-2" />
+              Cons
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-2">
+              {processedAreaData.cons?.map((con, idx) => (
+                <div key={idx} className="flex items-center gap-2 bg-red-900/30 border border-red-800/30 p-2 rounded-md">
+                  <ThumbsDown className="h-4 w-4 text-red-500 shrink-0" />
+                  <span className="text-sm text-white">{con}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Area Vibe and Amenities */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Area Vibe */}
+        {(processedAreaData.areaVibe || processedAreaData.areaStats?.areaVibe) && (
+          <Card className="shadow-md bg-gray-800 border border-gray-700">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl text-white flex items-center">
+                <Smile className="h-5 w-5 text-coral mr-2" />
+                Area Vibe
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {(processedAreaData.areaVibe || processedAreaData.areaStats?.areaVibe)?.map((vibe, idx) => (
+                  <span key={idx} className={cn("text-sm text-white px-3 py-2 rounded-full", getVibeTagColor(vibe))}>
+                    {vibe}
+                  </span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Amenities */}
+        {processedAreaData.matchingAmenities && processedAreaData.matchingAmenities.length > 0 && (
+          <Card className="shadow-md bg-gray-800 border border-gray-700">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl text-white flex items-center">
+                <Coffee className="h-5 w-5 text-coral mr-2" />
+                Local Amenities
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {processedAreaData.matchingAmenities.map((amenity, idx) => (
+                  <span key={idx} className="text-sm bg-gray-700 text-white px-3 py-2 rounded-full">
+                    {amenity}
+                  </span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+      
+      {/* Gentrification Index if available */}
+      {processedAreaData.gentrificationIndex !== undefined && (
+        <Card className="shadow-md bg-gray-800 border border-gray-700 mb-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl text-white flex items-center">
+              <History className="h-5 w-5 text-coral mr-2" />
+              Gentrification Index
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-white/80">
+                  {processedAreaData.gentrificationIndex}/100 - {getGentrificationLabel(processedAreaData.gentrificationIndex)}
+                </span>
+              </div>
+              <Progress 
+                value={processedAreaData.gentrificationIndex} 
+                className="h-3 bg-white/10" 
+                indicatorClassName={processedAreaData.gentrificationIndex >= 70 ? "bg-blue-600" : processedAreaData.gentrificationIndex >= 40 ? "bg-purple-600" : "bg-indigo-600"}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };
 

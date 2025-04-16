@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { Search, ArrowRight, MapPin } from 'lucide-react';
@@ -11,7 +12,6 @@ import { useTheme } from '@/context/ThemeContext';
 import { formatCurrency } from '@/utils/formatters';
 import { getAreaDetails } from '@/services/openaiService';
 import { AreaMatch } from '@/types/area';
-import { useSavedResults } from '@/context/SavedResultsContext';
 
 const PostcodeSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,7 +19,6 @@ const PostcodeSearch = () => {
   const [areaData, setAreaData] = useState<AreaMatch | null>(null);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const { saveSearchToHistory } = useSavedResults();
   
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,10 +74,6 @@ const PostcodeSearch = () => {
         }
         
         setAreaData(result);
-        
-        // Save search to history
-        saveSearchToHistory(searchQuery, [result], 'postcode');
-        
         toast.success(`Found data for ${result.name}`);
       } else {
         toast.error('Could not find data for this location');
