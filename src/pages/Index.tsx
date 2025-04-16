@@ -64,22 +64,6 @@ const Index = () => {
       <Navbar />
       <main className="space-y-0">
         <HeroSection />
-        
-        {/* New prominent postcode search link */}
-        <div className="bg-gradient-to-r from-blue-600 to-coral py-8 px-4">
-          <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left">
-              Discover How Posh Your Postcode Is
-            </h2>
-            <Link to="/postcode">
-              <Button size="xl" variant="glow" className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                <span>Check Your Postcode Now</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
-        
         <SearchExampleSection />
         <ProblemSection />
         <FeaturesSection />
