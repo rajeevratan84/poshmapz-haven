@@ -42,6 +42,14 @@ export interface AreaMatch {
   savedAt?: string;
   savedFrom?: 'postcode' | 'ai-search';
   id?: string;
+  // Add scoreBreakdown to fix the TypeScript errors
+  scoreBreakdown?: {
+    property: number;
+    safety: number;
+    transport: number;
+    lifestyle: number;
+    environment: number;
+  };
 }
 
 export interface AreaData {

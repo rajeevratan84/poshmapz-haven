@@ -36,7 +36,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="poshmaps-theme">
+    <ThemeProvider>
       <AuthProvider>
         <SavedResultsProvider>
           <Suspense fallback={<LoadingScreen />}>
