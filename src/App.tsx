@@ -1,7 +1,7 @@
 
 import React, { Suspense, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { SavedResultsProvider } from '@/context/SavedResultsContext';
@@ -16,6 +16,7 @@ import PostcodeSearch from '@/pages/PostcodeSearch';
 import Profile from '@/pages/Profile';
 import Admin from '@/pages/Admin';
 import SavedResults from '@/pages/SavedResults';
+import MySearches from '@/pages/MySearches';
 
 // Loading screen for suspense fallback
 const LoadingScreen = () => (
@@ -48,6 +49,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/saved" element={<SavedResults />} />
+              <Route path="/searches" element={<MySearches />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

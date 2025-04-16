@@ -3,6 +3,7 @@ import React from 'react';
 import { MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AreaDetailCard from '@/components/AreaDetailCard';
+import { useSavedResults } from '@/context/SavedResultsContext';
 
 interface AreaStats {
   crimeRate: string;
@@ -43,6 +44,15 @@ const AreaResultsList: React.FC<AreaResultsListProps> = ({
   isSearching,
   userInput
 }) => {
+  const { saveSearchToHistory } = useSavedResults();
+  
+  // Save search results to history when results change
+  React.useEffect(() => {
+    if (results.length > 0 && userInput) {
+      saveSearchToHistory(userInput, results, 'ai-search');
+    }
+  }, [results, userInput, saveSearchToHistory]);
+  
   return (
     <div className="mt-6">
       <h2 className="text-xl font-display font-semibold mb-4 text-white flex items-center gap-2">

@@ -4,7 +4,7 @@ import { AreaMatch } from '@/types/area';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Trash2, Calendar, Star } from 'lucide-react';
+import { MapPin, Trash2, Calendar, Star, ArrowRightLeft } from 'lucide-react';
 import { useSavedResults } from '@/context/SavedResultsContext';
 import { formatCurrency } from '@/utils/formatters';
 import PoshScoreChart from '@/components/posh/PoshScoreChart';
@@ -15,12 +15,14 @@ interface SavedAreaCardProps {
 }
 
 const SavedAreaCard: React.FC<SavedAreaCardProps> = ({ area }) => {
-  const { removeArea } = useSavedResults();
+  const { removeArea, addToCompare, isInCompare } = useSavedResults();
   const savedDate = area.savedAt ? new Date(area.savedAt) : null;
 
   const sourceLabel = area.savedFrom === 'postcode' 
     ? 'Postcode Search' 
     : 'AI Neighborhood Search';
+    
+  const isAreaInCompare = area.id ? isInCompare(area.id) : false;
 
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow duration-200">
@@ -85,11 +87,25 @@ const SavedAreaCard: React.FC<SavedAreaCardProps> = ({ area }) => {
       </CardContent>
       
       <CardFooter className="pt-4 flex justify-between">
-        <Button variant="outline" size="sm" asChild>
-          <Link to={area.savedFrom === 'postcode' ? `/postcode?area=${area.name}` : `/demo?area=${area.name}`}>
-            View Details
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link to={area.savedFrom === 'postcode' ? `/postcode?area=${area.name}` : `/demo?area=${area.name}`}>
+              View Details
+            </Link>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => addToCompare(area)}
+            disabled={isAreaInCompare}
+            className={isAreaInCompare ? "bg-primary/10 text-primary" : ""}
+          >
+            <ArrowRightLeft className="h-4 w-4 mr-1" />
+            {isAreaInCompare ? "In Compare" : "Compare"}
+          </Button>
+        </div>
+        
         <Button 
           variant="ghost" 
           size="icon" 

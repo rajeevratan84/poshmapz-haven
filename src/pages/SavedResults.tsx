@@ -6,10 +6,10 @@ import Footer from '@/components/Footer';
 import { useSavedResults } from '@/context/SavedResultsContext';
 import SavedAreaCard from '@/components/SavedAreaCard';
 import { Button } from '@/components/ui/button';
-import { MapPin, Bookmark, Search, Home } from 'lucide-react';
+import { MapPin, Bookmark, Search, ArrowRightLeft, History } from 'lucide-react';
 
 const SavedResults = () => {
-  const { savedAreas } = useSavedResults();
+  const { savedAreas, compareItems } = useSavedResults();
   const navigate = useNavigate();
   
   return (
@@ -26,6 +26,10 @@ const SavedResults = () => {
           </div>
           
           <div className="flex gap-3">
+            <Button variant="outline" onClick={() => navigate('/searches')} className="flex items-center gap-2">
+              <History className="h-4 w-4" />
+              <span>My Searches</span>
+            </Button>
             <Button variant="outline" onClick={() => navigate('/postcode')} className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />
               <span>Postcode Search</span>
@@ -36,6 +40,19 @@ const SavedResults = () => {
             </Button>
           </div>
         </div>
+        
+        {compareItems.length > 0 && (
+          <div className="mb-8">
+            <Button 
+              variant="outline" 
+              className="mb-4 bg-primary/10 text-primary"
+              onClick={() => navigate('/searches?view=compare')}
+            >
+              <ArrowRightLeft className="h-4 w-4 mr-2" />
+              View {compareItems.length} Areas in Comparison
+            </Button>
+          </div>
+        )}
         
         {savedAreas.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

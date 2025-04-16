@@ -3,8 +3,9 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, ChevronRight, Bookmark, BookmarkCheck } from "lucide-react";
+import { MapPin, Star, ChevronRight, Bookmark, BookmarkCheck, ArrowRightLeft } from "lucide-react";
 import { useSavedResults } from '@/context/SavedResultsContext';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AreaStats {
   crimeRate: string;
@@ -38,11 +39,11 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
   isSelected,
   onClick
 }) => {
-  const { saveArea, isSaved, removeArea, savedAreas } = useSavedResults();
-  
-  const isAreaSaved = isSaved(areaName);
+  const { saveArea, isSaved, removeArea, savedAreas, addToCompare, isInCompare } = useSavedResults();
   
   const savedArea = savedAreas.find(area => area.name === areaName);
+  const isAreaSaved = isSaved(areaName);
+  const isAreaInCompare = savedArea ? isInCompare(savedArea.id) : false;
 
   const handleSaveToggle = (e: React.MouseEvent) => {
     e.stopPropagation();  // Prevent triggering the card click
@@ -62,6 +63,32 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
       };
       
       saveArea(areaToSave, 'ai-search');
+    }
+  };
+
+  const handleAddToCompare = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    
+    if (!savedArea) {
+      const areaToCompare = {
+        name: areaName,
+        matchPercentage,
+        description,
+        poshScore,
+        amenities,
+        areaStats,
+        coordinates: { lat: 0, lng: 0 },
+      };
+      
+      // First save the area if it's not saved
+      if (!isAreaSaved) {
+        saveArea(areaToCompare, 'ai-search');
+      }
+      
+      // Then add to comparison
+      addToCompare(savedArea || areaToCompare);
+    } else {
+      addToCompare(savedArea);
     }
   };
 
@@ -90,18 +117,48 @@ const AreaDetailCard: React.FC<AreaDetailCardProps> = ({
             </div>
           </div>
           
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`${isAreaSaved ? "text-primary bg-primary/10" : ""}`}
-            onClick={handleSaveToggle}
-          >
-            {isAreaSaved ? (
-              <BookmarkCheck className="h-4 w-4" />
-            ) : (
-              <Bookmark className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="flex gap-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`${isAreaInCompare ? "text-primary bg-primary/10" : ""}`}
+                    onClick={handleAddToCompare}
+                    disabled={isAreaInCompare}
+                  >
+                    <ArrowRightLeft className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {isAreaInCompare ? "Already in comparison" : "Add to comparison"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`${isAreaSaved ? "text-primary bg-primary/10" : ""}`}
+                    onClick={handleSaveToggle}
+                  >
+                    {isAreaSaved ? (
+                      <BookmarkCheck className="h-4 w-4" />
+                    ) : (
+                      <Bookmark className="h-4 w-4" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {isAreaSaved ? "Remove from saved" : "Save area"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
         
         <div className="p-4">

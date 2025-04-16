@@ -8,7 +8,7 @@ import FeaturesSection from '@/components/FeaturesSection';
 import SearchExampleSection from '@/components/SearchExampleSection';
 import TeamSection from '@/components/TeamSection';
 import { Button } from '@/components/ui/button';
-import { MapPin } from 'lucide-react';
+import { MapPin, Search, History } from 'lucide-react';
 
 // Lazy load components that are lower in the page
 const CTASection = lazy(() => import('@/components/CTASection'));
@@ -64,6 +64,31 @@ const Index = () => {
       <Navbar />
       <main className="space-y-0">
         <HeroSection />
+        
+        {/* Quick Access Buttons for Tools */}
+        <div className="container mx-auto py-4 px-4 flex flex-wrap justify-center gap-4">
+          <Button asChild size="lg" className="shadow-md">
+            <Link to="/demo" className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              <span>Use AI to find your Ideal Neighborhood</span>
+            </Link>
+          </Button>
+          
+          <Button asChild size="lg" variant="secondary" className="shadow-md">
+            <Link to="/postcode" className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              <span>Discover How Posh Your Postcode Is</span>
+            </Link>
+          </Button>
+          
+          <Button asChild size="lg" variant="outline" className="shadow-md">
+            <Link to="/searches" className="flex items-center gap-2">
+              <History className="h-4 w-4" />
+              <span>My Searches & Comparisons</span>
+            </Link>
+          </Button>
+        </div>
+        
         <SearchExampleSection />
         <ProblemSection />
         <FeaturesSection />
