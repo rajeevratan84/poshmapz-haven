@@ -1,4 +1,3 @@
-
 import { AreaMatch } from '@/types/area';
 
 // Helper function to create area matches
@@ -38,6 +37,87 @@ const createAreaMatches = (count: number): AreaMatch[] => {
   return areas;
 };
 
+// Add European countries and their regions
+const europeanCountriesAndRegions = {
+  "Italy": ["Tuscany", "Lombardy", "Veneto", "Sicily", "Piedmont", "Lazio", "Campania"],
+  "Spain": ["Catalonia", "Andalusia", "Madrid", "Valencia", "Balearic Islands", "Basque Country", "Galicia"],
+  "Portugal": ["Lisbon", "Porto", "Algarve", "Madeira", "Azores", "Alentejo", "Central Portugal"],
+  "Romania": ["Transylvania", "Bucharest", "Moldova", "Banat", "Oltenia", "Dobruja", "Crișana", "Maramureș"],
+  "France": ["Île-de-France", "Provence", "Normandy", "Brittany", "Alsace", "French Riviera", "Loire Valley"],
+  "Germany": ["Bavaria", "Berlin", "Baden-Württemberg", "North Rhine-Westphalia", "Hesse", "Saxony", "Hamburg"],
+  "Netherlands": ["North Holland", "South Holland", "Utrecht", "Gelderland", "North Brabant", "Limburg", "Zeeland"],
+  "Greece": ["Attica", "Central Macedonia", "Crete", "South Aegean", "Peloponnese", "Thessaly", "Ionian Islands"],
+  "Austria": ["Vienna", "Tyrol", "Salzburg", "Styria", "Lower Austria", "Upper Austria", "Carinthia"],
+  "Sweden": ["Stockholm", "Gothenburg", "Malmö", "Uppsala", "Västra Götaland", "Skåne", "Norrland"],
+  "Poland": ["Masovia", "Lesser Poland", "Greater Poland", "Pomerania", "Silesia", "Łódź", "Lower Silesia"],
+  "Czechia": ["Prague", "Central Bohemia", "South Bohemia", "Moravia-Silesia", "South Moravia", "Pilsen", "Vysočina"],
+  "Switzerland": ["Zurich", "Geneva", "Bern", "Vaud", "Ticino", "Basel", "Graubünden"],
+  "Belgium": ["Brussels", "Flanders", "Wallonia", "Antwerp", "East Flanders", "Liège", "West Flanders"],
+  "Ireland": ["Dublin", "Cork", "Galway", "Kerry", "Wicklow", "Clare", "Donegal"],
+  "Denmark": ["Copenhagen", "Aarhus", "Odense", "Aalborg", "Zealand", "Funen", "Jutland"],
+  "Finland": ["Uusimaa", "Pirkanmaa", "Southwest Finland", "Northern Ostrobothnia", "Central Finland", "Lapland", "North Karelia"],
+  "Norway": ["Oslo", "Bergen", "Trondheim", "Stavanger", "Western Norway", "Northern Norway", "Trøndelag"],
+  "Hungary": ["Budapest", "Pest County", "Debrecen", "Szeged", "Lake Balaton", "Western Transdanubia", "Northern Hungary"],
+  "Bulgaria": ["Sofia", "Plovdiv", "Varna", "Burgas", "Veliko Tarnovo", "Ruse", "Stara Zagora"],
+  "Croatia": ["Dalmatia", "Istria", "Zagreb", "Dubrovnik-Neretva", "Split-Dalmatia", "Zadar", "Kvarner"],
+  "Serbia": ["Belgrade", "Novi Sad", "Niš", "Kragujevac", "Subotica", "Zlatibor", "Vojvodina"],
+  "Slovenia": ["Ljubljana", "Maribor", "Bled", "Coastal–Karst", "Upper Carniola", "Lower Styria", "Prekmurje"],
+  "Slovakia": ["Bratislava", "Košice", "Tatra Mountains", "Banská Bystrica", "Nitra", "Žilina", "Prešov"],
+  "Estonia": ["Tallinn", "Tartu", "Pärnu", "Saaremaa", "Narva", "Viljandi", "Ida-Viru"],
+  "Latvia": ["Riga", "Jurmala", "Liepāja", "Daugavpils", "Sigulda", "Ventspils", "Cēsis"],
+  "Lithuania": ["Vilnius", "Kaunas", "Klaipėda", "Palanga", "Druskininkai", "Trakai", "Curonian Spit"],
+  "Cyprus": ["Limassol", "Paphos", "Nicosia", "Larnaca", "Famagusta", "Kyrenia", "Troodos"],
+  "Malta": ["Valletta", "Sliema", "St. Julian's", "Gozo", "Mdina", "Three Cities", "Northern Region"],
+  "Luxembourg": ["Luxembourg City", "Esch-sur-Alzette", "Differdange", "Dudelange", "Ettelbruck", "Diekirch", "Echternach"],
+  "Iceland": ["Reykjavík", "South Region", "Northeast Region", "East Region", "West Fjords", "Capital Region", "South Peninsula"],
+  "Trinidad and Tobago": ["Port of Spain", "San Fernando", "Arima", "Chaguanas", "Point Fortin", "Tobago", "Diego Martin"]
+};
+
+// Get area details for postcode search
+export const getAreaDetails = async (
+  searchQuery: string, 
+  apiKey: string
+): Promise<AreaMatch> => {
+  console.log(`Getting details for: ${searchQuery}`);
+  
+  // This is a mock implementation
+  if (!apiKey) {
+    console.warn("No API key provided. Using mock data.");
+  }
+  
+  // Wait to simulate API call
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Generate generic area data
+  return {
+    name: searchQuery,
+    matchPercentage: 85,
+    description: `${searchQuery} is a residential area with a mix of properties and good amenities.`,
+    poshScore: 75,
+    coordinates: {
+      lat: 51.5 + (Math.random() * 0.1 - 0.05),
+      lng: -0.1 + (Math.random() * 0.2 - 0.1)
+    },
+    amenities: ["Parks", "Restaurants", "Schools", "Transport"],
+    areaStats: {
+      crimeRate: "Low to medium",
+      transportScore: "Good",
+      walkability: "Very good",
+      propertyGrowth: {
+        flats: "+3.2% per year",
+        houses: "+4.1% per year"
+      },
+      areaVibe: ["Family-friendly", "Residential", "Convenient"]
+    },
+    pros: ["Good transport links", "Local amenities", "Residential feel"],
+    cons: ["Average property prices", "Some busy roads"],
+    propertyPrices: {
+      flatTwoBed: 350000 + (Math.random() * 100000),
+      houseThreeBed: 550000 + (Math.random() * 150000)
+    }
+  };
+};
+
 // Simulate OpenAI API call
 export const analyzeAreaPreferences = async (
   userInput: string, 
@@ -45,7 +125,6 @@ export const analyzeAreaPreferences = async (
   mapMode: 'london' | 'uk' | 'europe' = 'london',
   nearestCity: string = 'none'
 ): Promise<AreaMatch[]> => {
-  // This is a mock implementation
   console.log(`Analyzing preferences for: ${userInput}`);
   console.log(`Map mode: ${mapMode}, Nearest city: ${nearestCity}`);
   
@@ -165,4 +244,9 @@ export const analyzeAreaPreferences = async (
   
   // Generate random area matches
   return createAreaMatches(numberOfResults);
+};
+
+// New function to get European countries and their regions
+export const getEuropeanCountriesAndRegions = () => {
+  return europeanCountriesAndRegions;
 };

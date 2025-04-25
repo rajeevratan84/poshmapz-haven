@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { MapPin, ArrowLeft, Sparkles, MapIcon, HomeIcon } from "lucide-react";
+
+import React, { useState, useEffect } from 'react';
+import { MapPin, ArrowLeft, Sparkles, MapIcon, HomeIcon, Globe } from "lucide-react";
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
-import { analyzeAreaPreferences } from '@/services/openaiService';
+import { analyzeAreaPreferences, getEuropeanCountriesAndRegions } from '@/services/openaiService';
 import { AreaMatch } from '@/types/area';
 import SearchBar from '@/components/search/SearchBar';
 import SearchWizard from '@/components/search/SearchWizard';
@@ -15,6 +16,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useAuth } from '@/context/AuthContext';
 import LoginButton from '@/components/auth/LoginButton';
 
+interface RegionOption {
+  value: string;
+  label: string;
+}
+
 const DemoPage: React.FC = () => {
   const { user } = useAuth();
   const [userInput, setUserInput] = useState('');
@@ -24,9 +30,35 @@ const DemoPage: React.FC = () => {
   const [showWizard, setShowWizard] = useState(false);
   const [mapMode, setMapMode] = useState<'london' | 'uk' | 'europe'>('london');
   const [nearestCity, setNearestCity] = useState<string>('none');
+  const [selectedCountry, setSelectedCountry] = useState<string>('none');
+  const [selectedRegion, setSelectedRegion] = useState<string>('none');
+  const [europeanCountries, setEuropeanCountries] = useState<{[key: string]: string[]}>({});
+  const [regionOptions, setRegionOptions] = useState<RegionOption[]>([{ value: 'none', label: 'No preference (anywhere in the country)' }]);
   const isMobile = useIsMobile();
   
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+  useEffect(() => {
+    // Load European countries and their regions
+    const countries = getEuropeanCountriesAndRegions();
+    setEuropeanCountries(countries);
+  }, []);
+
+  useEffect(() => {
+    // Reset region when country changes
+    setSelectedRegion('none');
+    
+    // Update region options based on selected country
+    if (selectedCountry === 'none') {
+      setRegionOptions([{ value: 'none', label: 'Select a country first' }]);
+    } else {
+      const regions = europeanCountries[selectedCountry] || [];
+      setRegionOptions([
+        { value: 'none', label: `All of ${selectedCountry}` },
+        ...regions.map(region => ({ value: region, label: region }))
+      ]);
+    }
+  }, [selectedCountry, europeanCountries]);
 
   const searchSuggestions = [
     "Family-friendly area with good schools and parks",
@@ -80,9 +112,16 @@ const DemoPage: React.FC = () => {
     
     try {
       console.log("Sending request to analyze:", searchInput);
+      console.log("Mode:", mapMode);
+      console.log("Near city:", nearestCity);
+      
+      if (mapMode === 'europe') {
+        console.log("Country:", selectedCountry);
+        console.log("Region:", selectedRegion);
+      }
       
       const startTime = Date.now();
-      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode, nearestCity);
+      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode, mapMode === 'europe' ? selectedCountry + (selectedRegion !== 'none' ? ':' + selectedRegion : '') : nearestCity);
       const elapsedTime = Date.now() - startTime;
       
       if (elapsedTime < 25000) {
@@ -92,7 +131,19 @@ const DemoPage: React.FC = () => {
       if (areas && areas.length > 0) {
         console.log("Received area matches:", areas);
         setResults(areas);
-        toast.success(`Found ${areas.length} matching areas in ${mapMode === 'london' ? 'London' : 'the UK'}!`);
+        
+        let locationName = "";
+        if (mapMode === 'london') locationName = "London";
+        else if (mapMode === 'uk') locationName = "the UK";
+        else if (mapMode === 'europe') {
+          if (selectedCountry !== 'none') {
+            locationName = selectedRegion !== 'none' ? `${selectedRegion}, ${selectedCountry}` : selectedCountry;
+          } else {
+            locationName = "Europe";
+          }
+        }
+        
+        toast.success(`Found ${areas.length} matching areas in ${locationName}!`);
       } else {
         toast.error("No matching areas found. Try adjusting your search criteria.");
       }
@@ -143,6 +194,8 @@ const DemoPage: React.FC = () => {
             setMapMode(value as 'london' | 'uk' | 'europe');
             if (value === 'london') {
               setNearestCity('none');
+              setSelectedCountry('none');
+              setSelectedRegion('none');
             }
           }}>
             <TabsList className="grid grid-cols-3 w-full bg-black/40 border border-white/10">
@@ -155,24 +208,20 @@ const DemoPage: React.FC = () => {
                 United Kingdom
               </TabsTrigger>
               <TabsTrigger value="europe" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
-                <Sparkles className="h-4 w-4 mr-2" />
+                <Globe className="h-4 w-4 mr-2" />
                 Europe
               </TabsTrigger>
             </TabsList>
           </Tabs>
           
-          {(mapMode === 'uk' || mapMode === 'europe') && (
+          {mapMode === 'uk' && (
             <div className="mb-4">
               <Select value={nearestCity} onValueChange={setNearestCity}>
                 <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
                   <SelectValue placeholder="Select nearest city (optional)" />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
-                  {mapMode === 'uk' ? ukCities.map(city => (
-                    <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
-                      {city.label}
-                    </SelectItem>
-                  )) : europeanCities.map(city => (
+                  {ukCities.map(city => (
                     <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
                       {city.label}
                     </SelectItem>
@@ -180,6 +229,45 @@ const DemoPage: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+          )}
+          
+          {mapMode === 'europe' && (
+            <>
+              <div className="mb-4">
+                <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                  <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
+                    <SelectItem value="none" className="focus:bg-zinc-800 focus:text-white">
+                      All of Europe (no preference)
+                    </SelectItem>
+                    {Object.keys(europeanCountries).sort().map(country => (
+                      <SelectItem key={country} value={country} className="focus:bg-zinc-800 focus:text-white">
+                        {country}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {selectedCountry !== 'none' && (
+                <div className="mb-4">
+                  <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                    <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
+                      <SelectValue placeholder="Select a region (optional)" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
+                      {regionOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value} className="focus:bg-zinc-800 focus:text-white">
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </>
           )}
           
           <SearchBar 
@@ -199,7 +287,7 @@ const DemoPage: React.FC = () => {
           
           <div className="flex items-center justify-center gap-2 text-xs text-purple-400 font-semibold bg-black/30 py-2 px-4 rounded-full mx-auto w-fit">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Beta {mapMode === 'london' ? 'London' : 'UK'} Mode</span>
+            <span>Beta {mapMode === 'london' ? 'London' : mapMode === 'uk' ? 'UK' : 'Europe'} Mode</span>
           </div>
         </div>
         
