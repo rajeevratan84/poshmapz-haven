@@ -7,7 +7,7 @@ interface AreaMapComponentProps {
   results: AreaMatch[];
   onAreaSelected: (area: AreaMatch) => void;
   selectedArea: AreaMatch | null;
-  mapMode?: 'london' | 'uk';
+  mapMode?: 'london' | 'uk' | 'europe';
 }
 
 const AreaMapComponent: React.FC<AreaMapComponentProps> = ({ 
@@ -28,10 +28,16 @@ const AreaMapComponent: React.FC<AreaMapComponentProps> = ({
         coordinates: { lat: 51.507, lng: -0.127 },
         zoom: 11
       };
-    } else {
+    } else if (mapMode === 'uk') {
       return {
         coordinates: { lat: 54.093, lng: -2.89 }, // Center of UK
         zoom: 6
+      };
+    } else {
+      // Europe map mode
+      return {
+        coordinates: { lat: 48.8566, lng: 14.3522 }, // Center of Europe
+        zoom: 4
       };
     }
   };
