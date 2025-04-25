@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MapPin, ArrowLeft, Sparkles, MapIcon, HomeIcon } from "lucide-react";
 import { toast } from 'sonner';
@@ -17,18 +16,16 @@ import { useAuth } from '@/context/AuthContext';
 import LoginButton from '@/components/auth/LoginButton';
 
 const DemoPage: React.FC = () => {
-  // Authentication is now handled by the ProtectedRoute in App.tsx
   const { user } = useAuth();
   const [userInput, setUserInput] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<AreaMatch[]>([]);
   const [selectedArea, setSelectedArea] = useState<AreaMatch | null>(null);
   const [showWizard, setShowWizard] = useState(false);
-  const [mapMode, setMapMode] = useState<'london' | 'uk'>('london');
+  const [mapMode, setMapMode] = useState<'london' | 'uk' | 'europe'>('london');
   const [nearestCity, setNearestCity] = useState<string>('none');
   const isMobile = useIsMobile();
   
-  // Use the VITE_ environment variable for the API key
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
   const searchSuggestions = [
@@ -56,6 +53,19 @@ const DemoPage: React.FC = () => {
     { value: 'brighton', label: 'Brighton' }
   ];
 
+  const europeanCities = [
+    { value: 'none', label: 'No preference (anywhere in Europe)' },
+    { value: 'bucharest', label: 'Bucharest' },
+    { value: 'cluj-napoca', label: 'Cluj-Napoca' },
+    { value: 'iasi', label: 'Iasi' },
+    { value: 'timisoara', label: 'Timisoara' },
+    { value: 'constanta', label: 'Constanta' },
+    { value: 'brasov', label: 'Brasov' },
+    { value: 'craiova', label: 'Craiova' },
+    { value: 'galati', label: 'Galati' },
+    { value: 'ploiesti', label: 'Ploiesti' }
+  ];
+
   const processSearch = async (searchInput: string) => {
     if (!searchInput.trim()) {
       toast.error("Please enter your preferences");
@@ -66,7 +76,6 @@ const DemoPage: React.FC = () => {
     setIsSearching(true);
     setResults([]);
     setSelectedArea(null);
-    // Hide the wizard when search starts
     setShowWizard(false);
     
     try {
@@ -76,7 +85,6 @@ const DemoPage: React.FC = () => {
       const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode, nearestCity);
       const elapsedTime = Date.now() - startTime;
       
-      // Ensure we show the loading animation for at least 25 seconds
       if (elapsedTime < 25000) {
         await new Promise(resolve => setTimeout(resolve, 25000 - elapsedTime));
       }
@@ -123,7 +131,6 @@ const DemoPage: React.FC = () => {
       </header>
 
       <main className="container mx-auto px-4 mt-6">
-        {/* User is authenticated at this point thanks to the ProtectedRoute */}
         <div className={`max-w-3xl mx-auto text-center ${isMobile ? 'mb-4' : 'mb-8'}`}>
           <h1 className="text-2xl md:text-4xl font-display font-bold mb-2 md:mb-4 text-white">
             Find Your Perfect Neighbourhood
@@ -133,12 +140,12 @@ const DemoPage: React.FC = () => {
           </p>
           
           <Tabs defaultValue="london" className="w-full mb-6" onValueChange={(value) => {
-            setMapMode(value as 'london' | 'uk');
+            setMapMode(value as 'london' | 'uk' | 'europe');
             if (value === 'london') {
               setNearestCity('none');
             }
           }}>
-            <TabsList className="grid grid-cols-2 w-full bg-black/40 border border-white/10">
+            <TabsList className="grid grid-cols-3 w-full bg-black/40 border border-white/10">
               <TabsTrigger value="london" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
                 <MapPin className="h-4 w-4 mr-2" />
                 London
@@ -147,17 +154,25 @@ const DemoPage: React.FC = () => {
                 <HomeIcon className="h-4 w-4 mr-2" />
                 United Kingdom
               </TabsTrigger>
+              <TabsTrigger value="europe" className="data-[state=active]:bg-posh-green data-[state=active]:text-white">
+                <Sparkles className="h-4 w-4 mr-2" />
+                Europe
+              </TabsTrigger>
             </TabsList>
           </Tabs>
           
-          {mapMode === 'uk' && (
+          {(mapMode === 'uk' || mapMode === 'europe') && (
             <div className="mb-4">
               <Select value={nearestCity} onValueChange={setNearestCity}>
                 <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
                   <SelectValue placeholder="Select nearest city (optional)" />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
-                  {ukCities.map(city => (
+                  {mapMode === 'uk' ? ukCities.map(city => (
+                    <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
+                      {city.label}
+                    </SelectItem>
+                  )) : europeanCities.map(city => (
                     <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
                       {city.label}
                     </SelectItem>
