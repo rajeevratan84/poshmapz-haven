@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MapPin, ArrowLeft, Sparkles, MapIcon, HomeIcon, Globe } from "lucide-react";
 import { toast } from 'sonner';
@@ -39,16 +38,13 @@ const DemoPage: React.FC = () => {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
   useEffect(() => {
-    // Load European countries and their regions
     const countries = getEuropeanCountriesAndRegions();
     setEuropeanCountries(countries);
   }, []);
 
   useEffect(() => {
-    // Reset region when country changes
     setSelectedRegion('none');
     
-    // Update region options based on selected country
     if (selectedCountry === 'none') {
       setRegionOptions([{ value: 'none', label: 'Select a country first' }]);
     } else {
@@ -83,19 +79,6 @@ const DemoPage: React.FC = () => {
     { value: 'nottingham', label: 'Nottingham' },
     { value: 'southampton', label: 'Southampton' },
     { value: 'brighton', label: 'Brighton' }
-  ];
-
-  const europeanCities = [
-    { value: 'none', label: 'No preference (anywhere in Europe)' },
-    { value: 'bucharest', label: 'Bucharest' },
-    { value: 'cluj-napoca', label: 'Cluj-Napoca' },
-    { value: 'iasi', label: 'Iasi' },
-    { value: 'timisoara', label: 'Timisoara' },
-    { value: 'constanta', label: 'Constanta' },
-    { value: 'brasov', label: 'Brasov' },
-    { value: 'craiova', label: 'Craiova' },
-    { value: 'galati', label: 'Galati' },
-    { value: 'ploiesti', label: 'Ploiesti' }
   ];
 
   const processSearch = async (searchInput: string) => {
@@ -212,27 +195,25 @@ const DemoPage: React.FC = () => {
                 Europe
               </TabsTrigger>
             </TabsList>
-          </Tabs>
-          
-          {mapMode === 'uk' && (
-            <div className="mb-4">
-              <Select value={nearestCity} onValueChange={setNearestCity}>
-                <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
-                  <SelectValue placeholder="Select nearest city (optional)" />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
-                  {ukCities.map(city => (
-                    <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
-                      {city.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-          
-          {mapMode === 'europe' && (
-            <>
+            
+            <TabsContent value="uk">
+              <div className="mb-4">
+                <Select value={nearestCity} onValueChange={setNearestCity}>
+                  <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
+                    <SelectValue placeholder="Select nearest city (optional)" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border-white/10 text-white max-h-60">
+                    {ukCities.map(city => (
+                      <SelectItem key={city.value} value={city.value} className="focus:bg-zinc-800 focus:text-white">
+                        {city.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="europe">
               <div className="mb-4">
                 <Select value={selectedCountry} onValueChange={setSelectedCountry}>
                   <SelectTrigger className="bg-black/30 border-white/10 text-white w-full">
@@ -267,8 +248,8 @@ const DemoPage: React.FC = () => {
                   </Select>
                 </div>
               )}
-            </>
-          )}
+            </TabsContent>
+          </Tabs>
           
           <SearchBar 
             onSearch={processSearch}
