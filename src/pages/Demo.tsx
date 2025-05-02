@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { MapPin, ArrowLeft, Sparkles, MapIcon, HomeIcon, Globe } from "lucide-react";
 import { toast } from 'sonner';
@@ -96,15 +97,22 @@ const DemoPage: React.FC = () => {
     try {
       console.log("Sending request to analyze:", searchInput);
       console.log("Mode:", mapMode);
-      console.log("Near city:", nearestCity);
       
-      if (mapMode === 'europe') {
+      let locationFilter = '';
+      
+      if (mapMode === 'uk') {
+        console.log("Near city:", nearestCity);
+        locationFilter = nearestCity;
+      } else if (mapMode === 'europe') {
         console.log("Country:", selectedCountry);
         console.log("Region:", selectedRegion);
+        if (selectedCountry !== 'none') {
+          locationFilter = selectedCountry + (selectedRegion !== 'none' ? ':' + selectedRegion : '');
+        }
       }
       
       const startTime = Date.now();
-      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode, mapMode === 'europe' ? selectedCountry + (selectedRegion !== 'none' ? ':' + selectedRegion : '') : nearestCity);
+      const areas = await analyzeAreaPreferences(searchInput, apiKey, mapMode, locationFilter);
       const elapsedTime = Date.now() - startTime;
       
       if (elapsedTime < 25000) {
@@ -117,7 +125,7 @@ const DemoPage: React.FC = () => {
         
         let locationName = "";
         if (mapMode === 'london') locationName = "London";
-        else if (mapMode === 'uk') locationName = "the UK";
+        else if (mapMode === 'uk') locationName = nearestCity !== 'none' ? ukCities.find(city => city.value === nearestCity)?.label || "the UK" : "the UK";
         else if (mapMode === 'europe') {
           if (selectedCountry !== 'none') {
             locationName = selectedRegion !== 'none' ? `${selectedRegion}, ${selectedCountry}` : selectedCountry;

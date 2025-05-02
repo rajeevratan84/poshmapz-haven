@@ -1,252 +1,165 @@
+import OpenAI from 'openai';
 import { AreaMatch } from '@/types/area';
 
-// Helper function to create area matches
-const createAreaMatches = (count: number): AreaMatch[] => {
-  const areas: AreaMatch[] = [];
-  
-  for (let i = 0; i < count; i++) {
-    areas.push({
-      name: `Example Area ${i + 1}`,
-      matchPercentage: Math.floor(Math.random() * 30) + 70,
-      description: "A sample area description for demonstration purposes.",
-      poshScore: Math.floor(Math.random() * 40) + 60,
-      coordinates: {
-        lat: 51.5 + (Math.random() * 0.1 - 0.05),
-        lng: -0.1 + (Math.random() * 0.2 - 0.1)
-      },
-      amenities: ["Parks", "Restaurants", "Schools", "Transport"],
-      areaStats: {
-        crimeRate: "Low to medium",
-        transportScore: "Excellent",
-        walkability: "Very good",
-        propertyGrowth: {
-          flats: "+3% per year",
-          houses: "+4.2% per year"
-        },
-        areaVibe: ["Family-friendly", "Trendy", "Cultural"]
-      },
-      pros: ["Good schools", "Excellent transport links", "Plenty of green spaces"],
-      cons: ["Higher than average property prices", "Some busy roads"],
-      propertyPrices: {
-        flatTwoBed: 450000 + (Math.random() * 100000),
-        houseThreeBed: 750000 + (Math.random() * 200000)
-      }
-    });
-  }
-  
-  return areas;
-};
+const AREA_PROMPT = (area_description: string, location: string) => `I am looking for a place to live. Please analyze the following description of my ideal area: "${area_description}". Based on this, suggest some specific areas in ${location} that might be a good fit for me.
 
-// Add European countries and their regions
-const europeanCountriesAndRegions = {
-  "Italy": ["Tuscany", "Lombardy", "Veneto", "Sicily", "Piedmont", "Lazio", "Campania"],
-  "Spain": ["Catalonia", "Andalusia", "Madrid", "Valencia", "Balearic Islands", "Basque Country", "Galicia"],
-  "Portugal": ["Lisbon", "Porto", "Algarve", "Madeira", "Azores", "Alentejo", "Central Portugal"],
-  "Romania": ["Transylvania", "Bucharest", "Moldova", "Banat", "Oltenia", "Dobruja", "Crișana", "Maramureș"],
-  "France": ["Île-de-France", "Provence", "Normandy", "Brittany", "Alsace", "French Riviera", "Loire Valley"],
-  "Germany": ["Bavaria", "Berlin", "Baden-Württemberg", "North Rhine-Westphalia", "Hesse", "Saxony", "Hamburg"],
-  "Netherlands": ["North Holland", "South Holland", "Utrecht", "Gelderland", "North Brabant", "Limburg", "Zeeland"],
-  "Greece": ["Attica", "Central Macedonia", "Crete", "South Aegean", "Peloponnese", "Thessaly", "Ionian Islands"],
-  "Austria": ["Vienna", "Tyrol", "Salzburg", "Styria", "Lower Austria", "Upper Austria", "Carinthia"],
-  "Sweden": ["Stockholm", "Gothenburg", "Malmö", "Uppsala", "Västra Götaland", "Skåne", "Norrland"],
-  "Poland": ["Masovia", "Lesser Poland", "Greater Poland", "Pomerania", "Silesia", "Łódź", "Lower Silesia"],
-  "Czechia": ["Prague", "Central Bohemia", "South Bohemia", "Moravia-Silesia", "South Moravia", "Pilsen", "Vysočina"],
-  "Switzerland": ["Zurich", "Geneva", "Bern", "Vaud", "Ticino", "Basel", "Graubünden"],
-  "Belgium": ["Brussels", "Flanders", "Wallonia", "Antwerp", "East Flanders", "Liège", "West Flanders"],
-  "Ireland": ["Dublin", "Cork", "Galway", "Kerry", "Wicklow", "Clare", "Donegal"],
-  "Denmark": ["Copenhagen", "Aarhus", "Odense", "Aalborg", "Zealand", "Funen", "Jutland"],
-  "Finland": ["Uusimaa", "Pirkanmaa", "Southwest Finland", "Northern Ostrobothnia", "Central Finland", "Lapland", "North Karelia"],
-  "Norway": ["Oslo", "Bergen", "Trondheim", "Stavanger", "Western Norway", "Northern Norway", "Trøndelag"],
-  "Hungary": ["Budapest", "Pest County", "Debrecen", "Szeged", "Lake Balaton", "Western Transdanubia", "Northern Hungary"],
-  "Bulgaria": ["Sofia", "Plovdiv", "Varna", "Burgas", "Veliko Tarnovo", "Ruse", "Stara Zagora"],
-  "Croatia": ["Dalmatia", "Istria", "Zagreb", "Dubrovnik-Neretva", "Split-Dalmatia", "Zadar", "Kvarner"],
-  "Serbia": ["Belgrade", "Novi Sad", "Niš", "Kragujevac", "Subotica", "Zlatibor", "Vojvodina"],
-  "Slovenia": ["Ljubljana", "Maribor", "Bled", "Coastal–Karst", "Upper Carniola", "Lower Styria", "Prekmurje"],
-  "Slovakia": ["Bratislava", "Košice", "Tatra Mountains", "Banská Bystrica", "Nitra", "Žilina", "Prešov"],
-  "Estonia": ["Tallinn", "Tartu", "Pärnu", "Saaremaa", "Narva", "Viljandi", "Ida-Viru"],
-  "Latvia": ["Riga", "Jurmala", "Liepāja", "Daugavpils", "Sigulda", "Ventspils", "Cēsis"],
-  "Lithuania": ["Vilnius", "Kaunas", "Klaipėda", "Palanga", "Druskininkai", "Trakai", "Curonian Spit"],
-  "Cyprus": ["Limassol", "Paphos", "Nicosia", "Larnaca", "Famagusta", "Kyrenia", "Troodos"],
-  "Malta": ["Valletta", "Sliema", "St. Julian's", "Gozo", "Mdina", "Three Cities", "Northern Region"],
-  "Luxembourg": ["Luxembourg City", "Esch-sur-Alzette", "Differdange", "Dudelange", "Ettelbruck", "Diekirch", "Echternach"],
-  "Iceland": ["Reykjavík", "South Region", "Northeast Region", "East Region", "West Fjords", "Capital Region", "South Peninsula"],
-  "Trinidad and Tobago": ["Port of Spain", "San Fernando", "Arima", "Chaguanas", "Point Fortin", "Tobago", "Diego Martin"]
-};
+I want you to respond with a JSON array of objects. Each object should contain the following keys:
+- name: The name of the area.
+- matchPercentage: A number between 0 and 100 indicating how well the area matches my preferences.
+- description: A short description of the area, highlighting why it might be a good fit for me.
+- poshScore: A number between 0 and 100 indicating how "posh" the area is. This is subjective, but should be based on factors like property prices, local amenities, and the general reputation of the area.
+- coordinates: An object containing the latitude and longitude of the area.
+- amenities: An array of strings, each string being a specific reason why the area might be a good fit for me.
+- areaStats: An object containing some statistics about the area, including:
+  - crimeRate: A string describing the crime rate in the area (e.g. "low", "moderate", "high").
+  - transportScore: A string describing the public transport options in the area (e.g. "excellent", "good", "poor").
+  - walkability: A string describing how walkable the area is (e.g. "very walkable", "somewhat walkable", "not very walkable").
+  - propertyGrowth: An object containing the predicted property growth for flats and houses in the area over the next 5 years (e.g. "{ flats: '5%', houses: '7%' }").
+  - areaVibe: An array of strings, each string being a single word describing the vibe of the area (e.g. ["trendy", "family-friendly", "quiet"]).
 
-// Get area details for postcode search
-export const getAreaDetails = async (
-  searchQuery: string, 
-  apiKey: string
-): Promise<AreaMatch> => {
-  console.log(`Getting details for: ${searchQuery}`);
-  
-  // This is a mock implementation
-  if (!apiKey) {
-    console.warn("No API key provided. Using mock data.");
-  }
-  
-  // Wait to simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Generate generic area data
-  return {
-    name: searchQuery,
-    matchPercentage: 85,
-    description: `${searchQuery} is a residential area with a mix of properties and good amenities.`,
-    poshScore: 75,
-    coordinates: {
-      lat: 51.5 + (Math.random() * 0.1 - 0.05),
-      lng: -0.1 + (Math.random() * 0.2 - 0.1)
+Here's an example of the format I want you to use:
+[
+  {
+    "name": "Notting Hill",
+    "matchPercentage": 92,
+    "description": "Notting Hill is an affluent and fashionable area, known for its vibrant atmosphere, beautiful Victorian townhouses, and the famous Portobello Road Market.",
+    "poshScore": 95,
+    "coordinates": {
+      "lat": 51.5151,
+      "lng": -0.1994
     },
-    amenities: ["Parks", "Restaurants", "Schools", "Transport"],
-    areaStats: {
-      crimeRate: "Low to medium",
-      transportScore: "Good",
-      walkability: "Very good",
-      propertyGrowth: {
-        flats: "+3.2% per year",
-        houses: "+4.1% per year"
+    "amenities": [
+      "Close to Portobello Road Market",
+      "Beautiful Victorian architecture",
+      "Excellent transport links"
+    ],
+    "areaStats": {
+      "crimeRate": "low",
+      "transportScore": "excellent",
+      "walkability": "very walkable",
+      "propertyGrowth": {
+        "flats": "6%",
+        "houses": "8%"
       },
-      areaVibe: ["Family-friendly", "Residential", "Convenient"]
-    },
-    pros: ["Good transport links", "Local amenities", "Residential feel"],
-    cons: ["Average property prices", "Some busy roads"],
-    propertyPrices: {
-      flatTwoBed: 350000 + (Math.random() * 100000),
-      houseThreeBed: 550000 + (Math.random() * 150000)
+      "areaVibe": ["trendy", "vibrant", "affluent"]
     }
-  };
-};
-
-// Simulate OpenAI API call
-export const analyzeAreaPreferences = async (
-  userInput: string, 
-  apiKey: string,
-  mapMode: 'london' | 'uk' | 'europe' = 'london',
-  nearestCity: string = 'none'
-): Promise<AreaMatch[]> => {
-  console.log(`Analyzing preferences for: ${userInput}`);
-  console.log(`Map mode: ${mapMode}, Nearest city: ${nearestCity}`);
-  
-  if (!apiKey) {
-    console.warn("No API key provided. Using mock data.");
+  },
+  {
+    "name": "Hampstead",
+    "matchPercentage": 88,
+    "description": "Hampstead is an affluent suburban area known for its intellectual, liberal, artistic, and literary associations.",
+    "poshScore": 90,
+    "coordinates": {
+      "lat": 51.5574,
+      "lng": -0.1772
+    },
+    "amenities": [
+      "Close to Hampstead Heath",
+      "Good schools",
+      "Quiet and green"
+    ],
+    "areaStats": {
+      "crimeRate": "very low",
+      "transportScore": "good",
+      "walkability": "very walkable",
+      "propertyGrowth": {
+        "flats": "4%",
+        "houses": "6%"
+      },
+      "areaVibe": ["leafy", "quiet", "affluent"]
+    }
   }
-  
-  // Wait to simulate API call
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
-  let numberOfResults = 5; // Default for London
-  
-  if (mapMode === 'uk') {
-    numberOfResults = 8; // More results for UK
+]
+
+Please only respond with the JSON, and nothing else.
+`;
+
+export const analyzeAreaPreferences = async (areaDescription: string, apiKey: string, mapMode: string, location: string): Promise<AreaMatch[]> => {
+  const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+
+  let searchLocation = '';
+
+  if (mapMode === 'london') {
+    searchLocation = 'London';
+  }
+  else if (mapMode === 'uk') {
+    searchLocation = `the UK, near ${location}`;
   } else if (mapMode === 'europe') {
-    numberOfResults = 10; // Even more results for Europe
-    
-    // Return European areas if mode is Europe
-    return [
-      {
-        name: "Bucharest - Primăverii",
-        matchPercentage: 95,
-        description: "Upscale residential area with embassies and luxury properties",
-        poshScore: 92,
-        coordinates: { lat: 44.4677, lng: 26.0896 },
-        amenities: ["Parks", "Luxury Restaurants", "International Schools", "Diplomatic Area"],
-        areaStats: {
-          crimeRate: "Very low",
-          transportScore: "Good",
-          walkability: "Excellent",
-          propertyGrowth: { flats: "+5.5% per year", houses: "+7.2% per year" },
-          areaVibe: ["Exclusive", "Diplomatic", "Quiet"]
-        },
-        pros: ["Elite neighborhood", "Green spaces", "Security"],
-        cons: ["High cost of living", "Tourist presence in summer"],
-        propertyPrices: { flatTwoBed: 350000, houseThreeBed: 850000 },
-        livingDescription: "Home to diplomatic residences and affluent locals"
-      },
-      {
-        name: "Cluj-Napoca - Bună Ziua",
-        matchPercentage: 88,
-        description: "Modern residential district with tech influence",
-        poshScore: 85,
-        coordinates: { lat: 46.7538, lng: 23.6221 },
-        amenities: ["Tech Hubs", "Modern Restaurants", "International Schools", "Shopping Centers"],
-        areaStats: {
-          crimeRate: "Low",
-          transportScore: "Good",
-          walkability: "Very good",
-          propertyGrowth: { flats: "+6.5% per year", houses: "+8.0% per year" },
-          areaVibe: ["Modern", "Tech-oriented", "Cosmopolitan"]
-        },
-        pros: ["IT hub", "Modern infrastructure", "International atmosphere"],
-        cons: ["New development areas", "Growing traffic"],
-        propertyPrices: { flatTwoBed: 180000, houseThreeBed: 380000 },
-        livingDescription: "Popular among tech professionals and expats"
-      },
-      {
-        name: "Brasov - Schei",
-        matchPercentage: 86,
-        description: "Historic district with traditional Romanian architecture",
-        poshScore: 83,
-        coordinates: { lat: 45.6358, lng: 25.5848 },
-        amenities: ["Historic Sites", "Traditional Restaurants", "Cultural Venues", "Mountain Views"],
-        areaStats: {
-          crimeRate: "Very low",
-          transportScore: "Moderate",
-          walkability: "Excellent",
-          propertyGrowth: { flats: "+4.5% per year", houses: "+6.2% per year" },
-          areaVibe: ["Historic", "Cultural", "Picturesque"]
-        },
-        pros: ["Rich history", "Mountain proximity", "Authentic experience"],
-        cons: ["Tourist crowds", "Limited parking"],
-        propertyPrices: { flatTwoBed: 140000, houseThreeBed: 300000 },
-        livingDescription: "Charming neighborhood with traditional Saxon influence"
-      },
-      {
-        name: "Timisoara - Fabric",
-        matchPercentage: 80,
-        description: "Rejuvenated historic district with bohemian vibes",
-        poshScore: 78,
-        coordinates: { lat: 45.7511, lng: 21.2372 },
-        amenities: ["Art Galleries", "Cafes", "Universities", "Urban Parks"],
-        areaStats: {
-          crimeRate: "Low",
-          transportScore: "Good",
-          walkability: "Very good",
-          propertyGrowth: { flats: "+5.0% per year", houses: "+6.0% per year" },
-          areaVibe: ["Bohemian", "Artistic", "Diverse"]
-        },
-        pros: ["Cultural scene", "Affordability", "European Capital of Culture 2023"],
-        cons: ["Some areas needing renovation", "Mixed development"],
-        propertyPrices: { flatTwoBed: 120000, houseThreeBed: 250000 },
-        livingDescription: "Artistic neighborhood with multicultural heritage"
-      },
-      {
-        name: "Constanta - Mamaia Nord",
-        matchPercentage: 78,
-        description: "Premium beachfront area with resort atmosphere",
-        poshScore: 80,
-        coordinates: { lat: 44.2418, lng: 28.6326 },
-        amenities: ["Beaches", "Seafood Restaurants", "Beach Clubs", "Water Sports"],
-        areaStats: {
-          crimeRate: "Low",
-          transportScore: "Moderate",
-          walkability: "Very good",
-          propertyGrowth: { flats: "+7.0% per year", houses: "+8.5% per year" },
-          areaVibe: ["Resort-like", "Seasonal", "Modern"]
-        },
-        pros: ["Black Sea views", "Summer entertainment", "Investment potential"],
-        cons: ["Seasonal popularity", "Quieter in winter"],
-        propertyPrices: { flatTwoBed: 200000, houseThreeBed: 450000 },
-        livingDescription: "Luxury beachfront living on the Black Sea coast"
-      }
-    ];
+    if (location && location !== 'none') {
+      searchLocation = location;
+    } else {
+      searchLocation = 'Europe';
+    }
   }
-  
-  // Generate random area matches
-  return createAreaMatches(numberOfResults);
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "user",
+          content: AREA_PROMPT(areaDescription, searchLocation),
+        },
+      ],
+      temperature: 0.4,
+    });
+
+    const content = completion.choices[0].message?.content;
+
+    if (content) {
+      try {
+        const parsedContent = JSON.parse(content);
+        if (Array.isArray(parsedContent)) {
+          return parsedContent as AreaMatch[];
+        } else {
+          console.error("Unexpected content format: Not an array.");
+          return [];
+        }
+      } catch (parseError) {
+        console.error("Error parsing JSON response:", parseError);
+        console.error("Invalid JSON content:", content);
+        return [];
+      }
+    } else {
+      console.error("No content received from OpenAI API.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error during OpenAI API call:", error);
+    return [];
+  }
 };
 
-// New function to get European countries and their regions
 export const getEuropeanCountriesAndRegions = () => {
-  return europeanCountriesAndRegions;
+  return {
+    'Austria': ['Vienna', 'Salzburg', 'Tyrol', 'Styria', 'Upper Austria'],
+    'Belgium': ['Brussels', 'Flanders', 'Wallonia', 'Antwerp', 'Liège'],
+    'Bulgaria': ['Sofia', 'Plovdiv', 'Varna', 'Burgas', 'Ruse'],
+    'Croatia': ['Zagreb', 'Split-Dalmatia', 'Istria', 'Dubrovnik-Neretva'],
+    'Cyprus': ['Nicosia', 'Limassol', 'Paphos', 'Larnaca', 'Famagusta'],
+    'Czech Republic': ['Prague', 'Central Bohemia', 'South Bohemia', 'Moravia-Silesia'],
+    'Denmark': ['Copenhagen', 'Zealand', 'North Denmark', 'Central Denmark', 'Southern Denmark'],
+    'Estonia': ['Harju', 'Tartu', 'Ida-Viru', 'Pärnu', 'Lääne-Viru'],
+    'Finland': ['Uusimaa', 'Southwest Finland', 'Pirkanmaa', 'Northern Ostrobothnia'],
+    'France': ['Île-de-France', 'Provence-Alpes-Côte d\'Azur', 'Rhône-Alpes', 'Brittany', 'Normandy'],
+    'Germany': ['Bavaria', 'Berlin', 'North Rhine-Westphalia', 'Baden-Württemberg', 'Hamburg'],
+    'Greece': ['Attica', 'Central Macedonia', 'Crete', 'Peloponnese', 'South Aegean'],
+    'Hungary': ['Budapest', 'Pest', 'Debrecen', 'Szeged', 'Miskolc'],
+    'Ireland': ['Dublin', 'Cork', 'Galway', 'Limerick', 'Waterford'],
+    'Italy': ['Lombardy', 'Lazio', 'Tuscany', 'Veneto', 'Campania', 'Sicily', 'Sardinia'],
+    'Latvia': ['Riga', 'Kurzeme', 'Latgale', 'Vidzeme', 'Zemgale'],
+    'Lithuania': ['Vilnius', 'Kaunas', 'Klaipėda', 'Šiauliai', 'Panevėžys'],
+    'Luxembourg': ['Luxembourg City', 'Esch-sur-Alzette', 'Differdange', 'Dudelange'],
+    'Malta': ['Gozo', 'Northern', 'Northern Harbour', 'South Eastern', 'Southern Harbour'],
+    'Netherlands': ['North Holland', 'South Holland', 'Utrecht', 'North Brabant', 'Gelderland'],
+    'Poland': ['Masovian', 'Lesser Poland', 'Silesian', 'Greater Poland', 'Lower Silesian'],
+    'Portugal': ['Lisbon', 'Porto', 'Algarve', 'Madeira', 'Azores', 'Alentejo'],
+    'Romania': ['Bucharest', 'Cluj', 'Iași', 'Timișoara', 'Constanța', 'Brașov', 'Transylvania'],
+    'Slovakia': ['Bratislava', 'Košice', 'Prešov', 'Žilina', 'Banská Bystrica'],
+    'Slovenia': ['Central Slovenia', 'Coastal–Karst', 'Southeast Slovenia', 'Drava'],
+    'Spain': ['Madrid', 'Catalonia', 'Andalusia', 'Valencia', 'Basque Country', 'Galicia'],
+    'Sweden': ['Stockholm', 'Västra Götaland', 'Skåne', 'Uppsala', 'Östergötland'],
+    'Trinidad and Tobago': ['Port of Spain', 'San Fernando', 'Arima', 'Chaguanas', 'Point Fortin']
+  };
 };
