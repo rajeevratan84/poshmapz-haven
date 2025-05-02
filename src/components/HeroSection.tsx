@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building, Star, RefreshCw, Sparkles, Rocket } from "lucide-react";
+import { MapPin, Search, Building, Star, RefreshCw, Sparkles, Rocket, Bookmark } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
 import GoogleMap from './GoogleMap';
 import AnimatedSearchExample from './AnimatedSearchExample';
@@ -73,7 +73,7 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
-            <div className="flex justify-center items-center">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
               <div className="relative w-full sm:w-auto group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-posh-green to-pink-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
                 <Link 
@@ -88,7 +88,19 @@ const HeroSection: React.FC = () => {
                   </Button>
                 </Link>
               </div>
+              
+              <Link to="/postcode" className="w-full sm:w-auto">
+                <Button variant="glow" size="xl" className="w-full flex items-center gap-3 px-8 py-7">
+                  <MapPin className="h-5 w-5" />
+                  <span className="font-bold">Discover How Posh Your Postcode Is</span>
+                </Button>
+              </Link>
             </div>
+            
+            <Link to="/saved" className="flex items-center gap-2 text-white hover:text-primary mt-4 justify-center">
+              <Bookmark className="h-4 w-4" />
+              <span className="text-sm">View your saved areas</span>
+            </Link>
           </ScrollAnimation>
         </div>
         
