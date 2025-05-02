@@ -131,6 +131,65 @@ export const analyzeAreaPreferences = async (areaDescription: string, apiKey: st
   }
 };
 
+export const getAreaDetails = async (searchQuery: string, apiKey: string): Promise<AreaMatch | null> => {
+  const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+  
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-1106",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "user",
+          content: `Please provide detailed information about ${searchQuery} in the UK. Include details about the area's characteristics, housing prices, transport links, and amenities. Return the data as a single JSON object with the following structure:
+          {
+            "name": "Area Name",
+            "poshScore": 85,
+            "matchPercentage": 90,
+            "areaType": "Urban neighborhood",
+            "description": "Detailed description of the area",
+            "livingDescription": "What it's like to live in this area",
+            "coordinates": {
+              "lat": 51.1234,
+              "lng": -0.1234
+            },
+            "amenities": ["Amenity 1", "Amenity 2", "Amenity 3"],
+            "areaStats": {
+              "crimeRate": "low - 20% below national average",
+              "transportScore": "excellent - 10 min to city center",
+              "walkability": "very walkable - 85/100",
+              "propertyGrowth": {
+                "flats": "+3.2%",
+                "houses": "+4.5%"
+              },
+              "areaVibe": ["trendy", "family-friendly", "quiet"]
+            }
+          }`
+        },
+      ],
+      temperature: 0.4,
+    });
+
+    const content = completion.choices[0].message?.content;
+
+    if (content) {
+      try {
+        const parsedContent = JSON.parse(content);
+        return parsedContent as AreaMatch;
+      } catch (parseError) {
+        console.error("Error parsing JSON response:", parseError);
+        return null;
+      }
+    } else {
+      console.error("No content received from OpenAI API.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during OpenAI API call:", error);
+    return null;
+  }
+};
+
 export const getEuropeanCountriesAndRegions = () => {
   return {
     'Austria': ['Vienna', 'Salzburg', 'Tyrol', 'Styria', 'Upper Austria'],
