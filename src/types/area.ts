@@ -1,4 +1,3 @@
-
 export interface AreaStats {
   crimeRate: string;
   transportScore: string;
@@ -38,10 +37,6 @@ export interface AreaMatch {
   // New fields for improved area description
   livingDescription?: string;
   postcodeSpecifics?: string;
-  // Field to track if this result is saved
-  savedAt?: string;
-  savedFrom?: 'postcode' | 'ai-search';
-  id?: string;
 }
 
 export interface AreaData {
@@ -89,8 +84,4 @@ export interface AreaData {
   // New fields for improved area description
   livingDescription?: string;
   postcodeSpecifics?: string;
-  // Field to track if this result is saved
-  savedAt?: string;
-  savedFrom?: 'postcode' | 'ai-search';
-  id?: string;
 }

@@ -57,17 +57,14 @@ async function createServer() {
     });
   }
 
-  // IMPORTANT: This route is crucial for SPA routing - it must be AFTER all other routes
-  // This makes sure ALL routes are handled by serving index.html
-  app.use('*', (req, res) => {
-    console.log(`Serving SPA for path: ${req.originalUrl}`);
+  // This is the crucial part - serve index.html for any route in both dev and prod
+  app.get('*', (req, res) => {
     if (isProd) {
-      // In production, serve the index.html file for any route
       const indexHtml = path.resolve(__dirname, 'dist', 'index.html');
       res.sendFile(indexHtml);
     } else {
-      // In development, index.html should also be served for client-side routing
-      res.sendFile(path.resolve(__dirname, 'index.html'));
+      // In development, this should be handled by the middleware above
+      res.status(404).send('Not found in development mode');
     }
   });
 
