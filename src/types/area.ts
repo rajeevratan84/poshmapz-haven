@@ -1,3 +1,4 @@
+
 export interface AreaStats {
   crimeRate: string;
   transportScore: string;
@@ -34,54 +35,4 @@ export interface AreaMatch {
     flatTwoBed: number;
     houseThreeBed: number;
   };
-  // New fields for improved area description
-  livingDescription?: string;
-  postcodeSpecifics?: string;
-}
-
-export interface AreaData {
-  name: string;
-  poshScore: number;
-  averagePrice: number;
-  propertyPrices?: {
-    flatTwoBed: number;
-    houseThreeBed: number;
-  };
-  crimeIndex: number;
-  transportScore: number;
-  greenSpaceAccess: number;
-  amenityDensity: number;
-  walkability: number;
-  priceGrowth: number;
-  scoreBreakdown: {
-    property: number;
-    safety: number;
-    transport: number;
-    lifestyle: number;
-    environment: number;
-  };
-  areaType?: string;
-  description?: string;
-  history?: string;
-  demographics?: string;
-  attractions?: string;
-  recentTrends?: string;
-  gentrificationIndex?: number;
-  matchPercentage?: number;
-  pros?: string[];
-  cons?: string[];
-  amenities?: string[];
-  areaStats?: AreaStats;
-  areaVibe?: string[];
-  crimeRateDescription?: string;
-  transportDescription?: string;
-  walkabilityDescription?: string;
-  propertyGrowthDetails?: {
-    flats: string;
-    houses: string;
-  };
-  matchingAmenities?: string[];
-  // New fields for improved area description
-  livingDescription?: string;
-  postcodeSpecifics?: string;
 }

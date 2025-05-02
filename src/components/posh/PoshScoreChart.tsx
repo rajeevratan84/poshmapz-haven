@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { useTheme } from '@/context/ThemeContext';
 
 interface ScoreBreakdown {
@@ -30,29 +30,25 @@ const PoshScoreChart: React.FC<PoshScoreChartProps> = ({ scoreBreakdown }) => {
   
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={chartData}>
+      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
         <PolarGrid stroke={isDark ? '#4a5568' : '#e2e8f0'} />
         <PolarAngleAxis 
           dataKey="subject" 
-          tick={{ fill: isDark ? '#ffffff' : '#4a5568', fontSize: 14, fontWeight: 500 }}
-          stroke={isDark ? '#4a5568' : '#e2e8f0'}
+          tick={{ fill: isDark ? '#a0aec0' : '#4a5568', fontSize: 12 }} 
         />
         <PolarRadiusAxis 
           angle={90} 
           domain={[0, 100]} 
-          tick={{ fill: isDark ? '#a0aec0' : '#4a5568' }}
-          tickCount={5}
+          tick={{ fill: isDark ? '#a0aec0' : '#4a5568' }} 
           stroke={isDark ? '#4a5568' : '#e2e8f0'}
-          axisLine={false}
         />
         <Radar
           name="Score"
           dataKey="A"
           stroke="#10b981"
           fill="#10b981"
-          fillOpacity={0.6}
+          fillOpacity={0.4}
         />
-        <Legend />
       </RadarChart>
     </ResponsiveContainer>
   );
