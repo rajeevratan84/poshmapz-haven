@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { HeatmapPoint } from '@/services/overpassService';
@@ -188,7 +187,7 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
         }
       });
       
-      // Add click handlers for individual points
+      // Add click handler for individual points (using layer-specific syntax)
       mapInstanceRef.current.on('click', 'heatmap-points', (e) => {
         if (e.features && e.features.length > 0) {
           const feature = e.features[0];
@@ -210,7 +209,7 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
         }
       });
       
-      // Change cursor on hover
+      // Change cursor on hover for points layer
       mapInstanceRef.current.on('mouseenter', 'heatmap-points', () => {
         if (mapInstanceRef.current) {
           mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
