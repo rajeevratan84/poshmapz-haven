@@ -27,32 +27,44 @@ export async function translateToOverpassQuery(
         messages: [
           {
             role: 'system',
-            content: `You are an expert at converting natural language queries into Overpass API queries for OpenStreetMap data within London bounds.
+            content: `You are an expert at converting simple place queries into Overpass API queries for OpenStreetMap data within London bounds.
 
 CRITICAL REQUIREMENTS:
 - Always use London bounding box: [bbox:51.28,-0.51,51.69,0.33]
-- Only return the raw Overpass QL query, no explanations
-- Focus on amenities, POIs, and infrastructure that affect "safety" and livability
-- For "safe" areas, prioritize: police stations, hospitals, schools, well-lit areas, parks with good access
-- Use appropriate tags like amenity=police, amenity=hospital, amenity=school, highway=street_lamp, etc.
-- Combine multiple relevant features when appropriate
-- Always include coordinate output format
+- Only return the raw Overpass QL query, no explanations or markdown
+- Focus on finding specific types of places/amenities
+- Use appropriate OpenStreetMap tags for the requested places
+- Always include coordinate output format: [out:json][timeout:25];
+- End with: out geom;
 
-Example queries:
-- "safe areas" → Query for police stations, hospitals, schools, street lamps
-- "family-friendly" → Query for schools, playgrounds, parks
-- "nightlife" → Query for pubs, bars, restaurants
-- "transport" → Query for tube stations, bus stops
-- "shopping" → Query for shops, supermarkets, malls
+Common place types and their tags:
+- Coffee shops: amenity=cafe
+- Restaurants: amenity=restaurant + cuisine tags
+- Pubs/bars: amenity=pub or amenity=bar
+- Shops: shop=* (specific shop types)
+- Gyms: leisure=fitness_centre
+- Pharmacies: amenity=pharmacy
+- Bookstores: shop=books
+- Banks: amenity=bank
+- Hotels: tourism=hotel
+
+Example query structure:
+[out:json][timeout:25][bbox:51.28,-0.51,51.69,0.33];
+(
+  node[amenity=cafe];
+  way[amenity=cafe];
+  relation[amenity=cafe];
+);
+out geom;
 
 Return ONLY the Overpass QL query.`
           },
           {
             role: 'user',
-            content: userQuery
+            content: `Find all "${userQuery}" in London`
           }
         ],
-        temperature: 0.3,
+        temperature: 0.1,
       }),
     });
 
@@ -117,13 +129,23 @@ export async function fetchOverpassData(overpassQuery: string): Promise<HeatmapP
           return; // Skip elements without coordinates
         }
 
-        const name = element.tags?.name || element.tags?.amenity || 'Unknown';
-        const type = element.tags?.amenity || element.tags?.shop || element.tags?.highway || 'poi';
+        // Extract meaningful name and type
+        const name = element.tags?.name || 
+                    element.tags?.brand || 
+                    element.tags?.amenity || 
+                    element.tags?.shop || 
+                    'Unknown';
+        
+        const type = element.tags?.amenity || 
+                    element.tags?.shop || 
+                    element.tags?.leisure || 
+                    element.tags?.tourism || 
+                    'poi';
         
         points.push({
           lat,
           lng,
-          intensity: 1, // Base intensity, can be adjusted based on type
+          intensity: 1, // Base intensity for heatmap
           name,
           type
         });

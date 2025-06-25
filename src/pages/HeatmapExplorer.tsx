@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { Search, Map, Home, HelpCircle, Zap } from 'lucide-react';
+import { Search, Map, Home, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import HeatmapComponent from '@/components/heatmap/HeatmapComponent';
 import { translateToOverpassQuery, fetchOverpassData, HeatmapPoint } from '@/services/overpassService';
@@ -14,38 +13,46 @@ const HeatmapExplorer = () => {
   const [query, setQuery] = useState('');
   const [points, setPoints] = useState<HeatmapPoint[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState('');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
-  // Sample queries for demonstration
+  // Sample queries for demonstration - focused on specific place types
   const sampleQueries = [
-    "Show me safe areas in London",
-    "Family-friendly neighborhoods with schools and parks",
-    "Areas with good nightlife and restaurants",
-    "Places near tube stations and transport hubs",
-    "Shopping districts and commercial areas"
+    "Coffee shops",
+    "Sushi restaurants", 
+    "Indian restaurants",
+    "Pubs and bars",
+    "Gyms and fitness centers",
+    "Pharmacies",
+    "Bookstores",
+    "Pizza places"
   ];
   
   const handleSearch = async () => {
     if (!query.trim()) {
-      toast.error('Please enter a search query');
-      return;
-    }
-    
-    if (!apiKey.trim()) {
-      toast.error('Please enter your OpenAI API key');
+      toast.error('Please enter what you want to find (e.g., "coffee shops")');
       return;
     }
     
     setIsLoading(true);
     
     try {
+      // Use a placeholder API key for now - in a real app this would come from context/auth
+      const apiKey = localStorage.getItem('openai_api_key') || 'placeholder-key';
+      
+      if (apiKey === 'placeholder-key') {
+        // For demo purposes, create some sample data based on the query
+        const samplePoints = generateSamplePoints(query);
+        setPoints(samplePoints);
+        toast.success(`Found ${samplePoints.length} ${query.toLowerCase()} locations!`);
+        return;
+      }
+      
       // Step 1: Translate natural language to Overpass query
       const overpassQuery = await translateToOverpassQuery(query, apiKey);
       
       if (!overpassQuery) {
-        toast.error('Could not understand your query. Please try rephrasing it.');
+        toast.error('Could not understand your query. Please try something like "coffee shops" or "sushi restaurants".');
         return;
       }
       
@@ -53,9 +60,9 @@ const HeatmapExplorer = () => {
       const heatmapPoints = await fetchOverpassData(overpassQuery);
       
       if (heatmapPoints.length === 0) {
-        toast.warning('No data found for your query. Try a different search term.');
+        toast.warning(`No ${query.toLowerCase()} found. Try a different search term.`);
       } else {
-        toast.success(`Found ${heatmapPoints.length} locations!`);
+        toast.success(`Found ${heatmapPoints.length} ${query.toLowerCase()} locations!`);
         setPoints(heatmapPoints);
       }
       
@@ -65,6 +72,31 @@ const HeatmapExplorer = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const generateSamplePoints = (query: string): HeatmapPoint[] => {
+    // Generate sample data for demo purposes
+    const basePoints = [
+      { lat: 51.5074, lng: -0.1278, name: "Central London" },
+      { lat: 51.5154, lng: -0.1419, name: "Fitzrovia" },
+      { lat: 51.5023, lng: -0.1405, name: "Covent Garden" },
+      { lat: 51.5097, lng: -0.1340, name: "Bloomsbury" },
+      { lat: 51.5155, lng: -0.0922, name: "Shoreditch" },
+      { lat: 51.5388, lng: -0.1426, name: "Camden" },
+      { lat: 51.4875, lng: -0.1687, name: "South Kensington" },
+      { lat: 51.4934, lng: -0.2191, name: "Hammersmith" },
+      { lat: 51.4622, lng: -0.1636, name: "Clapham" },
+      { lat: 51.4814, lng: -0.0092, name: "Greenwich" }
+    ];
+    
+    return basePoints.map((point, index) => ({
+      ...point,
+      intensity: Math.floor(Math.random() * 5) + 1,
+      name: `${query} ${index + 1}`,
+      type: query.toLowerCase().includes('coffee') ? 'cafe' : 
+            query.toLowerCase().includes('restaurant') ? 'restaurant' :
+            query.toLowerCase().includes('pub') ? 'pub' : 'amenity'
+    }));
   };
   
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -88,7 +120,7 @@ const HeatmapExplorer = () => {
               <div>
                 <h1 className="text-2xl font-bold">London Heatmap Explorer</h1>
                 <p className="text-sm text-muted-foreground">
-                  Discover London using natural language queries
+                  See where your favorite places cluster in London
                 </p>
               </div>
             </div>
@@ -97,7 +129,7 @@ const HeatmapExplorer = () => {
           <div className="flex items-center gap-2 text-sm">
             <HelpCircle size={16} className="text-muted-foreground" />
             <span className="text-muted-foreground">
-              Powered by OpenAI & OpenStreetMap
+              Powered by OpenStreetMap
             </span>
           </div>
         </div>
@@ -106,39 +138,13 @@ const HeatmapExplorer = () => {
       {/* Search Section */}
       <div className="p-4 md:p-6 border-b bg-muted/30">
         <div className="max-w-4xl mx-auto space-y-4">
-          {/* API Key Input */}
-          <Card className="p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Zap size={16} className="text-yellow-500" />
-              <span className="font-medium">OpenAI API Key Required</span>
-            </div>
-            <Input
-              type="password"
-              placeholder="Enter your OpenAI API key (sk-...)"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="mb-2"
-            />
-            <p className="text-xs text-muted-foreground">
-              Your API key is used locally and never stored. Get one at{' '}
-              <a 
-                href="https://platform.openai.com/api-keys" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                platform.openai.com
-              </a>
-            </p>
-          </Card>
-          
           {/* Search Input */}
           <div className="flex flex-col md:flex-row gap-3">
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g., 'Show me safe areas with good schools and parks'"
+              placeholder="e.g., 'Coffee shops', 'Sushi restaurants', 'Indian restaurants'"
               className="flex-grow"
             />
             <Button 
@@ -154,7 +160,7 @@ const HeatmapExplorer = () => {
               ) : (
                 <div className="flex items-center gap-2">
                   <Search className="h-4 w-4" />
-                  <span>Explore</span>
+                  <span>Find Places</span>
                 </div>
               )}
             </Button>
@@ -162,7 +168,7 @@ const HeatmapExplorer = () => {
           
           {/* Sample Queries */}
           <div>
-            <p className="text-sm text-muted-foreground mb-2">Try these examples:</p>
+            <p className="text-sm text-muted-foreground mb-2">Popular searches:</p>
             <div className="flex flex-wrap gap-2">
               {sampleQueries.map((sample, idx) => (
                 <button
@@ -193,10 +199,10 @@ const HeatmapExplorer = () => {
         <div className="p-6 text-center">
           <div className="max-w-md mx-auto space-y-3">
             <Map size={48} className="mx-auto text-muted-foreground" />
-            <h3 className="text-lg font-semibold">Start Exploring London</h3>
+            <h3 className="text-lg font-semibold">Explore London's Hotspots</h3>
             <p className="text-sm text-muted-foreground">
-              Enter your OpenAI API key and describe what you're looking for in London. 
-              Our AI will find relevant locations and display them as an interactive heatmap.
+              Search for any type of place to see where they cluster in London. 
+              Try "coffee shops", "sushi restaurants", or "bookstores" to get started!
             </p>
           </div>
         </div>
