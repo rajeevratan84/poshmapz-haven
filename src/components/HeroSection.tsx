@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { MapPin, Search, Building, Star, RefreshCw, Sparkles, Rocket } from "lucide-react";
+import { MapPin, Search, Building, Star, RefreshCw, Sparkles, Rocket, Map } from "lucide-react";
 import ScrollAnimation from './animations/ScrollAnimation';
 import GoogleMap from './GoogleMap';
 import AnimatedSearchExample from './AnimatedSearchExample';
@@ -73,7 +73,7 @@ const HeroSection: React.FC = () => {
           </ScrollAnimation>
           
           <ScrollAnimation type="fade-up" delay={600} duration={800}>
-            <div className="flex justify-center items-center">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
               <div className="relative w-full sm:w-auto group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-posh-green to-pink-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
                 <Link 
@@ -85,6 +85,17 @@ const HeroSection: React.FC = () => {
                     <Rocket className="h-5 w-5" />
                     <span className="font-bold">Use AI to find your Ideal Neighborhood</span>
                     <span className="absolute -top-3 -right-3 bg-coral text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse-subtle">BETA</span>
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="relative w-full sm:w-auto group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 via-blue-500 to-teal-500 rounded-full opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
+                <Link to="/heatmap" className="w-full relative">
+                  <Button variant="glow" size="xl" className="w-full relative flex items-center gap-3 px-8 py-7">
+                    <Map className="h-5 w-5" />
+                    <span className="font-bold">London Heatmap Explorer</span>
+                    <span className="absolute -top-3 -right-3 bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse-subtle">NEW</span>
                   </Button>
                 </Link>
               </div>
