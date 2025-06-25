@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 import { AreaMatch } from '@/types/area';
 
@@ -315,3 +316,4 @@ IMPORTANT:
 - Be precise about transportation options and limitations
 - JSON FORMAT ONLY - no explanatory text
 `;
+}
