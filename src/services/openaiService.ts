@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 import { AreaMatch } from '@/types/area';
 
@@ -14,7 +13,7 @@ export async function analyzeAreaPreferences(
       ? getLondonPrompt(userInput)
       : getUKPrompt(userInput, nearestCity);
 
-    console.log(`Making request to OpenAI API with GPT-4o model in ${mapMode} mode${nearestCity !== 'none' ? ` near ${nearestCity}` : ''}`);
+    console.log(`Making request to OpenAI API with GPT-4.1 model in ${mapMode} mode${nearestCity !== 'none' ? ` near ${nearestCity}` : ''}`);
     
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -23,18 +22,18 @@ export async function analyzeAreaPreferences(
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o', // Using GPT-4o model for better results
+        model: 'gpt-4.1-2025-04-14', // Updated to GPT-4.1
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that provides information about UK locations in JSON format only.'
+            content: 'You are a helpful assistant that provides information about UK locations in JSON format only. Focus on discovering hidden gems and lesser-known areas that match user preferences.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.7, // Increased for more variety in responses
+        temperature: 0.9, // Increased for more creative and diverse responses
       }),
     });
 
@@ -87,7 +86,7 @@ export async function getAreaDetails(
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4.1-2025-04-14', // Updated to GPT-4.1
         messages: [
           {
             role: 'system',
@@ -138,186 +137,181 @@ export async function getAreaDetails(
 
 function getLondonPrompt(userInput: string): string {
   return `
-You are an AI assistant for PoshMaps, a service that helps people find neighborhoods in London that match their preferences.
+You are an AI assistant for PoshMaps that specializes in discovering HIDDEN GEMS and LESSER-KNOWN neighborhoods in London.
 
-Based on the following user input, identify UP TO 10 AREAS across ALL of London that best match their preferences.
-CRUCIAL: PROVIDE DIVERSE GEOGRAPHICAL COVERAGE - include at least 2 areas each from North, South, East, West, and maybe 1-2 from Central London.
-Ensure you include lesser-known areas and neighborhoods, not just the famous ones.
-Make your selection HIGHLY DIVERSE in terms of area types, sizes, and character.
+Your mission: Find UP TO 10 DIVERSE London areas that match the user's preferences, with a STRONG EMPHASIS on discovering neighborhoods that are often overlooked but perfect matches.
 
-User input: "${userInput}"
+CRITICAL REQUIREMENTS:
+1. AVOID the obvious choices (Notting Hill, Chelsea, Camden, Clapham, etc.) UNLESS they are truly exceptional matches
+2. PRIORITIZE lesser-known neighborhoods, emerging areas, quiet residential pockets, and hidden gems
+3. Include areas from ALL compass directions: North, South, East, West, and maybe 1-2 from Central
+4. Mix of established residential areas, up-and-coming districts, village-like pockets, and unique enclaves
+5. Consider areas like: Dulwich Village, Blackheath, Rotherhithe, Walthamstow Village, Forest Hill, Crystal Palace, Bermondsey Street, London Fields, Stoke Newington, Putney Heath, Barnes, Bow, Limehouse, New Cross, Peckham Rye, Honor Oak, Herne Hill, etc.
 
-For each area, provide:
-1. Area name
-2. Match percentage (between 70-98%)
-3. A brief description of the area (2-3 sentences)
-4. A "Posh Score" between 60-95
-5. Coordinates (latitude and longitude) within London - BE PRECISE WITH COORDINATES
-6. A list of 3-7 amenities or features that match the user's request
-7. Detailed area statistics including:
-   - Crime rate (Low/Medium/High with specific percentage compared to London average)
-   - Transport score (Poor/Good/Excellent with specific tube/train lines and time to central London)
-   - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
-   - Property growth (use "+" or "-" followed by percentage for clear growth indicators)
-   - Area vibe (2-4 tags that describe the area character)
-8. At the end of each description, add ONE sentence explaining why this area specifically matches the user's requirements.
+User preferences: "${userInput}"
 
-Format the response as a valid JSON array with objects having these exact keys:
+For each area, provide comprehensive details including:
+- Unique selling points that make this area special and often overlooked
+- Why locals love it but tourists don't know about it
+- Specific streets, pubs, cafes, or spots that define the character
+- Transportation reality (not just "good transport" - be specific about lines, journey times)
+- Realistic property prices and recent market trends
+- What type of person thrives in this area
+
+Structure your response as a JSON array with these exact keys:
 [
   {
-    "name": "Area Name",
-    "matchPercentage": 95,
-    "description": "Brief description of the area. Also includes why it matches requirements.",
-    "poshScore": 85,
+    "name": "Unique Area Name",
+    "matchPercentage": 85,
+    "description": "3-4 sentences describing the area's hidden charm, local character, and why it's often overlooked. Include specific details about what makes it special - mention actual streets, landmarks, or local spots.",
+    "poshScore": 75,
     "coordinates": {
       "lat": 51.5074,
       "lng": -0.1278
     },
-    "amenities": ["amenity1", "amenity2", "amenity3"],
+    "amenities": ["specific local amenities", "unique features", "hidden gems"],
     "areaStats": {
-      "crimeRate": "Low - 20% below London average",
-      "transportScore": "Excellent - 15 min to central via Northern Line",
-      "walkability": "Very Walkable - 85/100",
+      "crimeRate": "Low - 15% below London average",
+      "transportScore": "Good - Overground to Liverpool Street (22 min), limited evening buses",
+      "walkability": "Very Walkable - 88/100",
       "propertyGrowth": {
-        "flats": "+2.5%",
-        "houses": "+3%"
+        "flats": "+4.2%",
+        "houses": "+5.8%"
       },
-      "areaVibe": ["Family-friendly", "Upscale", "Riverside"]
-    }
-  }
-]
-
-IMPORTANT REQUIREMENTS: 
-1. Include up to 10 areas total
-2. Ensure geographic diversity across London (North, South, East, West, Central)
-3. Include lesser-known neighborhoods alongside famous ones
-4. Provide realistic, accurate information and precise coordinates
-5. Sort by match percentage in descending order
-6. PROVIDE OUTPUT IN JSON FORMAT ONLY
-`;
-}
-
-function getUKPrompt(userInput: string, nearestCity: string = 'none'): string {
-  const citySpecificGuidance = nearestCity !== 'none' 
-    ? `Focus on areas within a 30-mile radius of ${nearestCity}. Include both the city itself and surrounding towns, villages, and suburbs that match the user's preferences.` 
-    : `Ensure good geographical distribution across the UK (Scotland, Wales, Northern Ireland, and England regions).`;
-
-  return `
-You are an AI assistant for PoshMaps, a service that helps people find towns and cities in the United Kingdom that match their preferences.
-
-Based on the following user input, identify up to 10 areas in the UK (outside of London) that best match their preferences.
-${citySpecificGuidance}
-Only include real cities, towns, villages and small communities within the United Kingdom, covering a range of sizes from small villages to major cities.
-DO NOT include neighborhoods within London as they are handled separately.
-IMPORTANT: DO NOT INCLUDE ANY LONDON AREAS IN YOUR RESULTS, EVEN IF THE USER MENTIONS LONDON.
-
-IMPORTANT: Consider small villages, hamlets, and lesser-known communities that might be perfect matches, not just major towns and cities.
-
-User input: "${userInput}"
-
-For each location, provide:
-1. Location name and region (e.g., "Edinburgh, Scotland" or "Manchester, England")
-2. Match percentage (between 70-98%)
-3. A brief description of the location (2-3 sentences)
-4. A "Posh Score" between 60-95
-5. Coordinates (latitude and longitude) for the location
-6. A list of 3-7 amenities or features that match the user's request
-7. Detailed area statistics including:
-   - Crime rate (Low/Medium/High with specific percentage compared to UK average, e.g., "Low - 15% below UK average" or "Medium - 5% above UK average")
-   - Transport score (Poor/Good/Excellent with specific details on train connections, airports, bus service, etc.)
-   - Walkability score (Not walkable/Moderately walkable/Very walkable with score out of 100)
-   - Property growth (use "+" or "-" followed by percentage for clear growth indicators, e.g., "+3.5%" or "-1.2%")
-   - Area vibe (2-4 tags like: Coastal, University Town, Historic, Cultural, etc.)
-8. At the end of each description, add ONE sentence explaining why this location specifically matches the user's requirements.
-
-Format the response as a valid JSON array with objects having these exact keys:
-[
-  {
-    "name": "Location Name, Region",
-    "matchPercentage": 95,
-    "description": "Brief description of the location. Also includes why it matches requirements.",
-    "poshScore": 85,
-    "coordinates": {
-      "lat": 55.9533,
-      "lng": -3.1883
-    },
-    "amenities": ["amenity1", "amenity2", "amenity3"],
-    "areaStats": {
-      "crimeRate": "Low - 20% below UK average",
-      "transportScore": "Excellent - Direct trains to London (2.5 hours), International airport",
-      "walkability": "Very Walkable - 85/100",
-      "propertyGrowth": {
-        "flats": "+2.5%",
-        "houses": "+3%"
-      },
-      "areaVibe": ["Historic", "Cultural", "University Town"]
+      "areaVibe": ["Hidden gem", "Village feel", "Artistic"]
     }
   }
 ]
 
 IMPORTANT: 
-- Limit your response to a maximum of 10 locations
-- Ensure all locations are real UK towns and cities with accurate information and actual UK coordinates
-- Sort by match percentage in descending order
-- DO NOT include any London areas in your results
-- Make sure to consider small villages and lesser-known areas that might be perfect matches
-${nearestCity !== 'none' ? `- Focus on areas within approximately 30 miles of ${nearestCity}` : '- Include locations from different regions of the UK for diversity'}
-PROVIDE OUTPUT IN JSON FORMAT ONLY.
-  `;
+- Focus on AUTHENTICITY over fame
+- Include specific local details (street names, pub names, market days, etc.)
+- Mention WHY each area is often overlooked but shouldn't be
+- Sort by match percentage (highest first)
+- Ensure geographic diversity across London
+- AVOID tourist hotspots unless they're genuinely perfect matches
+- JSON FORMAT ONLY - no explanatory text outside the JSON
+`;
+}
+
+function getUKPrompt(userInput: string, nearestCity: string = 'none'): string {
+  const citySpecificGuidance = nearestCity !== 'none' 
+    ? `Focus on hidden gems within a 30-mile radius of ${nearestCity}. Include both overlooked parts of the city itself and charming surrounding towns, villages, and suburbs that locals know but outsiders don't.` 
+    : `Discover hidden gems across the UK - focus on places that locals love but don't appear in typical "best places to live" lists.`;
+
+  return `
+You are an AI assistant for PoshMaps that specializes in discovering HIDDEN GEMS and OVERLOOKED locations across the UK.
+
+Your mission: Find up to 10 UK locations (outside London) that match the user's preferences, with STRONG EMPHASIS on places that are genuinely special but often missed by mainstream property searches.
+
+CRITICAL REQUIREMENTS:
+1. AVOID the obvious choices (Bath, York, Edinburgh city center, etc.) UNLESS they are truly exceptional matches
+2. PRIORITIZE: Historic market towns, coastal villages, cathedral cities' hidden quarters, former mill towns with character, university towns' residential areas, converted industrial areas, rural suburbs with character
+3. ${citySpecificGuidance}
+4. Include variety: seaside towns, market towns, suburban villages, historic quarters, converted industrial areas, university suburbs
+5. Consider places like: Marlow, Lewes, Rye, Hebden Bridge, Totnes, Ludlow, Stamford, Whitstable's backstreets, Harrogate's quieter areas, etc.
+
+User preferences: "${userInput}"
+
+For each location, provide:
+- Why this place is special but often overlooked
+- Specific details about local character (market days, independent shops, local traditions)
+- Transportation reality (exact train services, journey times, car access)
+- What type of lifestyle this place offers
+- Property market insights and value for money
+
+Structure as JSON array:
+[
+  {
+    "name": "Hidden Gem Town/Village, County",
+    "matchPercentage": 88,
+    "description": "3-4 sentences about why this place is special, what locals love about it, and why it's often missed. Include specific details about character, amenities, and lifestyle.",
+    "poshScore": 78,
+    "coordinates": {
+      "lat": 51.7520,
+      "lng": -1.2577
+    },
+    "amenities": ["specific local features", "unique selling points", "hidden treasures"],
+    "areaStats": {
+      "crimeRate": "Low - 25% below UK average",
+      "transportScore": "Good - Direct trains to London (45 min), limited Sunday service",
+      "walkability": "Very Walkable - 85/100",
+      "propertyGrowth": {
+        "flats": "+3.8%",
+        "houses": "+4.5%"
+      },
+      "areaVibe": ["Historic", "Hidden gem", "Community-focused"]
+    }
+  }
+]
+
+IMPORTANT:
+- Focus on AUTHENTICITY and local character over fame
+- Include specific local knowledge (market days, festivals, local landmarks)
+- Explain WHY each place is often overlooked
+- Sort by match percentage
+- Ensure variety in location types and regions
+${nearestCity !== 'none' ? `- Focus on areas within approximately 30 miles of ${nearestCity}` : '- Include locations from different UK regions for diversity'}
+- JSON FORMAT ONLY
+`;
 }
 
 function getPostcodeAreaPrompt(postcodeOrArea: string): string {
   return `
-You are an AI assistant for PoshMaps, a service that helps people find information about specific areas or postcodes in the UK.
+You are an AI assistant for PoshMaps that provides detailed, authentic information about specific UK locations.
 
-Based on the provided input "${postcodeOrArea}", which could be a UK postcode or area name, provide COMPREHENSIVE and DETAILED information about this specific location.
+For the location "${postcodeOrArea}", provide comprehensive and REALISTIC information. If this is a well-known area, focus on lesser-known aspects and hidden characteristics that locals know but outsiders don't.
 
-If this is a London area, provide extensive details about the neighborhood. If it's outside of London, provide information about the town, city, or village.
+Focus on:
+- Authentic local character and community feel
+- Specific neighborhoods within the broader area
+- Local knowledge (best streets, hidden spots, community hubs)
+- Realistic property market data
+- Transportation reality (not just "good transport" - be specific)
+- What type of person actually lives there vs. the stereotype
 
-Return a SINGLE location object with the following structure:
+Return a SINGLE detailed location object:
 
 {
-  "name": "Full Location Name, Region",
+  "name": "Specific Area Name, Region",
   "matchPercentage": 100,
-  "description": "Detailed 3-4 sentence description of the area, including its character and notable features.",
-  "areaType": "Urban/Suburban/Rural/Village/etc.",
-  "history": "2-3 sentences about the area's historical development.",
-  "demographics": "Description of who typically lives in this area.",
-  "attractions": "Notable attractions, landmarks, or amenities in the area.",
-  "recentTrends": "Recent developments or trends in the property market or community.",
-  "poshScore": 85, (a score between 60-95 indicating how upscale the area is)
-  "gentrificationIndex": 70, (a score between 30-100 indicating the level of gentrification)
+  "description": "4-5 sentences providing authentic insight into the area's real character, including both positives and any challenges. Mention specific streets, local spots, or community features that define the area.",
+  "areaType": "Specific classification (e.g., 'Victorian suburb', 'converted docklands', 'market town center')",
+  "history": "2-3 sentences about how the area developed its current character, including recent changes.",
+  "demographics": "Realistic description of who actually lives there, including age ranges, professions, and lifestyle types.",
+  "attractions": "Specific local attractions, including both obvious ones and hidden gems that locals know.",
+  "recentTrends": "Current property market trends, new developments, or community changes affecting the area.",
+  "poshScore": 75, (realistic score based on actual local perception, not just property prices)
+  "gentrificationIndex": 65, (honest assessment of gentrification level and pace)
   "coordinates": {
     "lat": 51.5074,
     "lng": -0.1278
   },
   "propertyPrices": {
-    "flatTwoBed": 450000,
-    "houseThreeBed": 750000
+    "flatTwoBed": 485000, (realistic current market prices)
+    "houseThreeBed": 675000
   },
-  "amenities": ["amenity1", "amenity2", "amenity3", "amenity4", "amenity5"],
-  "matchingAmenities": ["specific match 1", "specific match 2", "specific match 3"],
+  "amenities": ["specific local amenities", "community features", "transport links", "shopping areas", "green spaces"],
+  "matchingAmenities": ["standout features", "unique selling points", "local specialties"],
   "areaStats": {
-    "crimeRate": "Low - 25% below UK average",
-    "transportScore": "Excellent - Direct trains to London (25 min)",
-    "walkability": "Very Walkable - 85/100",
+    "crimeRate": "Medium - 10% above UK average, mostly antisocial behavior",
+    "transportScore": "Good - Northern Line (Zone 2), 18 min to Bank, limited night service",
+    "walkability": "Very Walkable - 82/100, flat terrain, good pedestrian areas",
     "propertyGrowth": {
-      "flats": "+3.5%",
-      "houses": "+4.2%"
+      "flats": "+2.8%",
+      "houses": "+4.1%"
     },
-    "areaVibe": ["Historic", "Family-friendly", "Upscale"]
+    "areaVibe": ["Community-focused", "Family-friendly", "Quietly trendy"]
   },
-  "pros": ["Pro 1", "Pro 2", "Pro 3"],
-  "cons": ["Con 1", "Con 2"]
+  "pros": ["Specific advantage 1", "Specific advantage 2", "Specific advantage 3"],
+  "cons": ["Realistic drawback 1", "Realistic drawback 2"]
 }
 
-IMPORTANT REQUIREMENTS:
-1. Provide REALISTIC and ACCURATE information
-2. Include PRECISE coordinates for the location
-3. Be SPECIFIC about property prices based on current market trends
-4. Include NUMERICAL values for all scores (poshScore, gentrificationIndex)
-5. ALWAYS return valid, properly formatted JSON
-6. DO NOT include any explanatory text outside of the JSON object
-7. Ensure the response is a SINGLE location object, not an array
+IMPORTANT:
+- Provide REALISTIC and HONEST assessment
+- Include both positives and genuine drawbacks
+- Use specific local knowledge and details
+- Ensure property prices reflect current market reality
+- Be precise about transportation options and limitations
+- JSON FORMAT ONLY - no explanatory text
 `;
-}
