@@ -79,7 +79,9 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
   const getCrimeIndex = (): number => {
     if ('crimeIndex' in areaData) return areaData.crimeIndex;
     
-    const crimeRateDesc = areaData.areaStats?.crimeRate?.toLowerCase() || '';
+    const crimeRateDesc = ('areaStats' in areaData && areaData.areaStats) 
+      ? areaData.areaStats.crimeRate?.toLowerCase() || ''
+      : '';
     if (crimeRateDesc.includes('low')) return 30;
     if (crimeRateDesc.includes('medium')) return 50;
     if (crimeRateDesc.includes('high')) return 75;
@@ -89,7 +91,9 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
   const getTransportScore = (): number => {
     if ('transportScore' in areaData) return areaData.transportScore;
     
-    const transportDesc = areaData.areaStats?.transportScore?.toLowerCase() || '';
+    const transportDesc = ('areaStats' in areaData && areaData.areaStats) 
+      ? areaData.areaStats.transportScore?.toLowerCase() || ''
+      : '';
     if (transportDesc.includes('excellent')) return 85;
     if (transportDesc.includes('good')) return 70;
     if (transportDesc.includes('poor')) return 40;
@@ -99,7 +103,9 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
   const getWalkabilityScore = (): number => {
     if ('walkability' in areaData) return areaData.walkability;
     
-    const walkDesc = areaData.areaStats?.walkability || '';
+    const walkDesc = ('areaStats' in areaData && areaData.areaStats) 
+      ? areaData.areaStats.walkability || ''
+      : '';
     const match = walkDesc.match(/(\d+)\/100/);
     if (match && match[1]) return parseInt(match[1], 10);
     
@@ -124,7 +130,7 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
   const getPriceGrowth = (): number => {
     if ('priceGrowth' in areaData) return areaData.priceGrowth;
     
-    if (areaData.areaStats?.propertyGrowth) {
+    if ('areaStats' in areaData && areaData.areaStats?.propertyGrowth) {
       const houseGrowth = areaData.areaStats.propertyGrowth.houses;
       if (houseGrowth) {
         const match = houseGrowth.match(/([+-]?\d+(?:\.\d+)?)/);
@@ -148,11 +154,11 @@ const PoshScoreCard: React.FC<PoshScoreCardProps> = ({ areaData }) => {
       (areaData.propertyPrices ? 
         Math.round((areaData.propertyPrices.flatTwoBed + areaData.propertyPrices.houseThreeBed) / 2) : 
         750000),
-    crimeRateDescription: areaData.areaStats?.crimeRate,
-    transportDescription: areaData.areaStats?.transportScore,
-    walkabilityDescription: areaData.areaStats?.walkability,
-    propertyGrowthDetails: areaData.areaStats?.propertyGrowth,
-    areaVibe: areaData.areaStats?.areaVibe
+    crimeRateDescription: ('areaStats' in areaData && areaData.areaStats) ? areaData.areaStats.crimeRate : undefined,
+    transportDescription: ('areaStats' in areaData && areaData.areaStats) ? areaData.areaStats.transportScore : undefined,
+    walkabilityDescription: ('areaStats' in areaData && areaData.areaStats) ? areaData.areaStats.walkability : undefined,
+    propertyGrowthDetails: ('areaStats' in areaData && areaData.areaStats) ? areaData.areaStats.propertyGrowth : undefined,
+    areaVibe: ('areaStats' in areaData && areaData.areaStats) ? areaData.areaStats.areaVibe : undefined
   };
 
   const getScoreColor = (score: number) => {
