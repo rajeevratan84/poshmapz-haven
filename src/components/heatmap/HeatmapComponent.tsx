@@ -187,8 +187,8 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
         }
       });
       
-      // Add click handler for individual points (using layer-specific syntax)
-      mapInstanceRef.current.on('click', 'heatmap-points', (e) => {
+      // Add click handler for individual points (corrected syntax)
+      mapInstanceRef.current.on('click', 'heatmap-points', (e: any) => {
         if (e.features && e.features.length > 0) {
           const feature = e.features[0];
           const props = feature.properties;
@@ -209,7 +209,7 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
         }
       });
       
-      // Change cursor on hover for points layer
+      // Change cursor on hover for points layer (corrected syntax)
       mapInstanceRef.current.on('mouseenter', 'heatmap-points', () => {
         if (mapInstanceRef.current) {
           mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
@@ -242,7 +242,7 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
           document.head.appendChild(link);
           
           const script = document.createElement('script');
-          script.src = 'https://unpkg.com/maplibregl@2.4.0/dist/maplibre-gl.js';
+          script.src = 'https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js';
           script.async = true;
           document.body.appendChild(script);
           
