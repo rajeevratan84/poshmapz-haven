@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { HeatmapPoint } from '@/services/overpassService';
@@ -187,10 +188,14 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
         }
       });
       
-      // Add click handler for individual points (corrected syntax)
-      mapInstanceRef.current.on('click', 'heatmap-points', (e: any) => {
-        if (e.features && e.features.length > 0) {
-          const feature = e.features[0];
+      // Add click handler for individual points (fixed signature)
+      mapInstanceRef.current.on('click', (e: any) => {
+        const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, {
+          layers: ['heatmap-points']
+        });
+        
+        if (features && features.length > 0) {
+          const feature = features[0];
           const props = feature.properties;
           const coords = (feature.geometry as any).coordinates;
           
@@ -209,15 +214,23 @@ const HeatmapComponent: React.FC<HeatmapComponentProps> = ({ points, isLoading }
         }
       });
       
-      // Change cursor on hover for points layer (corrected syntax)
-      mapInstanceRef.current.on('mouseenter', 'heatmap-points', () => {
-        if (mapInstanceRef.current) {
+      // Change cursor on hover for points layer (fixed signature)
+      mapInstanceRef.current.on('mouseenter', (e: any) => {
+        const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, {
+          layers: ['heatmap-points']
+        });
+        
+        if (features && features.length > 0 && mapInstanceRef.current) {
           mapInstanceRef.current.getCanvas().style.cursor = 'pointer';
         }
       });
       
-      mapInstanceRef.current.on('mouseleave', 'heatmap-points', () => {
-        if (mapInstanceRef.current) {
+      mapInstanceRef.current.on('mouseleave', (e: any) => {
+        const features = mapInstanceRef.current?.queryRenderedFeatures(e.point, {
+          layers: ['heatmap-points']
+        });
+        
+        if (features && features.length === 0 && mapInstanceRef.current) {
           mapInstanceRef.current.getCanvas().style.cursor = '';
         }
       });
